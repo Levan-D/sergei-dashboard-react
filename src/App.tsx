@@ -1,35 +1,37 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
-import AppLayout from '@/layout/AppLayout';
-import DashboardPage from '@/pages/DashboardPage';
-import LandingPage from '@/pages/LandingPage';
-import CatalogPage from '@/pages/CatalogPage';
-import ModelEditorPage from '@/pages/ModelEditorPage';
-import GenEditorPage from '@/pages/GenEditorPage';
-import MediaPage from '@/pages/MediaPage';
-import BrandStylePage from '@/pages/BrandStylePage';
-import CommunityPage from '@/pages/CommunityPage';
-import UsersPage from '@/pages/UsersPage';
-import NotificationsPage from '@/pages/NotificationsPage';
-import HistoryPage from '@/pages/HistoryPage';
-import SettingsPage from '@/pages/SettingsPage';
+import useScreenDimensions from '@/hooks/use-screen-dimensions';
+import AdminLayout from '@/layout/admin-layout/AdminLayout';
+import DashboardPage from '@/pages/_admin/DashboardPage';
+import LandingPage from '@/pages/_admin/LandingPage';
+import CatalogPage from '@/pages/_admin/CatalogPage';
+import ModelEditorPage from '@/pages/_admin/ModelEditorPage';
+import GenEditorPage from '@/pages/_admin/GenEditorPage';
+import MediaPage from '@/pages/_admin/MediaPage';
+import BrandStylePage from '@/pages/_admin/BrandStylePage';
+import CommunityPage from '@/pages/_admin/CommunityPage';
+import UsersPage from '@/pages/_admin/UsersPage';
+import NotificationsPage from '@/pages/_admin/NotificationsPage';
+import HistoryPage from '@/pages/_admin/HistoryPage';
+import SettingsPage from '@/pages/_admin/SettingsPage';
 
 export default function App() {
+  useScreenDimensions();
   return (
     <Routes>
-      <Route path="/admin" element={<AppLayout />}>
+      <Route path={ROUTING.admin} element={<AdminLayout />}>
         <Route index element={<DashboardPage />} />
-        <Route path="landing" element={<LandingPage />} />
-        <Route path="catalog" element={<CatalogPage />} />
-        <Route path="catalog/model/:name" element={<ModelEditorPage />} />
-        <Route path="catalog/gen/:name" element={<GenEditorPage />} />
-        <Route path="media" element={<MediaPage />} />
-        <Route path="style" element={<BrandStylePage />} />
-        <Route path="community" element={<CommunityPage />} />
-        <Route path="users" element={<UsersPage />} />
-        <Route path="notifications" element={<NotificationsPage />} />
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+        <Route path={ROUTING.adminLanding} element={<LandingPage />} />
+        <Route path={ROUTING.adminCatalog} element={<CatalogPage />} />
+        <Route path={`${ROUTING.adminCatalogModel}:name`} element={<ModelEditorPage />} />
+        <Route path={`${ROUTING.adminCatalogGen}:name`} element={<GenEditorPage />} />
+        <Route path={ROUTING.adminMedia} element={<MediaPage />} />
+        <Route path={ROUTING.adminStyle} element={<BrandStylePage />} />
+        <Route path={ROUTING.adminCommunity} element={<CommunityPage />} />
+        <Route path={ROUTING.adminUsers} element={<UsersPage />} />
+        <Route path={ROUTING.adminNotifications} element={<NotificationsPage />} />
+        <Route path={ROUTING.adminHistory} element={<HistoryPage />} />
+        <Route path={ROUTING.adminSettings} element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to={ROUTING.admin} replace />} />
     </Routes>

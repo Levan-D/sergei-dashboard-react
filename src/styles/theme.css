@@ -1,0 +1,26 @@
+@theme inline {
+  --breakpoint-xs: 375px;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface2);
+  --color-surface-3: var(--surface3);
+  --color-line: var(--border);
+  --color-line-2: var(--border2);
+  --color-ink: var(--text);
+  --color-ink-2: var(--text-2);
+  --color-ink-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-bg: var(--accent-bg);
+  --color-green: var(--green);
+  --color-green-bg: var(--green-bg);
+  --color-yellow: var(--yellow);
+  --color-yellow-bg: var(--yellow-bg);
+  --color-red: var(--red);
+  --color-red-bg: var(--red-bg);
+  --radius-card: 10px;
+  --radius-el: 7px;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --shadow-card: var(--shadow);
+}

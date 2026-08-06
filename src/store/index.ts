@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
-import ui from './uiSlice';
-import catalog from '@/features/catalog/catalogSlice';
-import landing from '@/features/landing/landingSlice';
-import specs from '@/features/specs/specsSlice';
+import catalog from '@/features/_admin/catalog/catalogSlice';
+import landing from '@/features/_admin/landing/landingSlice';
+import specs from '@/features/_admin/specs/specsSlice';
+import screen from './screenSlice';
 
 export const store = configureStore({
-  reducer: { ui, catalog, landing, specs },
+  reducer: { catalog, landing, specs, screen },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

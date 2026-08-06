@@ -1,0 +1,25 @@
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
