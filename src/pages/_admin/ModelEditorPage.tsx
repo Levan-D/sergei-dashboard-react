@@ -29,13 +29,13 @@ export default function ModelEditorPage() {
   }, [name]);
 
   return (
-    <div className="grid h-auto grid-cols-[1fr_260px] items-start gap-5">
+    <div className="flex h-auto items-start gap-5">
       {/* LEFT COLUMN */}
-      <div className="flex min-w-0 flex-col gap-3 md:gap-4 [&>div]:mb-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 md:gap-4 [&>div]:mb-0">
         <SectionCard>
           <SectionHeader title="Basic Information" />
-          <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
-            <FormGroup label="Model Name">
+          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+            <FormGroup half label="Model Name">
               <Input
                 type="text"
                 placeholder="e.g. BMW M4"
@@ -43,7 +43,7 @@ export default function ModelEditorPage() {
                 onChange={(e) => dispatch(updateModelEditor({ name: e.target.value }))}
               />
             </FormGroup>
-            <FormGroup label="Production Years">
+            <FormGroup half label="Production Years">
               <Input
                 type="text"
                 placeholder="e.g. 2014 – Present"
@@ -51,7 +51,7 @@ export default function ModelEditorPage() {
                 onChange={(e) => dispatch(updateModelEditor({ years: e.target.value }))}
               />
             </FormGroup>
-            <FormGroup label="Body Type">
+            <FormGroup half label="Body Type">
               <Select
                 placeholder="— Select —"
                 options={[
@@ -67,7 +67,7 @@ export default function ModelEditorPage() {
                 ]}
               />
             </FormGroup>
-            <FormGroup label="Power Type">
+            <FormGroup half label="Power Type">
               <Select placeholder="— Select —" options={['Combustion', 'Electric', 'Hybrid', 'Plug-in Hybrid']} />
             </FormGroup>
             <FormGroup label="Description" full hint="Markdown supported">
@@ -83,7 +83,7 @@ export default function ModelEditorPage() {
 
         <SectionCard>
           <SectionHeader title="Model Overview" sub="Displayed in the overview section of the model page" />
-          <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
             <FormGroup label="Overview Text" full hint="Markdown supported">
               <Textarea
                 rows={6}
@@ -113,7 +113,7 @@ export default function ModelEditorPage() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="flex flex-col gap-2 md:gap-3">
+      <div className="flex w-[260px] shrink-0 flex-col gap-2 md:gap-3">
         <PublishCard saveLabel="Save Model" savedToast="✅ Model saved" />
 
         <SectionCard className="mb-0">

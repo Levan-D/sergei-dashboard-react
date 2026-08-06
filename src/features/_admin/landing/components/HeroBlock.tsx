@@ -17,8 +17,8 @@ import Input from '@/components/_admin/forms/Input';
 /* ── Hero CTA form fields (shared by the three hero types) ── */
 function HeroCtaFields({ prefill }: { prefill?: boolean }) {
   return (
-    <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
-      <div className="col-span-full h-px bg-line" />
+    <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+      <div className="h-px w-full bg-line" />
       <FormGroup label="H1 — Headline" full>
         <Input type="text" defaultValue={prefill ? 'The Ultimate Driving Machine' : ''} placeholder="Main heading" />
       </FormGroup>
@@ -29,16 +29,16 @@ function HeroCtaFields({ prefill }: { prefill?: boolean }) {
           placeholder="Supporting text"
         />
       </FormGroup>
-      <FormGroup label="CTA Primary — Button Text">
+      <FormGroup half label="CTA Primary — Button Text">
         <Input type="text" defaultValue={prefill ? 'Explore Models' : ''} placeholder="e.g. Explore Models" />
       </FormGroup>
-      <FormGroup label="CTA Primary — Link URL">
+      <FormGroup half label="CTA Primary — Link URL">
         <Input type="url" defaultValue={prefill ? 'https://bmw.motority.com/models' : ''} placeholder="https://..." />
       </FormGroup>
-      <FormGroup label="CTA Secondary — Button Text">
+      <FormGroup half label="CTA Secondary — Button Text">
         <Input type="text" defaultValue={prefill ? 'Join the Community' : ''} placeholder="e.g. Join Community" />
       </FormGroup>
-      <FormGroup label="CTA Secondary — Link URL">
+      <FormGroup half label="CTA Secondary — Link URL">
         <Input type="url" defaultValue={prefill ? 'https://motority.com/join' : ''} placeholder="https://..." />
       </FormGroup>
     </div>

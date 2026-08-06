@@ -6,14 +6,14 @@ import { LivePreview } from '@/features/_admin/landing/components/LivePreview';
 
 export default function LandingPage() {
   return (
-    <div className="grid grid-cols-[1fr_320px] gap-3 md:gap-4">
-      <div>
+    <div className="flex gap-3 md:gap-4">
+      <div className="min-w-0 flex-1">
         <HeroBlock />
         <SecondScreen />
         <FiltersConfig />
         <ModelsOnLanding />
       </div>
-      <div>
+      <div className="w-[320px] shrink-0">
         <LivePreview />
       </div>
     </div>

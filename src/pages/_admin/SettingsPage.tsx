@@ -24,17 +24,17 @@ export default function SettingsPage() {
           </Button>
         }
       />
-      <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
-        <FormGroup label="Brand Name">
+      <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+        <FormGroup half label="Brand Name">
           <Input type="text" defaultValue="BMW" />
         </FormGroup>
-        <FormGroup label="Domain">
+        <FormGroup half label="Domain">
           <Input type="text" defaultValue="bmw.motority.com" />
         </FormGroup>
-        <FormGroup label="Contact Email">
+        <FormGroup half label="Contact Email">
           <Input type="email" defaultValue="admin@bmw-motority.com" />
         </FormGroup>
-        <FormGroup label="Default Language">
+        <FormGroup half label="Default Language">
           <Select options={['English', 'Deutsch', 'Русский']} />
         </FormGroup>
       </div>

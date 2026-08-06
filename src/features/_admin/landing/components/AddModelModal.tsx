@@ -31,20 +31,20 @@ export default function AddModelModal({ open, onClose }: Props) {
         </>
       }
     >
-      <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
-        <FormGroup label="Model Name">
+      <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+        <FormGroup half label="Model Name">
           <Input type="text" placeholder="e.g. BMW M5" />
         </FormGroup>
-        <FormGroup label="Production Years">
+        <FormGroup half label="Production Years">
           <Input type="text" placeholder="e.g. 2021 – Present" />
         </FormGroup>
         <FormGroup label="Description" full>
           <Textarea rows={3} placeholder="Model description..." />
         </FormGroup>
-        <FormGroup label="Body Type">
+        <FormGroup half label="Body Type">
           <Select options={['Sedan', 'Coupe', 'SAV', 'Convertible', 'Touring']} />
         </FormGroup>
-        <FormGroup label="Power Type">
+        <FormGroup half label="Power Type">
           <Select options={['Combustion', 'Electric', 'Hybrid']} />
         </FormGroup>
         <FormGroup label="Main Image" full>

@@ -87,9 +87,9 @@ export default function BrandStylePage() {
             </Button>
           }
         />
-        <div className="grid grid-cols-4 gap-2 p-5 md:gap-3">
+        <div className="flex gap-2 p-5 md:gap-3">
           {colors.map((c) => (
-            <div key={c.label} className="flex flex-col gap-1.5">
+            <div key={c.label} className="flex flex-1 flex-col gap-1.5">
               <div
                 className="h-12 w-full cursor-pointer rounded-el border border-line transition-transform duration-100 hover:scale-[1.04]"
                 style={{ background: c.hex }}

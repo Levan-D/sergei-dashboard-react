@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   return (
     <div>
-      <div className="mb-4 grid grid-cols-4 gap-2 md:mb-6 md:gap-3">
+      <div className="mb-4 flex gap-2 md:mb-6 md:gap-3">
         <StatCard label="Models on Landing" value="47" sub="Across 8 series" />
         <StatCard label="Generations" value="134" sub="+3 this month" />
         <StatCard label="Community Logbooks" value="2,841" sub="BMW owners on Motority" />

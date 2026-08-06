@@ -33,13 +33,13 @@ export default function GenEditorPage() {
   }, [name]);
 
   return (
-    <div className="grid h-auto grid-cols-[1fr_260px] items-start gap-5">
+    <div className="flex h-auto items-start gap-5">
       {/* LEFT COLUMN */}
-      <div className="flex min-w-0 flex-col gap-3 md:gap-4 [&>div]:mb-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 md:gap-4 [&>div]:mb-0">
         <SectionCard>
           <SectionHeader title="Basic Information" />
-          <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
-            <FormGroup label="Generation Name">
+          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+            <FormGroup half label="Generation Name">
               <Input
                 type="text"
                 placeholder="e.g. BMW M4 G82"
@@ -47,7 +47,7 @@ export default function GenEditorPage() {
                 onChange={(e) => dispatch(updateGenEditor({ name: e.target.value }))}
               />
             </FormGroup>
-            <FormGroup label="Production Years">
+            <FormGroup half label="Production Years">
               <Input
                 type="text"
                 placeholder="e.g. 2020 – Present"
@@ -76,7 +76,7 @@ export default function GenEditorPage() {
 
         <SectionCard>
           <SectionHeader title="Generation Overview" sub="Displayed in the overview section of the generation page" />
-          <div className="grid grid-cols-2 gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
             <FormGroup label="Overview Text" full hint="Markdown supported">
               <Textarea
                 rows={6}
@@ -107,7 +107,7 @@ export default function GenEditorPage() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="flex flex-col gap-2 md:gap-3">
+      <div className="flex w-[260px] shrink-0 flex-col gap-2 md:gap-3">
         <PublishCard saveLabel="Save Generation" savedToast="✅ Generation saved" />
         <InfoCard
           rows={[

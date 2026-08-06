@@ -29,7 +29,7 @@ export default function EditRoleModal({ open, onClose }: Props) {
         </>
       }
     >
-      <div className="grid grid-cols-1 gap-3 p-5 md:gap-4">
+      <div className="flex flex-col gap-3 p-5 md:gap-4">
         <FormGroup label="Role">
           <Select options={['Admin', 'Super Admin']} />
         </FormGroup>

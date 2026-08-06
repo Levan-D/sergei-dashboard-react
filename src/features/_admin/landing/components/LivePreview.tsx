@@ -41,13 +41,13 @@ export function LivePreview() {
                 Sedan
               </div>
             </div>
-            <div className="mt-1.5 grid grid-cols-3 gap-[5px]">
+            <div className="mt-1.5 flex gap-[5px]">
               {[
                 { code: 'M4', name: 'BMW M4', year: '2021–Present' },
                 { code: 'M3', name: 'BMW M3', year: '2020–Present' },
                 { code: 'X5', name: 'BMW X5', year: '2018–Present' },
               ].map((m) => (
-                <div key={m.code} className="overflow-hidden rounded-[3px]" style={{ background: '#1a1a1a' }}>
+                <div key={m.code} className="flex-1 overflow-hidden rounded-[3px]" style={{ background: '#1a1a1a' }}>
                   <div
                     className="flex h-6 items-center justify-center text-[5px] font-bold"
                     style={{ background: 'linear-gradient(135deg,#1e3a5f,#2d6a4f)', color: 'rgba(255,255,255,.4)' }}
@@ -66,9 +66,13 @@ export function LivePreview() {
           </div>
           <div className="px-2.5 py-1.5" style={{ borderTop: '1px solid #1a1a1a' }}>
             <div className="mb-1 text-[5px] font-bold text-white">REAL OWNERS</div>
-            <div className="grid grid-cols-2 gap-[3px]">
+            <div className="flex gap-[3px]">
               {['BMW M4 Competition', 'BMW X5 G05'].map((n) => (
-                <div key={n} className="flex h-[22px] items-end rounded-[3px] p-[3px]" style={{ background: '#111' }}>
+                <div
+                  key={n}
+                  className="flex h-[22px] flex-1 items-end rounded-[3px] p-[3px]"
+                  style={{ background: '#111' }}
+                >
                   <div className="text-[4px]" style={{ color: '#aaa' }}>
                     {n}
                   </div>

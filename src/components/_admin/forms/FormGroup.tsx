@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn';
 export default function FormGroup({
   label,
   full,
+  half,
   hint,
   className,
   style,
@@ -11,13 +12,22 @@ export default function FormGroup({
 }: {
   label?: ReactNode;
   full?: boolean;
+  half?: boolean;
   hint?: string;
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
 }) {
   return (
-    <div className={cn('flex flex-col gap-1.5', full && 'col-span-full', className)} style={style}>
+    <div
+      className={cn(
+        'flex flex-col gap-1.5',
+        full && 'w-full',
+        half && 'w-[calc(50%-6px)] md:w-[calc(50%-8px)]',
+        className,
+      )}
+      style={style}
+    >
       {label && <label>{label}</label>}
       {children}
       {hint && <div className="mt-1 text-[11px] text-ink-3">{hint}</div>}
