@@ -21,7 +21,7 @@ export function FiltersConfig() {
           </Button>
         }
       />
-      <div className="flex flex-col gap-3 p-5 md:gap-4">
+      <div className="flex flex-col gap-3 p-5 @mobile:gap-4">
         <div className="flex items-center gap-2.5">
           <Toggle on={decadesFilter} onClick={() => dispatch(toggleDecadesFilter())} />
           <label>Decades filter (1960s, 1970s … 2020s)</label>

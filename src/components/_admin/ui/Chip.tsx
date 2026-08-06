@@ -17,7 +17,7 @@ export default function Chip({
     <span
       onClick={onClick}
       className={cn(
-        'inline-flex cursor-pointer items-center gap-[5px] rounded-[20px] border py-[5px] pr-2 pl-3.5 text-xs font-semibold transition-all duration-150 select-none md:pr-3',
+        'inline-flex cursor-pointer items-center gap-[5px] rounded-[20px] border py-[5px] pr-2 pl-3.5 text-xs font-semibold transition-all duration-150 select-none @mobile:pr-3',
         active
           ? 'border-accent bg-accent-bg text-accent-light'
           : 'border-line bg-transparent text-ink-2 hover:border-line-2 hover:text-ink',

@@ -15,7 +15,7 @@ const colors = [
 
 function Recommendation({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-2.5 rounded-el border border-line bg-surface-2 px-2 py-2.5 text-[11px] text-ink-3 md:px-3">
+    <div className="mt-2.5 rounded-el border border-line bg-surface-2 px-2 py-2.5 text-[11px] text-ink-3 @mobile:px-3">
       <strong className="text-ink-2">Recommendations:</strong> {children}
     </div>
   );
@@ -87,7 +87,7 @@ export default function BrandStylePage() {
             </Button>
           }
         />
-        <div className="flex gap-2 p-5 md:gap-3">
+        <div className="flex gap-2 p-5 @mobile:gap-3">
           {colors.map((c) => (
             <div key={c.label} className="flex flex-1 flex-col gap-1.5">
               <div
@@ -116,7 +116,7 @@ export default function BrandStylePage() {
           }
         />
         <div
-          className="flex cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 md:gap-3 md:py-3"
+          className="flex cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('✅ BMW Type Next selected')}
         >
           <div className="w-[100px] text-xl font-bold text-ink">Aa</div>
@@ -129,7 +129,7 @@ export default function BrandStylePage() {
           </Badge>
         </div>
         <div
-          className="flex cursor-pointer items-center gap-2 border-b border-line px-5 py-2 hover:bg-surface-2 md:gap-3 md:py-3"
+          className="flex cursor-pointer items-center gap-2 border-b border-line px-5 py-2 hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('✅ Helvetica Neue selected')}
         >
           <div className="w-[100px] text-xl font-bold text-ink" style={{ fontFamily: 'Helvetica,Arial,sans-serif' }}>
@@ -141,7 +141,7 @@ export default function BrandStylePage() {
           </div>
         </div>
         <div
-          className="flex cursor-pointer items-center gap-2 px-5 py-2 hover:bg-surface-2 md:gap-3 md:py-3"
+          className="flex cursor-pointer items-center gap-2 px-5 py-2 hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('📁 Font upload — .woff, .woff2, .ttf')}
         >
           <div className="w-[100px] text-xl font-bold text-ink-3">+</div>

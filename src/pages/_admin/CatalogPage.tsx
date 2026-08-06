@@ -36,13 +36,13 @@ export default function CatalogPage() {
 
   return (
     <div className="rounded-card border border-line bg-surface">
-      <div className="flex gap-0.5 border-b border-line px-5 pt-3 md:pt-4">
+      <div className="flex gap-0.5 border-b border-line px-5 pt-3 @mobile:pt-4">
         {(['models', 'gen'] as const).map((t) => (
           <div
             key={t}
             onClick={() => dispatch(setTab(t))}
             className={cn(
-              'cursor-pointer border-b-2 px-3 py-2 text-[13px] font-semibold transition-all duration-150 md:px-4',
+              'cursor-pointer border-b-2 px-3 py-2 text-[13px] font-semibold transition-all duration-150 @mobile:px-4',
               tab === t ? 'border-accent text-accent-light' : 'border-transparent text-ink-3 hover:text-ink',
             )}
           >
@@ -115,7 +115,7 @@ export default function CatalogPage() {
 
       {tab === 'gen' && (
         <div>
-          <div className="flex items-center gap-3 border-t border-b border-line bg-surface-2 px-5 py-3 md:gap-4 md:py-4">
+          <div className="flex items-center gap-3 border-t border-b border-line bg-surface-2 px-5 py-3 @mobile:gap-4 @mobile:py-4">
             <label className="whitespace-nowrap">Model</label>
             <Select
               className="max-w-[280px]"
@@ -133,7 +133,7 @@ export default function CatalogPage() {
 
           {!genFilter ? (
             <div className="px-5 py-12 text-center text-ink-3">
-              <div className="mb-2 text-[32px] md:mb-3">📋</div>
+              <div className="mb-2 text-[32px] @mobile:mb-3">📋</div>
               <div className="mb-1 text-sm font-semibold text-ink-2">Select a model</div>
               <div className="text-[13px]">Choose a model above to view and manage its generations</div>
             </div>

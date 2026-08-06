@@ -24,7 +24,7 @@ export default function SettingsPage() {
           </Button>
         }
       />
-      <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+      <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
         <FormGroup half label="Brand Name">
           <Input type="text" defaultValue="BMW" />
         </FormGroup>
@@ -39,7 +39,7 @@ export default function SettingsPage() {
         </FormGroup>
       </div>
       <div className="px-5 pb-5">
-        <div className="rounded-card border border-line bg-surface-2 p-3 md:p-4">
+        <div className="rounded-card border border-line bg-surface-2 p-3 @mobile:p-4">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
               <div className="text-sm font-semibold text-ink">Maintenance Mode</div>
@@ -62,7 +62,9 @@ export default function SettingsPage() {
         </div>
       </div>
       <div className="px-5 pb-5">
-        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase md:mb-3">Backup &amp; Restore</div>
+        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase @mobile:mb-3">
+          Backup &amp; Restore
+        </div>
         <div className="flex gap-1.5">
           <Button variant="ghost" onClick={() => showToast('💾 Manual backup created')}>
             Create Backup

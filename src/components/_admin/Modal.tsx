@@ -23,7 +23,7 @@ export default function Modal({ open, onClose, title, sub, footer, width, childr
     >
       {open && (
         <div
-          className="max-h-[82dvh] overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-surface"
+          className="@container max-h-[82dvh] overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-surface"
           style={{ width: width ?? 540, maxWidth: '90vw' }}
           onClick={(e) => e.stopPropagation()}
         >

@@ -98,11 +98,11 @@ export default function SpecsEditor() {
               dispatch(moveMod({ dragId: drag.id, overId: mod.id, after: isAfter(e) }));
             }}
             className={cn(
-              'mt-3 overflow-hidden rounded-card border border-line md:mt-4',
+              'mt-3 overflow-hidden rounded-card border border-line @mobile:mt-4',
               drag?.level === 'mod' && drag.id === mod.id && 'opacity-40',
             )}
           >
-            <div className="flex items-center gap-2.5 border-b border-line bg-surface-2 px-3 py-2 md:px-4 md:py-3">
+            <div className="flex items-center gap-2.5 border-b border-line bg-surface-2 px-3 py-2 @mobile:px-4 @mobile:py-3">
               <DragHandle size="md" />
               <div className="flex-1">
                 <div className="mb-[3px] text-[10px] font-semibold tracking-[.06em] text-ink-3 uppercase">
@@ -140,7 +140,7 @@ export default function SpecsEditor() {
               </div>
             </div>
 
-            <div className="px-3 pb-2 md:px-4 md:pb-3">
+            <div className="px-3 pb-2 @mobile:px-4 @mobile:pb-3">
               {mod.groups.map((grp) => (
                 <div
                   key={grp.id}
@@ -158,11 +158,11 @@ export default function SpecsEditor() {
                     dispatch(moveGroup({ modId: mod.id, dragId: drag.id, overId: grp.id, after: isAfter(e) }));
                   }}
                   className={cn(
-                    'mt-2 overflow-hidden rounded-el border border-line md:mt-3',
+                    'mt-2 overflow-hidden rounded-el border border-line @mobile:mt-3',
                     drag?.level === 'group' && drag.id === grp.id && 'opacity-40',
                   )}
                 >
-                  <div className="flex items-center gap-2 border-b border-line bg-surface-2 px-2 py-2 md:px-3">
+                  <div className="flex items-center gap-2 border-b border-line bg-surface-2 px-2 py-2 @mobile:px-3">
                     <DragHandle size="sm" />
                     <Input
                       type="text"
@@ -219,7 +219,7 @@ export default function SpecsEditor() {
                           );
                         }}
                         className={cn(
-                          'group flex items-center gap-2 border-b border-line px-2 py-1.5 transition-colors duration-100 last:border-b-0 hover:bg-surface-2 md:px-3',
+                          'group flex items-center gap-2 border-b border-line px-2 py-1.5 transition-colors duration-100 last:border-b-0 hover:bg-surface-2 @mobile:px-3',
                           drag?.level === 'row' && drag.id === row.id && 'opacity-40',
                         )}
                       >

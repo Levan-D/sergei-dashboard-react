@@ -17,7 +17,7 @@ import Input from '@/components/_admin/forms/Input';
 /* ── Hero CTA form fields (shared by the three hero types) ── */
 function HeroCtaFields({ prefill }: { prefill?: boolean }) {
   return (
-    <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+    <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
       <div className="h-px w-full bg-line" />
       <FormGroup label="H1 — Headline" full>
         <Input type="text" defaultValue={prefill ? 'The Ultimate Driving Machine' : ''} placeholder="Main heading" />
@@ -91,13 +91,13 @@ export function HeroBlock() {
           </Button>
         }
       />
-      <div className="flex gap-1 border-b border-line bg-surface-2 px-3 py-2 md:px-4 md:py-3">
+      <div className="flex gap-1 border-b border-line bg-surface-2 px-3 py-2 @mobile:px-4 @mobile:py-3">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => dispatch(setHeroType(t.id))}
             className={cn(
-              'inline-flex cursor-pointer items-center gap-1.5 rounded-el border px-3 py-[7px] font-sans text-[12.5px] font-semibold transition-all duration-150 md:px-4',
+              'inline-flex cursor-pointer items-center gap-1.5 rounded-el border px-3 py-[7px] font-sans text-[12.5px] font-semibold transition-all duration-150 @mobile:px-4',
               heroType === t.id
                 ? 'border-line bg-surface text-accent-light shadow-[0_1px_4px_rgba(0,0,0,.15)] [&_svg]:opacity-100'
                 : 'border-transparent bg-transparent text-ink-3 hover:border-line hover:bg-surface hover:text-ink [&_svg]:opacity-70 [&_svg]:hover:opacity-100',
@@ -125,7 +125,7 @@ export function HeroBlock() {
             text="Drop video or click to upload"
             hint="MP4/WebM · max 100MB · recommended 1920×1080"
           />
-          <MediaSectionLabel className="mt-3 md:mt-4">Preview Thumbnail</MediaSectionLabel>
+          <MediaSectionLabel className="mt-3 @mobile:mt-4">Preview Thumbnail</MediaSectionLabel>
           <MediaPickRow icon="🖼️" text="Upload thumbnail image" hint="Shown before video loads" compact />
         </div>
         <HeroCtaFields />
@@ -133,7 +133,7 @@ export function HeroBlock() {
 
       <div className={heroType === 'carousel' ? '' : 'hidden'}>
         <div className="p-5">
-          <div className="mb-2 flex items-center justify-between md:mb-3">
+          <div className="mb-2 flex items-center justify-between @mobile:mb-3">
             <MediaSectionLabel className="mb-0">
               Carousel Slides{' '}
               <Badge color="gray" className="ml-1.5 text-[11px]">
@@ -172,7 +172,7 @@ export function HeroBlock() {
           <div className="mt-2.5">
             <MediaPickRow icon="+" text="Upload new slide" compact />
           </div>
-          <div className="mt-2 flex items-center gap-5 border-t border-line pt-3.5 md:mt-3">
+          <div className="mt-2 flex items-center gap-5 border-t border-line pt-3.5 @mobile:mt-3">
             <div className="flex flex-row items-center gap-2.5">
               <Toggle on={autoplay} onClick={() => setAutoplay(!autoplay)} />
               <label>Autoplay</label>

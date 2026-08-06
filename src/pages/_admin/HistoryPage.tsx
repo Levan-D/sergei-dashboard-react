@@ -5,6 +5,18 @@ import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import type { BadgeColor } from '@/components/_admin/ui/Badge';
 import Table from '@/components/_admin/ui/Table';
+import { RecordCard } from '@/components/_admin/RecordCard';
+
+function RestoreButton() {
+  return (
+    <button
+      onClick={() => showToast('♻️ Restored to this version')}
+      className="cursor-pointer border-none bg-transparent font-sans text-xs font-semibold text-accent hover:underline"
+    >
+      Restore
+    </button>
+  );
+}
 
 const entries: {
   initials: string;
@@ -57,7 +69,7 @@ export default function HistoryPage() {
   return (
     <SectionCard>
       <SectionHeader title="Version History" sub="All content changes" />
-      <Table>
+      <Table className="@max-mobile:hidden">
         <thead>
           <tr>
             <th>Editor</th>
@@ -82,17 +94,26 @@ export default function HistoryPage() {
               </td>
               <td className="text-ink-3">{e.time}</td>
               <td>
-                <button
-                  onClick={() => showToast('♻️ Restored to this version')}
-                  className="cursor-pointer border-none bg-transparent font-sans text-xs font-semibold text-accent hover:underline"
-                >
-                  Restore
-                </button>
+                <RestoreButton />
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
+      <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+        {entries.map((e, i) => (
+          <RecordCard
+            key={i}
+            initials={e.initials}
+            bg={e.bg}
+            title={e.name}
+            meta={e.time}
+            description={e.object}
+            badge={{ label: e.change, color: e.badge }}
+            action={<RestoreButton />}
+          />
+        ))}
+      </div>
     </SectionCard>
   );
 }

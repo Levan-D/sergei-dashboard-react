@@ -53,7 +53,7 @@ export default function PickMediaModal({ open, onClose }: Props) {
         </div>
       }
     >
-      <div className="flex gap-2 border-b border-line px-5 py-2 md:py-3">
+      <div className="flex gap-2 border-b border-line px-5 py-2 @mobile:py-3">
         {mediaFilters.map((f) => (
           <Chip
             key={f}
@@ -66,7 +66,7 @@ export default function PickMediaModal({ open, onClose }: Props) {
           />
         ))}
       </div>
-      <div className="grid max-h-[420px] grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2 overflow-y-auto overscroll-contain p-5 md:gap-3">
+      <div className="grid max-h-[420px] grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2 overflow-y-auto overscroll-contain p-5 @mobile:gap-3">
         {mediaFiles.map((f) => (
           <div
             key={f.name}

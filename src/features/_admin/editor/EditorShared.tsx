@@ -29,7 +29,7 @@ export function GallerySection({ sub, initial }: { sub: string; initial: Gallery
           </Button>
         }
       />
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2.5 px-5 py-3 md:py-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2.5 px-5 py-3 @mobile:py-4">
         {photos.map((p) => (
           <div key={p.id} className="group relative aspect-[4/3] overflow-hidden rounded-el border border-line">
             <div className="flex h-full w-full items-center justify-center text-2xl" style={{ background: p.bg }}>
@@ -54,7 +54,7 @@ export function GallerySection({ sub, initial }: { sub: string; initial: Gallery
           <span>Upload</span>
         </div>
       </div>
-      <div className="px-5 pb-3 text-[11px] text-ink-3 md:pb-4">Drag to reorder · JPG, WebP · max 5MB each</div>
+      <div className="px-5 pb-3 text-[11px] text-ink-3 @mobile:pb-4">Drag to reorder · JPG, WebP · max 5MB each</div>
       <PickMediaModal open={pickOpen} onClose={() => setPickOpen(false)} />
     </SectionCard>
   );
@@ -93,7 +93,7 @@ export function ExternalLinksSection({ sub, target }: { sub: string; target: 'mo
       <SectionHeader title="External Links" sub={sub} />
       <div className="flex flex-col gap-3.5 p-5">
         {fixedLinks.map((l) => (
-          <div key={l.label} className="flex items-center gap-2 md:gap-3">
+          <div key={l.label} className="flex items-center gap-2 @mobile:gap-3">
             <div
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] text-base"
               style={{ background: l.iconBg, color: l.iconColor }}
@@ -108,7 +108,10 @@ export function ExternalLinksSection({ sub, target }: { sub: string; target: 'mo
         ))}
         <div>
           {links.map((l, i) => (
-            <div key={l.id} className="flex items-center gap-2 border-t border-dashed border-line-2 py-2.5 md:gap-3">
+            <div
+              key={l.id}
+              className="flex items-center gap-2 border-t border-dashed border-line-2 py-2.5 @mobile:gap-3"
+            >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-surface-3 text-base text-ink-3">
                 🔗
               </div>
@@ -145,7 +148,7 @@ export function PublishCard({ saveLabel, savedToast }: { saveLabel: string; save
   return (
     <SectionCard className="mb-0">
       <SectionHeader compact title="Publish" />
-      <div className="flex flex-col gap-2 px-3 py-3.5 md:gap-3 md:px-4">
+      <div className="flex flex-col gap-2 px-3 py-3.5 @mobile:gap-3 @mobile:px-4">
         <div className="flex items-center gap-2.5">
           <Toggle
             on={visible}
@@ -173,7 +176,7 @@ export function InfoCard({ rows }: { rows: { label: string; value: string; muted
   return (
     <SectionCard className="mb-0">
       <SectionHeader compact title="Info" />
-      <div className="flex flex-col gap-2 px-3 py-3.5 md:px-4">
+      <div className="flex flex-col gap-2 px-3 py-3.5 @mobile:px-4">
         {rows.map((r) => (
           <div key={r.label} className="flex justify-between text-xs">
             <span className="text-ink-3">{r.label}</span>

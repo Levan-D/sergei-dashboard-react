@@ -18,7 +18,7 @@ export default function SectionHeader({
     <div
       className={cn(
         'flex items-center justify-between border-b border-line',
-        compact ? 'px-3 py-3.5 md:px-4' : 'px-5 py-3 md:py-4',
+        compact ? 'px-3 py-3.5 @mobile:px-4' : 'px-5 py-3 @mobile:py-4',
         borderTop && 'border-t',
       )}
     >

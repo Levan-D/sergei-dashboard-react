@@ -1,5 +1,6 @@
 @theme inline {
   --breakpoint-xs: 375px;
+  --container-mobile: 48rem;
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface2);

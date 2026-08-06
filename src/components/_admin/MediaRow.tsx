@@ -19,12 +19,12 @@ export function MediaPickRow({
 }) {
   const [pickOpen, setPickOpen] = useState(false);
   return (
-    <div className="flex flex-wrap items-center gap-2 md:gap-3">
+    <div className="flex flex-wrap items-center gap-2 @mobile:gap-3">
       <div
         onClick={() => showToast('📁 File picker opened')}
         className={cn(
           'min-w-[180px] flex-1 cursor-pointer rounded-card border-2 border-dashed border-line-2 text-center transition-all duration-150 hover:border-accent hover:bg-accent-bg',
-          compact ? 'p-3 md:p-4' : 'px-5 py-3 md:py-4',
+          compact ? 'p-3 @mobile:p-4' : 'px-5 py-3 @mobile:py-4',
         )}
       >
         <div className={cn('mb-2', compact ? 'text-lg' : 'text-[28px]')}>{icon}</div>
@@ -66,7 +66,7 @@ export function CurrentMedia({
   onRemove: () => void;
 }) {
   return (
-    <div className="mt-2.5 flex items-center gap-2.5 rounded-el border border-line bg-surface-2 p-2.5 px-2 md:px-3">
+    <div className="mt-2.5 flex items-center gap-2.5 rounded-el border border-line bg-surface-2 p-2.5 px-2 @mobile:px-3">
       <div
         className="flex h-[34px] w-12 shrink-0 items-center justify-center rounded-[5px] text-base"
         style={{ background: bg }}

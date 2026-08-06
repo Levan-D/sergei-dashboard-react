@@ -35,10 +35,10 @@ export default function GenEditorPage() {
   return (
     <div className="flex h-auto items-start gap-5">
       {/* LEFT COLUMN */}
-      <div className="flex min-w-0 flex-1 flex-col gap-3 md:gap-4 [&>div]:mb-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 @mobile:gap-4 [&>div]:mb-0">
         <SectionCard>
           <SectionHeader title="Basic Information" />
-          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
             <FormGroup half label="Generation Name">
               <Input
                 type="text"
@@ -76,7 +76,7 @@ export default function GenEditorPage() {
 
         <SectionCard>
           <SectionHeader title="Generation Overview" sub="Displayed in the overview section of the generation page" />
-          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
             <FormGroup label="Overview Text" full hint="Markdown supported">
               <Textarea
                 rows={6}
@@ -107,7 +107,7 @@ export default function GenEditorPage() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="flex w-[260px] shrink-0 flex-col gap-2 md:gap-3">
+      <div className="flex w-[260px] shrink-0 flex-col gap-2 @mobile:gap-3">
         <PublishCard saveLabel="Save Generation" savedToast="✅ Generation saved" />
         <InfoCard
           rows={[

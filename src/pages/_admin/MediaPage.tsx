@@ -22,12 +22,12 @@ export default function MediaPage() {
           </Button>
         }
       />
-      <div className="flex gap-2 px-5 pt-3 md:pt-4">
+      <div className="flex gap-2 px-5 pt-3 @mobile:pt-4">
         {filters.map((f) => (
           <Chip key={f} label={f} active={!!active[f]} onClick={() => setActive((a) => ({ ...a, [f]: !a[f] }))} />
         ))}
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2 p-5 md:gap-3">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2 p-5 @mobile:gap-3">
         {mediaFiles.slice(0, 6).map((f) => (
           <div
             key={f.name}

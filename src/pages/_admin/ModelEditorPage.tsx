@@ -31,10 +31,10 @@ export default function ModelEditorPage() {
   return (
     <div className="flex h-auto items-start gap-5">
       {/* LEFT COLUMN */}
-      <div className="flex min-w-0 flex-1 flex-col gap-3 md:gap-4 [&>div]:mb-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 @mobile:gap-4 [&>div]:mb-0">
         <SectionCard>
           <SectionHeader title="Basic Information" />
-          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
             <FormGroup half label="Model Name">
               <Input
                 type="text"
@@ -83,7 +83,7 @@ export default function ModelEditorPage() {
 
         <SectionCard>
           <SectionHeader title="Model Overview" sub="Displayed in the overview section of the model page" />
-          <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+          <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
             <FormGroup label="Overview Text" full hint="Markdown supported">
               <Textarea
                 rows={6}
@@ -113,12 +113,12 @@ export default function ModelEditorPage() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="flex w-[260px] shrink-0 flex-col gap-2 md:gap-3">
+      <div className="flex w-[260px] shrink-0 flex-col gap-2 @mobile:gap-3">
         <PublishCard saveLabel="Save Model" savedToast="✅ Model saved" />
 
         <SectionCard className="mb-0">
           <SectionHeader compact title="Series" />
-          <div className="px-3 py-3.5 md:px-4">
+          <div className="px-3 py-3.5 @mobile:px-4">
             <Select
               placeholder="— Select series —"
               options={[
@@ -139,7 +139,7 @@ export default function ModelEditorPage() {
 
         <SectionCard className="mb-0">
           <SectionHeader compact title="Decade" />
-          <div className="flex flex-wrap gap-1.5 px-3 py-3.5 md:px-4">
+          <div className="flex flex-wrap gap-1.5 px-3 py-3.5 @mobile:px-4">
             {decades.map((d) => (
               <Chip
                 key={d}

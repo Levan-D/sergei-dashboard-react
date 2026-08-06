@@ -7,6 +7,7 @@ import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import { StatCard } from '@/components/_admin/StatCard';
 import { NotifyItem } from '@/components/_admin/NotifyItem';
+import { RecordCard } from '@/components/_admin/RecordCard';
 import Table from '@/components/_admin/ui/Table';
 
 const activity = [
@@ -52,7 +53,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   return (
     <div>
-      <div className="mb-4 flex gap-2 md:mb-6 md:gap-3">
+      <div className="mb-4 flex gap-2 @max-mobile:flex-wrap @mobile:mb-6 @mobile:gap-3">
         <StatCard label="Models on Landing" value="47" sub="Across 8 series" />
         <StatCard label="Generations" value="134" sub="+3 this month" />
         <StatCard label="Community Logbooks" value="2,841" sub="BMW owners on Motority" />
@@ -74,7 +75,7 @@ export default function DashboardPage() {
             </Button>
           }
         />
-        <Table>
+        <Table className="@max-mobile:hidden">
           <thead>
             <tr>
               <th>Editor</th>
@@ -101,6 +102,19 @@ export default function DashboardPage() {
             ))}
           </tbody>
         </Table>
+        <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+          {activity.map((a, i) => (
+            <RecordCard
+              key={i}
+              initials={a.initials}
+              bg={a.bg}
+              title={a.name}
+              meta={a.time}
+              description={a.action}
+              badge={{ label: a.object, color: a.badge }}
+            />
+          ))}
+        </div>
       </SectionCard>
 
       <SectionCard>

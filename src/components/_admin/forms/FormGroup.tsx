@@ -23,7 +23,7 @@ export default function FormGroup({
       className={cn(
         'flex flex-col gap-1.5',
         full && 'w-full',
-        half && 'w-[calc(50%-6px)] md:w-[calc(50%-8px)]',
+        half && 'w-[calc(50%-6px)] @mobile:w-[calc(50%-8px)]',
         className,
       )}
       style={style}

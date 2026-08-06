@@ -38,7 +38,7 @@ export function SecondScreen() {
         }
       />
       <div className="border-b border-line p-5">
-        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase md:mb-3">
+        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase @mobile:mb-3">
           About{' '}
           <span className="text-[11px] font-normal tracking-normal text-ink-3 normal-case">
             — pulled from Motority, editable
@@ -52,17 +52,17 @@ export function SecondScreen() {
         </FormGroup>
       </div>
       <div className="border-b border-line p-5">
-        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase md:mb-3">
+        <div className="mb-2 text-xs font-bold tracking-[.06em] text-ink-2 uppercase @mobile:mb-3">
           Facts{' '}
           <span className="text-[11px] font-normal tracking-normal text-ink-3 normal-case">
             — pulled from Motority, editable
           </span>
         </div>
-        <div className="flex flex-wrap gap-2 md:gap-3">
+        <div className="flex flex-wrap gap-2 @mobile:gap-3">
           {facts.map((f, i) => (
             <div
               key={i}
-              className="flex w-[calc(50%-4px)] flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 md:w-[calc(50%-6px)]"
+              className="flex w-[calc(50%-4px)] flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
             >
               <div className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</div>
               <Input type="text" placeholder="Fact name" defaultValue={f.name} />
@@ -72,7 +72,7 @@ export function SecondScreen() {
         </div>
       </div>
       <div className="p-5">
-        <div className="mb-2 flex items-center gap-2 md:mb-3">
+        <div className="mb-2 flex items-center gap-2 @mobile:mb-3">
           <div className="text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Motority Stats</div>
           <span className="rounded-[20px] border border-line bg-surface-3 px-2 py-0.5 text-[11px] text-ink-3">
             Read-only · auto-updated

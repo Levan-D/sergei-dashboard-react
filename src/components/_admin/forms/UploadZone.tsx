@@ -20,7 +20,7 @@ export default function UploadZone({
       onClick={onClick}
       className={cn(
         'cursor-pointer rounded-card border-2 border-dashed border-line-2 text-center transition-all duration-150 hover:border-accent hover:bg-accent-bg',
-        compact ? 'p-3 md:p-4' : 'p-8',
+        compact ? 'p-3 @mobile:p-4' : 'p-8',
         className,
       )}
     >

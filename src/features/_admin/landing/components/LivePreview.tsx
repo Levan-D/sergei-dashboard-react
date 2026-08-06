@@ -1,14 +1,14 @@
 export function LivePreview() {
   return (
     <div className="sticky top-0 overflow-hidden rounded-card border border-line bg-surface">
-      <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[11px] font-semibold tracking-[.08em] text-ink-3 uppercase md:px-4 md:py-3">
+      <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[11px] font-semibold tracking-[.08em] text-ink-3 uppercase @mobile:px-4 @mobile:py-3">
         <div className="h-1.5 w-1.5 rounded-full bg-green" />
         Live Preview — bmw.motority.com
       </div>
-      <div className="p-3 md:p-4">
+      <div className="p-3 @mobile:p-4">
         <div className="overflow-hidden rounded-lg bg-black">
           <div
-            className="relative flex h-[100px] items-end p-2 md:p-3"
+            className="relative flex h-[100px] items-end p-2 @mobile:p-3"
             style={{ background: 'linear-gradient(135deg,#0a0a1a,#1a1a3e,#0f2460)' }}
           >
             <div className="text-[7px] leading-[1.4] font-extrabold tracking-[.5px] text-white">

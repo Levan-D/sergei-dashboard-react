@@ -31,7 +31,7 @@ export default function AddModelModal({ open, onClose }: Props) {
         </>
       }
     >
-      <div className="flex flex-wrap gap-3 p-5 md:gap-4">
+      <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
         <FormGroup half label="Model Name">
           <Input type="text" placeholder="e.g. BMW M5" />
         </FormGroup>

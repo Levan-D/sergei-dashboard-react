@@ -46,7 +46,7 @@ export default function CommunityPage() {
 
   return (
     <div>
-      <div className="mb-4 flex gap-2 md:mb-6 md:gap-3">
+      <div className="mb-4 flex gap-2 @mobile:mb-6 @mobile:gap-3">
         <StatCard label="Total Logbooks" value="2,841" />
         <StatCard label="Active Owners" value="1,203" />
         <StatCard label="New This Month" value="+47" valueStyle={{ color: 'var(--green)' }} />
@@ -61,7 +61,7 @@ export default function CommunityPage() {
             </Button>
           }
         />
-        <div className="flex flex-col gap-3 p-5 md:gap-4">
+        <div className="flex flex-col gap-3 p-5 @mobile:gap-4">
           <div className="flex items-center gap-2.5">
             <Toggle on={showBlock} onClick={() => setShowBlock(!showBlock)} />
             <label>Show Community block on landing</label>
