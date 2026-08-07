@@ -82,7 +82,7 @@ export function SecondScreen() {
           {motorityStats.map((s) => (
             <div
               key={s.label}
-              className="w-[calc(50%-5px)] rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc((100%-20px)/3)]"
+              className="w-full rounded-el border border-line bg-surface-2 p-3.5 @sm:w-[calc(50%-5px)] @mobile:w-[calc((100%-20px)/3)]"
             >
               <div className="mb-1 text-[11px] text-ink-3">{s.label}</div>
               <div

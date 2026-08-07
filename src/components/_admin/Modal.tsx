@@ -30,7 +30,7 @@ export default function Modal({ open, onClose, title, sub, footer, width, childr
           <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-line bg-surface px-4 py-5 md:px-6">
             <div>
               <div className="text-base font-bold text-ink">{title}</div>
-              {sub && <div className="mt-0.5 text-xs text-ink-3">{sub}</div>}
+              {sub && <div className="mt-1.5 text-xs text-ink-3">{sub}</div>}
             </div>
             <button
               onClick={onClose}

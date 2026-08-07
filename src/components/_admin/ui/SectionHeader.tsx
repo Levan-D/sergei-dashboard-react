@@ -27,7 +27,7 @@ export default function SectionHeader({
     >
       <div>
         <div className={cn('font-semibold text-ink', compact ? 'text-[13px]' : 'text-sm')}>{title}</div>
-        {sub && <div className="mt-0.5 text-xs text-ink-3">{sub}</div>}
+        {sub && <div className="mt-1.5 text-xs text-ink-3">{sub}</div>}
       </div>
       {right}
     </div>

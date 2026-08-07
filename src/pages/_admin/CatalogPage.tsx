@@ -163,8 +163,10 @@ export default function CatalogPage() {
               options={models.map((m) => m.name)}
             />
             {genFilter && (
-              <Badge color="gray">
-                {filteredGens.length} generation{filteredGens.length !== 1 ? 's' : ''}
+              <Badge color="gray" className="whitespace-nowrap">
+                {filteredGens.length}{' '}
+                <span className="@max-mobile:hidden">generation{filteredGens.length !== 1 ? 's' : ''}</span>
+                <span className="hidden @max-mobile:inline">gen{filteredGens.length !== 1 ? 's' : ''}</span>
               </Badge>
             )}
           </div>

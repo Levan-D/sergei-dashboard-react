@@ -40,6 +40,7 @@ export default function BrandStylePage() {
           <div className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Brand Logo</div>
           <div className="mb-3.5 text-xs text-ink-3">Primary logo shown in the site header and on landing pages.</div>
           <MediaPickRow
+            stack
             icon="🖼️"
             text="Drop logo or click to upload"
             hint="SVG preferred · PNG/WebP accepted · transparent background · max 2MB"
@@ -65,6 +66,7 @@ export default function BrandStylePage() {
           <div className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Favicon</div>
           <div className="mb-3.5 text-xs text-ink-3">Shown in browser tabs and bookmarks.</div>
           <MediaPickRow
+            stack
             icon="📌"
             text="Drop favicon or click to upload"
             hint="ICO · PNG · SVG · 32×32 or 64×64 px recommended · max 500 KB"
