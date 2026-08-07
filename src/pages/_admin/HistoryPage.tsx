@@ -1,11 +1,11 @@
 import { showToast } from '@/lib/toast';
-import Avatar from '@/components/_admin/ui/Avatar';
 import Badge from '@/components/_admin/ui/Badge';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import type { BadgeColor } from '@/components/_admin/ui/Badge';
 import Table from '@/components/_admin/ui/Table';
 import { RecordCard } from '@/components/_admin/RecordCard';
+import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
 
 function RestoreButton() {
   return (
@@ -82,17 +82,12 @@ export default function HistoryPage() {
         <tbody>
           {entries.map((e, i) => (
             <tr key={i}>
-              <td>
-                <div className="flex items-center gap-2">
-                  <Avatar sm initials={e.initials} bg={e.bg} />
-                  {e.name}
-                </div>
-              </td>
+              <IdentityCell initials={e.initials} bg={e.bg} name={e.name} />
               <td>{e.object}</td>
               <td>
                 <Badge color={e.badge}>{e.change}</Badge>
               </td>
-              <td className="text-ink-3">{e.time}</td>
+              <MutedCell>{e.time}</MutedCell>
               <td>
                 <RestoreButton />
               </td>

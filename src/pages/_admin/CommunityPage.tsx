@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { showToast } from '@/lib/toast';
-import Avatar from '@/components/_admin/ui/Avatar';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
@@ -8,6 +7,8 @@ import FormGroup from '@/components/_admin/forms/FormGroup';
 import Select from '@/components/_admin/forms/Select';
 import Toggle from '@/components/_admin/forms/Toggle';
 import { StatCard } from '@/components/_admin/StatCard';
+import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
+import Avatar from '@/components/_admin/ui/Avatar';
 import Input from '@/components/_admin/forms/Input';
 import Table from '@/components/_admin/ui/Table';
 
@@ -80,7 +81,7 @@ export default function CommunityPage() {
 
       <SectionCard>
         <SectionHeader title="Recent Logbooks" sub="Latest from BMW owners" />
-        <Table>
+        <Table className="@max-mobile:hidden">
           <thead>
             <tr>
               <th>Owner</th>
@@ -93,20 +94,38 @@ export default function CommunityPage() {
           <tbody>
             {logbooks.map((l) => (
               <tr key={l.name}>
-                <td>
-                  <div className="flex items-center gap-2">
-                    <Avatar sm initials={l.initials} bg={l.bg} />
-                    {l.name}
-                  </div>
-                </td>
+                <IdentityCell initials={l.initials} bg={l.bg} name={l.name} />
                 <td>{l.car}</td>
                 <td>{l.mileage}</td>
                 <td>{l.owned}</td>
-                <td className="text-ink-3">{l.date}</td>
+                <MutedCell>{l.date}</MutedCell>
               </tr>
             ))}
           </tbody>
         </Table>
+
+        <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+          {logbooks.map((l) => (
+            <div key={l.name} className="w-full overflow-hidden rounded-el border border-line bg-surface-2">
+              <div className="flex items-center gap-2.5 p-3">
+                <Avatar sm initials={l.initials} bg={l.bg} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13.5px] font-semibold text-ink">{l.name}</div>
+                  <div className="truncate text-[11px] text-ink-3">{l.car}</div>
+                </div>
+                <span className="text-[11px] text-ink-3">{l.date}</span>
+              </div>
+              <div className="flex items-center gap-4 border-t border-line px-3 py-2.5 text-[12px] text-ink-3">
+                <span>
+                  <span className="text-ink-2">{l.mileage}</span> mileage
+                </span>
+                <span>
+                  <span className="text-ink-2">{l.owned}</span> owned
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </SectionCard>
     </div>
   );

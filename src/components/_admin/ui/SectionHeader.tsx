@@ -7,12 +7,14 @@ export default function SectionHeader({
   right,
   compact,
   borderTop,
+  stack,
 }: {
   title: ReactNode;
   sub?: ReactNode;
   right?: ReactNode;
   compact?: boolean;
   borderTop?: boolean;
+  stack?: boolean;
 }) {
   return (
     <div
@@ -20,6 +22,7 @@ export default function SectionHeader({
         'flex items-center justify-between border-b border-line',
         compact ? 'px-3 py-3.5 @mobile:px-4' : 'px-5 py-3 @mobile:py-4',
         borderTop && 'border-t',
+        stack && '@max-mobile:flex-col @max-mobile:items-start @max-mobile:gap-2',
       )}
     >
       <div>

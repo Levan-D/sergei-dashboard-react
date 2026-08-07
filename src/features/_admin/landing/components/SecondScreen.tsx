@@ -62,7 +62,7 @@ export function SecondScreen() {
           {facts.map((f, i) => (
             <div
               key={i}
-              className="flex w-[calc(50%-4px)] flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
+              className="flex w-full flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
             >
               <div className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</div>
               <Input type="text" placeholder="Fact name" defaultValue={f.name} />
@@ -80,7 +80,10 @@ export function SecondScreen() {
         </div>
         <div className="flex flex-wrap gap-2.5">
           {motorityStats.map((s) => (
-            <div key={s.label} className="w-[calc((100%-20px)/3)] rounded-el border border-line bg-surface-2 p-3.5">
+            <div
+              key={s.label}
+              className="w-[calc(50%-5px)] rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc((100%-20px)/3)]"
+            >
               <div className="mb-1 text-[11px] text-ink-3">{s.label}</div>
               <div
                 className={cn('font-mono font-bold', s.small ? 'text-[15px]' : 'text-[22px]')}

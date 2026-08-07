@@ -17,6 +17,10 @@ import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import Select from '@/components/_admin/forms/Select';
 import Toggle from '@/components/_admin/forms/Toggle';
 import Table from '@/components/_admin/ui/Table';
+import { MutedCell, ActionsCell } from '@/components/_admin/table-cells';
+
+const cardClass =
+  'w-full cursor-pointer overflow-hidden rounded-el border border-line bg-surface-2 transition-colors duration-150 hover:border-line-2';
 
 export default function CatalogPage() {
   const dispatch = useAppDispatch();
@@ -62,7 +66,7 @@ export default function CatalogPage() {
               </Button>
             }
           />
-          <Table>
+          <Table className="@max-mobile:hidden">
             <thead>
               <tr>
                 <th>Model Name</th>
@@ -78,38 +82,72 @@ export default function CatalogPage() {
                   <td>
                     <div className="text-[13.5px] font-semibold text-ink">{m.name}</div>
                   </td>
-                  <td className="text-ink-3">{m.years}</td>
+                  <MutedCell>{m.years}</MutedCell>
                   <td>{m.generations}</td>
                   <td>
                     <Badge color={m.badge}>{m.logbooks}</Badge>
                   </td>
-                  <td>
-                    <div className="flex items-center gap-1.5">
-                      <Button
-                        variant="ghost"
-                        sm
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openModel(m.name);
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <Toggle
-                        on={m.visible}
-                        title="Toggle visibility"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          dispatch(toggleModelVisible(m.name));
-                          showToast('👁️ Visibility updated');
-                        }}
-                      />
-                    </div>
-                  </td>
+                  <ActionsCell>
+                    <Button
+                      variant="ghost"
+                      sm
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openModel(m.name);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Toggle
+                      on={m.visible}
+                      title="Toggle visibility"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        dispatch(toggleModelVisible(m.name));
+                        showToast('👁️ Visibility updated');
+                      }}
+                    />
+                  </ActionsCell>
                 </tr>
               ))}
             </tbody>
           </Table>
+          <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+            {models.map((m) => (
+              <div key={m.name} onClick={() => openModel(m.name)} className={cardClass}>
+                <div className="flex items-center gap-2.5 p-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-[13.5px] font-semibold text-ink">{m.name}</div>
+                    <div className="text-[11px] text-ink-3">{m.years}</div>
+                  </div>
+                  <Toggle
+                    on={m.visible}
+                    title="Toggle visibility"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch(toggleModelVisible(m.name));
+                      showToast('👁️ Visibility updated');
+                    }}
+                  />
+                </div>
+                <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
+                  <span className="text-[12px] text-ink-3">{m.generations} gens</span>
+                  <Badge color={m.badge}>{m.logbooks}</Badge>
+                  <Button
+                    variant="ghost"
+                    sm
+                    className="ml-auto"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModel(m.name);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -147,7 +185,7 @@ export default function CatalogPage() {
                   </Button>
                 }
               />
-              <Table>
+              <Table className="@max-mobile:hidden">
                 <thead>
                   <tr>
                     <th>Generation</th>
@@ -162,37 +200,70 @@ export default function CatalogPage() {
                       <td>
                         <div className="text-[13.5px] font-semibold text-ink">{g.name}</div>
                       </td>
-                      <td className="text-ink-3">{g.years}</td>
+                      <MutedCell>{g.years}</MutedCell>
                       <td>
                         <Badge color={g.badge}>{g.logbooks}</Badge>
                       </td>
-                      <td>
-                        <div className="flex items-center gap-1.5">
-                          <Button
-                            variant="ghost"
-                            sm
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openGen(g.name, genFilter);
-                            }}
-                          >
-                            Edit
-                          </Button>
-                          <Toggle
-                            on={g.visible}
-                            title="Toggle visibility"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dispatch(toggleGenVisible({ model: genFilter, name: g.name }));
-                              showToast('👁️ Visibility updated');
-                            }}
-                          />
-                        </div>
-                      </td>
+                      <ActionsCell>
+                        <Button
+                          variant="ghost"
+                          sm
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openGen(g.name, genFilter);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Toggle
+                          on={g.visible}
+                          title="Toggle visibility"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(toggleGenVisible({ model: genFilter, name: g.name }));
+                            showToast('👁️ Visibility updated');
+                          }}
+                        />
+                      </ActionsCell>
                     </tr>
                   ))}
                 </tbody>
               </Table>
+              <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+                {filteredGens.map((g) => (
+                  <div key={g.name} onClick={() => openGen(g.name, genFilter)} className={cardClass}>
+                    <div className="flex items-center gap-2.5 p-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-[13.5px] font-semibold text-ink">{g.name}</div>
+                        <div className="text-[11px] text-ink-3">{g.years}</div>
+                      </div>
+                      <Toggle
+                        on={g.visible}
+                        title="Toggle visibility"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(toggleGenVisible({ model: genFilter, name: g.name }));
+                          showToast('👁️ Visibility updated');
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
+                      <Badge color={g.badge}>{g.logbooks}</Badge>
+                      <Button
+                        variant="ghost"
+                        sm
+                        className="ml-auto"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openGen(g.name, genFilter);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

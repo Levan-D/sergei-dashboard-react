@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
-import Avatar from '@/components/_admin/ui/Avatar';
 import Badge from '@/components/_admin/ui/Badge';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
@@ -9,6 +8,7 @@ import { StatCard } from '@/components/_admin/StatCard';
 import { NotifyItem } from '@/components/_admin/NotifyItem';
 import { RecordCard } from '@/components/_admin/RecordCard';
 import Table from '@/components/_admin/ui/Table';
+import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
 
 const activity = [
   {
@@ -87,17 +87,12 @@ export default function DashboardPage() {
           <tbody>
             {activity.map((a, i) => (
               <tr key={i}>
-                <td>
-                  <div className="flex items-center gap-2">
-                    <Avatar sm initials={a.initials} bg={a.bg} />
-                    {a.name}
-                  </div>
-                </td>
+                <IdentityCell initials={a.initials} bg={a.bg} name={a.name} />
                 <td>{a.action}</td>
                 <td>
                   <Badge color={a.badge}>{a.object}</Badge>
                 </td>
-                <td className="text-ink-3">{a.time}</td>
+                <MutedCell>{a.time}</MutedCell>
               </tr>
             ))}
           </tbody>

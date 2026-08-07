@@ -33,9 +33,9 @@ export default function GenEditorPage() {
   }, [name]);
 
   return (
-    <div className="flex h-auto items-start gap-5">
+    <div className="flex h-auto items-start gap-5 @max-mobile:flex-col">
       {/* LEFT COLUMN */}
-      <div className="flex min-w-0 flex-1 flex-col gap-3 @mobile:gap-4 [&>div]:mb-0">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 @max-mobile:w-full @mobile:gap-4 [&>div]:mb-0">
         <SectionCard>
           <SectionHeader title="Basic Information" />
           <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
@@ -89,7 +89,12 @@ export default function GenEditorPage() {
         <SectionCard>
           <SectionHeader title="Main Image" sub="Primary photo for this generation" />
           <div className="p-5">
-            <MediaPickRow icon="🖼️" text="Drop image or click to upload" hint="JPG / WebP · min 800×533 · max 5MB" />
+            <MediaPickRow
+              stack
+              icon="🖼️"
+              text="Drop image or click to upload"
+              hint="JPG / WebP · min 800×533 · max 5MB"
+            />
           </div>
         </SectionCard>
 
@@ -107,8 +112,8 @@ export default function GenEditorPage() {
       </div>
 
       {/* RIGHT SIDEBAR */}
-      <div className="flex w-[260px] shrink-0 flex-col gap-2 @mobile:gap-3">
-        <PublishCard saveLabel="Save Generation" savedToast="✅ Generation saved" />
+      <div className="flex w-[260px] shrink-0 flex-col gap-2 @max-mobile:w-full @mobile:gap-3">
+        <PublishCard saveLabel="Save Generation" savedToast="✅ Generation saved" className="@max-mobile:order-last" />
         <InfoCard
           rows={[
             { label: 'Logbooks', value: '147' },

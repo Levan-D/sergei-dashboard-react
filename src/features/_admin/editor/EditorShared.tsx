@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { showToast } from '@/lib/toast';
+import { cn } from '@/lib/cn';
 import { ROUTING } from '@/lib/routing';
 import { addCustomLink, removeCustomLink } from '@/features/_admin/catalog/catalogSlice';
 import Button from '@/components/_admin/ui/Button';
@@ -29,9 +30,12 @@ export function GallerySection({ sub, initial }: { sub: string; initial: Gallery
           </Button>
         }
       />
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2.5 px-5 py-3 @mobile:py-4">
+      <div className="flex flex-wrap gap-2.5 px-5 py-3 @mobile:py-4">
         {photos.map((p) => (
-          <div key={p.id} className="group relative aspect-[4/3] overflow-hidden rounded-el border border-line">
+          <div
+            key={p.id}
+            className="group relative aspect-[4/3] w-[calc(33.333%-7px)] overflow-hidden rounded-el border border-line @mobile:w-[calc(20%-8px)]"
+          >
             <div className="flex h-full w-full items-center justify-center text-2xl" style={{ background: p.bg }}>
               {p.emoji}
             </div>
@@ -48,7 +52,7 @@ export function GallerySection({ sub, initial }: { sub: string; initial: Gallery
         ))}
         <div
           onClick={() => showToast('📁 File picker opened')}
-          className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1 rounded-el border-2 border-dashed border-line-2 text-[11px] font-semibold text-ink-3 transition-all duration-150 hover:border-accent hover:bg-accent-bg hover:text-accent-light"
+          className="flex aspect-[4/3] w-[calc(33.333%-7px)] cursor-pointer flex-col items-center justify-center gap-1 rounded-el border-2 border-dashed border-line-2 text-[11px] font-semibold text-ink-3 transition-all duration-150 hover:border-accent hover:bg-accent-bg hover:text-accent-light @mobile:w-[calc(20%-8px)]"
         >
           <IconPlus size={20} sw={1.5} />
           <span>Upload</span>
@@ -142,11 +146,19 @@ export function ExternalLinksSection({ sub, target }: { sub: string; target: 'mo
 }
 
 /* ── Publish sidebar card ── */
-export function PublishCard({ saveLabel, savedToast }: { saveLabel: string; savedToast: string }) {
+export function PublishCard({
+  saveLabel,
+  savedToast,
+  className,
+}: {
+  saveLabel: string;
+  savedToast: string;
+  className?: string;
+}) {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   return (
-    <SectionCard className="mb-0">
+    <SectionCard className={cn('mb-0', className)}>
       <SectionHeader compact title="Publish" />
       <div className="flex flex-col gap-2 px-3 py-3.5 @mobile:gap-3 @mobile:px-4">
         <div className="flex items-center gap-2.5">

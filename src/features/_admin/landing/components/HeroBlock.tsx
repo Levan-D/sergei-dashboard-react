@@ -112,7 +112,7 @@ export function HeroBlock() {
       <div className={heroType === 'image' ? '' : 'hidden'}>
         <div className="p-5">
           <MediaSectionLabel>Background Photo</MediaSectionLabel>
-          <MediaPickRow icon="🖼️" text="Drop image or click to upload" hint="1600×900px · JPG/WebP · max 5MB" />
+          <MediaPickRow stack icon="🖼️" text="Drop image or click to upload" hint="1600×900px · JPG/WebP · max 5MB" />
         </div>
         <HeroCtaFields prefill />
       </div>
@@ -121,12 +121,13 @@ export function HeroBlock() {
         <div className="p-5">
           <MediaSectionLabel>Background Video</MediaSectionLabel>
           <MediaPickRow
+            stack
             icon="🎬"
             text="Drop video or click to upload"
             hint="MP4/WebM · max 100MB · recommended 1920×1080"
           />
           <MediaSectionLabel className="mt-3 @mobile:mt-4">Preview Thumbnail</MediaSectionLabel>
-          <MediaPickRow icon="🖼️" text="Upload thumbnail image" hint="Shown before video loads" compact />
+          <MediaPickRow stack icon="🖼️" text="Upload thumbnail image" hint="Shown before video loads" compact />
         </div>
         <HeroCtaFields />
       </div>
@@ -144,33 +145,62 @@ export function HeroBlock() {
               + Add Slide
             </Button>
           </div>
-          {slides.map((s) => (
-            <div key={s.num} className="flex items-center gap-2.5 border-b border-line py-2.5 last-of-type:border-b-0">
-              <div className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-line-2 bg-surface-3 text-[11px] font-bold text-ink-3">
-                {s.num}
-              </div>
+          <div className="@max-mobile:hidden">
+            {slides.map((s) => (
               <div
-                className="flex h-9 w-[52px] shrink-0 items-center justify-center rounded-[5px] text-base"
-                style={{ background: s.bg }}
+                key={s.num}
+                className="flex items-center gap-2.5 border-b border-line py-2.5 last-of-type:border-b-0"
               >
-                {s.emoji}
+                <div className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-line-2 bg-surface-3 text-[11px] font-bold text-ink-3">
+                  {s.num}
+                </div>
+                <div
+                  className="flex h-9 w-[52px] shrink-0 items-center justify-center rounded-[5px] text-base"
+                  style={{ background: s.bg }}
+                >
+                  {s.emoji}
+                </div>
+                <div>
+                  <div className="text-[13px] font-semibold text-ink">{s.name}</div>
+                  <div className="mt-0.5 text-[11px] text-ink-3">{s.meta}</div>
+                </div>
+                <div className="ml-auto flex gap-1.5">
+                  <Button variant="ghost" sm onClick={() => showToast(`✏️ Slide ${s.num} editing`)}>
+                    Edit
+                  </Button>
+                  <Button variant="danger" sm onClick={() => showToast('🗑️ Slide removed')}>
+                    Remove
+                  </Button>
+                </div>
               </div>
-              <div>
-                <div className="text-[13px] font-semibold text-ink">{s.name}</div>
-                <div className="mt-0.5 text-[11px] text-ink-3">{s.meta}</div>
+            ))}
+          </div>
+          <div className="hidden flex-col gap-3 @max-mobile:flex">
+            {slides.map((s) => (
+              <div key={s.num} className="overflow-hidden rounded-el border border-line bg-surface-2">
+                <div className="relative flex h-24 items-center justify-center text-3xl" style={{ background: s.bg }}>
+                  {s.emoji}
+                  <span className="absolute top-2 left-2 flex h-[22px] w-[22px] items-center justify-center rounded-full border border-line-2 bg-surface-3 text-[11px] font-bold text-ink-3">
+                    {s.num}
+                  </span>
+                </div>
+                <div className="p-3">
+                  <div className="truncate text-[13px] font-semibold text-ink">{s.name}</div>
+                  <div className="mt-0.5 text-[11px] text-ink-3">{s.meta}</div>
+                  <div className="mt-2.5 flex gap-1.5">
+                    <Button variant="ghost" sm onClick={() => showToast(`✏️ Slide ${s.num} editing`)}>
+                      Edit
+                    </Button>
+                    <Button variant="danger" sm onClick={() => showToast('🗑️ Slide removed')}>
+                      Remove
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div className="ml-auto flex gap-1.5">
-                <Button variant="ghost" sm onClick={() => showToast(`✏️ Slide ${s.num} editing`)}>
-                  Edit
-                </Button>
-                <Button variant="danger" sm onClick={() => showToast('🗑️ Slide removed')}>
-                  Remove
-                </Button>
-              </div>
-            </div>
-          ))}
-          <div className="mt-2.5">
-            <MediaPickRow icon="+" text="Upload new slide" compact />
+            ))}
+          </div>
+          <div className="mt-3">
+            <MediaPickRow stack icon="+" text="Upload new slide" compact />
           </div>
           <div className="mt-2 flex items-center gap-5 border-t border-line pt-3.5 @mobile:mt-3">
             <div className="flex flex-row items-center gap-2.5">

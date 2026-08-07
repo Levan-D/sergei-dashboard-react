@@ -8,6 +8,7 @@ import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import InviteUserModal from '@/features/_admin/users/InviteUserModal';
 import EditRoleModal from '@/features/_admin/users/EditRoleModal';
 import Table from '@/components/_admin/ui/Table';
+import { IdentityCell, MutedCell, ActionsCell } from '@/components/_admin/table-cells';
 
 const users = [
   {
@@ -62,7 +63,7 @@ export default function UsersPage() {
           </Button>
         }
       />
-      <Table>
+      <Table className="@max-mobile:hidden">
         <thead>
           <tr>
             <th>Name</th>
@@ -75,35 +76,61 @@ export default function UsersPage() {
         <tbody>
           {users.map((u) => (
             <tr key={u.name}>
-              <td>
-                <div className="flex items-center gap-2.5">
-                  <Avatar initials={u.initials} bg={u.bg} />
-                  <div className="text-[13.5px] font-semibold text-ink">{u.name}</div>
-                </div>
-              </td>
+              <IdentityCell sm={false} initials={u.initials} bg={u.bg} name={u.name} />
               <td className="text-ink-2">{u.email}</td>
               <td>
                 <Badge color={u.roleBadge}>{u.role}</Badge>
               </td>
-              <td className="text-ink-3">{u.login}</td>
-              <td>
-                {u.you ? (
+              <MutedCell>{u.login}</MutedCell>
+              {u.you ? (
+                <td>
                   <span className="text-xs text-ink-3">You</span>
-                ) : (
-                  <div className="flex gap-1.5">
-                    <Button variant="ghost" sm onClick={() => setModal('role')}>
-                      Edit Role
-                    </Button>
-                    <Button variant="danger" sm onClick={() => showToast(`⚠️ ${u.name} deactivated`)}>
-                      Deactivate
-                    </Button>
-                  </div>
-                )}
-              </td>
+                </td>
+              ) : (
+                <ActionsCell>
+                  <Button variant="ghost" sm onClick={() => setModal('role')}>
+                    Edit Role
+                  </Button>
+                  <Button variant="danger" sm onClick={() => showToast(`⚠️ ${u.name} deactivated`)}>
+                    Deactivate
+                  </Button>
+                </ActionsCell>
+              )}
             </tr>
           ))}
         </tbody>
       </Table>
+
+      <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
+        {users.map((u) => (
+          <div key={u.name} className="w-full overflow-hidden rounded-el border border-line bg-surface-2">
+            <div className="flex items-center gap-2.5 p-3">
+              <Avatar initials={u.initials} bg={u.bg} />
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[13.5px] font-semibold text-ink">{u.name}</div>
+                <div className="truncate text-[11px] text-ink-3">{u.email}</div>
+              </div>
+              <Badge color={u.roleBadge}>{u.role}</Badge>
+            </div>
+            <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
+              <span className="text-[11px] text-ink-3">{u.login}</span>
+              {u.you ? (
+                <span className="ml-auto text-xs text-ink-3">You</span>
+              ) : (
+                <div className="ml-auto flex gap-1.5">
+                  <Button variant="ghost" sm onClick={() => setModal('role')}>
+                    Edit Role
+                  </Button>
+                  <Button variant="danger" sm onClick={() => showToast(`⚠️ ${u.name} deactivated`)}>
+                    Deactivate
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
       <InviteUserModal open={modal === 'invite'} onClose={() => setModal(null)} />
       <EditRoleModal open={modal === 'role'} onClose={() => setModal(null)} />
     </SectionCard>
