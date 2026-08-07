@@ -47,7 +47,7 @@ export default function CommunityPage() {
 
   return (
     <div>
-      <div className="mb-4 flex gap-2 @mobile:mb-6 @mobile:gap-3">
+      <div className="mb-4 flex gap-2 @max-mobile:flex-wrap @mobile:mb-6 @mobile:gap-3">
         <StatCard label="Total Logbooks" value="2,841" />
         <StatCard label="Active Owners" value="1,203" />
         <StatCard label="New This Month" value="+47" valueStyle={{ color: 'var(--green)' }} />
