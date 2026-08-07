@@ -23,11 +23,11 @@ export default function Modal({ open, onClose, title, sub, footer, width, childr
     >
       {open && (
         <div
-          className="@container max-h-[82dvh] overflow-y-auto overscroll-contain rounded-[14px] border border-line bg-surface"
+          className="@container flex max-h-[82dvh] flex-col overflow-hidden rounded-[14px] border border-line bg-surface"
           style={{ width: width ?? 540, maxWidth: '90vw' }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-line bg-surface px-4 py-5 md:px-6">
+          <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-5 md:px-6">
             <div>
               <div className="text-base font-bold text-ink">{title}</div>
               {sub && <div className="mt-1.5 text-xs text-ink-3">{sub}</div>}
@@ -39,10 +39,8 @@ export default function Modal({ open, onClose, title, sub, footer, width, childr
               ✕
             </button>
           </div>
-          {children}
-          <div className="sticky bottom-0 flex justify-end gap-2 border-t border-line bg-surface px-4 py-3 md:px-6 md:py-4">
-            {footer}
-          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
+          <div className="flex shrink-0 justify-end gap-2 border-t border-line px-4 py-3 md:px-6 md:py-4">{footer}</div>
         </div>
       )}
     </div>,

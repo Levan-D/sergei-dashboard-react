@@ -1,6 +1,8 @@
-import { useState, useRef, type Ref } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useState, type HTMLAttributes } from 'react';
+import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { CSS } from '@dnd-kit/utilities';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
@@ -29,22 +31,30 @@ import Input from '@/components/_admin/forms/Input';
 type SpecGroup = SpecMod['groups'][number];
 type SpecRow = SpecGroup['rows'][number];
 
-const TYPE = { mod: 'spec-mod', group: 'spec-group', row: 'spec-row' };
-
 const nakedInput = 'border-none bg-transparent p-[3px_4px] rounded-[3px] focus:bg-surface-3 focus:outline-none min-w-0';
 
-/** Is the pointer past the vertical midpoint of `el`? */
-function pastMidpoint(el: HTMLElement, clientY: number) {
-  const r = el.getBoundingClientRect();
-  return clientY > r.top + r.height / 2;
-}
+const useDndSensors = () => useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
-function DragHandle({ size, innerRef }: { size: 'md' | 'sm' | 'xs'; innerRef: Ref<HTMLDivElement> }) {
+/** Translate a dnd-kit drop into the slice's move payload (`after` = moving down the list). */
+const dropToMove = (
+  list: { id: string }[],
+  e: DragEndEvent,
+  onMove: (dragId: string, overId: string, after: boolean) => void,
+) => {
+  const overId = e.over?.id;
+  if (overId == null || overId === e.active.id) return;
+  const from = list.findIndex((x) => x.id === e.active.id);
+  const to = list.findIndex((x) => x.id === overId);
+  if (from === -1 || to === -1) return;
+  onMove(String(e.active.id), String(overId), from < to);
+};
+
+function DragHandle({ size, ...rest }: { size: 'md' | 'sm' | 'xs' } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      ref={innerRef}
+      {...rest}
       className={cn(
-        'flex shrink-0 cursor-grab items-center justify-center rounded p-0.5 px-1 text-ink-3 hover:bg-surface-3 hover:text-ink-2 active:cursor-grabbing',
+        'flex shrink-0 cursor-grab touch-none items-center justify-center rounded p-0.5 px-1 text-ink-3 hover:bg-surface-3 hover:text-ink-2 active:cursor-grabbing',
         size === 'sm' && 'opacity-70',
         size === 'xs' && 'opacity-50',
       )}
@@ -56,36 +66,17 @@ function DragHandle({ size, innerRef }: { size: 'md' | 'sm' | 'xs'; innerRef: Re
 
 function RowItem({ modId, groupId, row }: { modId: string; groupId: string; row: SpecRow }) {
   const dispatch = useAppDispatch();
-  const ref = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag, preview] = useDrag(
-    () => ({ type: TYPE.row, item: { id: row.id, modId, groupId }, collect: (m) => ({ isDragging: m.isDragging() }) }),
-    [row.id, modId, groupId],
-  );
-  const [, drop] = useDrop<{ id: string; modId: string; groupId: string }>(
-    () => ({
-      accept: TYPE.row,
-      hover(item, monitor) {
-        if (item.id === row.id || item.modId !== modId || item.groupId !== groupId) return;
-        const el = ref.current;
-        const off = monitor.getClientOffset();
-        if (!el || !off) return;
-        dispatch(moveRow({ modId, groupId, dragId: item.id, overId: row.id, after: pastMidpoint(el, off.y) }));
-      },
-    }),
-    [row.id, modId, groupId, dispatch],
-  );
-  drag(handleRef);
-  preview(drop(ref));
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: row.id });
   return (
     <div
-      ref={ref}
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
         'group flex items-center gap-2 border-b border-line px-2 py-1.5 transition-colors duration-100 last:border-b-0 hover:bg-surface-2 @mobile:px-3',
-        isDragging && 'opacity-40',
+        isDragging && 'relative z-10 bg-surface-2',
       )}
     >
-      <DragHandle size="xs" innerRef={handleRef} />
+      <DragHandle size="xs" {...attributes} {...listeners} />
       <Input
         type="text"
         placeholder="Characteristic name"
@@ -115,34 +106,19 @@ function RowItem({ modId, groupId, row }: { modId: string; groupId: string; row:
 
 function GroupItem({ modId, grp }: { modId: string; grp: SpecGroup }) {
   const dispatch = useAppDispatch();
-  const ref = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag, preview] = useDrag(
-    () => ({ type: TYPE.group, item: { id: grp.id, modId }, collect: (m) => ({ isDragging: m.isDragging() }) }),
-    [grp.id, modId],
-  );
-  const [, drop] = useDrop<{ id: string; modId: string }>(
-    () => ({
-      accept: TYPE.group,
-      hover(item, monitor) {
-        if (item.id === grp.id || item.modId !== modId) return;
-        const el = ref.current;
-        const off = monitor.getClientOffset();
-        if (!el || !off) return;
-        dispatch(moveGroup({ modId, dragId: item.id, overId: grp.id, after: pastMidpoint(el, off.y) }));
-      },
-    }),
-    [grp.id, modId, dispatch],
-  );
-  drag(handleRef);
-  preview(drop(ref));
+  const sensors = useDndSensors();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: grp.id });
   return (
     <div
-      ref={ref}
-      className={cn('mt-2 overflow-hidden rounded-el border border-line @mobile:mt-3', isDragging && 'opacity-40')}
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        'mt-2 overflow-hidden rounded-el border border-line @mobile:mt-3',
+        isDragging && 'relative z-10 border-accent shadow-[0_8px_24px_rgba(0,0,0,.35)]',
+      )}
     >
       <div className="flex items-center gap-2 border-b border-line bg-surface-2 px-2 py-2 @mobile:px-3">
-        <DragHandle size="sm" innerRef={handleRef} />
+        <DragHandle size="sm" {...attributes} {...listeners} />
         <Input
           type="text"
           placeholder="Group name"
@@ -166,45 +142,43 @@ function GroupItem({ modId, grp }: { modId: string; grp: SpecGroup }) {
           </Button>
         </div>
       </div>
-      <div className="flex flex-col">
-        {grp.rows.map((row) => (
-          <RowItem key={row.id} modId={modId} groupId={grp.id} row={row} />
-        ))}
-      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        onDragEnd={(e) =>
+          dropToMove(grp.rows, e, (dragId, overId, after) =>
+            dispatch(moveRow({ modId, groupId: grp.id, dragId, overId, after })),
+          )
+        }
+      >
+        <SortableContext items={grp.rows.map((r) => r.id)} strategy={verticalListSortingStrategy}>
+          <div className="flex flex-col">
+            {grp.rows.map((row) => (
+              <RowItem key={row.id} modId={modId} groupId={grp.id} row={row} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
 
 function ModItem({ mod }: { mod: SpecMod }) {
   const dispatch = useAppDispatch();
-  const ref = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag, preview] = useDrag(
-    () => ({ type: TYPE.mod, item: { id: mod.id }, collect: (m) => ({ isDragging: m.isDragging() }) }),
-    [mod.id],
-  );
-  const [, drop] = useDrop<{ id: string }>(
-    () => ({
-      accept: TYPE.mod,
-      hover(item, monitor) {
-        if (item.id === mod.id) return;
-        const el = ref.current;
-        const off = monitor.getClientOffset();
-        if (!el || !off) return;
-        dispatch(moveMod({ dragId: item.id, overId: mod.id, after: pastMidpoint(el, off.y) }));
-      },
-    }),
-    [mod.id, dispatch],
-  );
-  drag(handleRef);
-  preview(drop(ref));
+  const sensors = useDndSensors();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: mod.id });
   return (
     <div
-      ref={ref}
-      className={cn('mt-3 overflow-hidden rounded-card border border-line @mobile:mt-4', isDragging && 'opacity-40')}
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        'mt-3 overflow-hidden rounded-card border border-line @mobile:mt-4',
+        isDragging && 'relative z-10 border-accent shadow-[0_8px_24px_rgba(0,0,0,.35)]',
+      )}
     >
       <div className="flex items-center gap-2.5 border-b border-line bg-surface-2 px-3 py-2 @mobile:px-4 @mobile:py-3">
-        <DragHandle size="md" innerRef={handleRef} />
+        <DragHandle size="md" {...attributes} {...listeners} />
         <div className="flex-1">
           <div className="mb-[3px] text-[10px] font-semibold tracking-[.06em] text-ink-3 uppercase">Modification</div>
           <Input
@@ -239,11 +213,24 @@ function ModItem({ mod }: { mod: SpecMod }) {
         </div>
       </div>
 
-      <div className="px-3 pb-2 @mobile:px-4 @mobile:pb-3">
-        {mod.groups.map((grp) => (
-          <GroupItem key={grp.id} modId={mod.id} grp={grp} />
-        ))}
-      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        onDragEnd={(e) =>
+          dropToMove(mod.groups, e, (dragId, overId, after) =>
+            dispatch(moveGroup({ modId: mod.id, dragId, overId, after })),
+          )
+        }
+      >
+        <SortableContext items={mod.groups.map((g) => g.id)} strategy={verticalListSortingStrategy}>
+          <div className="px-3 pb-2 @mobile:px-4 @mobile:pb-3">
+            {mod.groups.map((grp) => (
+              <GroupItem key={grp.id} modId={mod.id} grp={grp} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
@@ -251,41 +238,49 @@ function ModItem({ mod }: { mod: SpecMod }) {
 export default function SpecsEditor() {
   const dispatch = useAppDispatch();
   const mods = useAppSelector((s) => s.specs.mods);
+  const sensors = useDndSensors();
   const [importOpen, setImportOpen] = useState(false);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <SectionCard>
-        <SectionHeader
-          stack
-          title="Technical Specifications"
-          sub="Modifications, groups, and individual characteristics"
-          right={
-            <div className="flex flex-wrap gap-1.5">
-              <Button variant="ghost" sm onClick={() => setImportOpen(true)}>
-                <IconDownload size={13} />
-                Import Excel
-              </Button>
-              <Button
-                sm
-                onClick={() => {
-                  dispatch(addModification());
-                  showToast('✅ New modification added');
-                }}
-              >
-                + Add Modification
-              </Button>
-            </div>
-          }
-        />
+    <SectionCard>
+      <SectionHeader
+        stack
+        title="Technical Specifications"
+        sub="Modifications, groups, and individual characteristics"
+        right={
+          <div className="flex flex-wrap gap-1.5">
+            <Button variant="ghost" sm onClick={() => setImportOpen(true)}>
+              <IconDownload size={13} />
+              Import Excel
+            </Button>
+            <Button
+              sm
+              onClick={() => {
+                dispatch(addModification());
+                showToast('✅ New modification added');
+              }}
+            >
+              + Add Modification
+            </Button>
+          </div>
+        }
+      />
 
-        <div className="px-5 pb-5">
-          {mods.map((mod) => (
-            <ModItem key={mod.id} mod={mod} />
-          ))}
-        </div>
-        <ImportSpecsModal open={importOpen} onClose={() => setImportOpen(false)} />
-      </SectionCard>
-    </DndProvider>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        onDragEnd={(e) => dropToMove(mods, e, (dragId, overId, after) => dispatch(moveMod({ dragId, overId, after })))}
+      >
+        <SortableContext items={mods.map((m) => m.id)} strategy={verticalListSortingStrategy}>
+          <div className="px-5 pb-5">
+            {mods.map((mod) => (
+              <ModItem key={mod.id} mod={mod} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+      <ImportSpecsModal open={importOpen} onClose={() => setImportOpen(false)} />
+    </SectionCard>
   );
 }
