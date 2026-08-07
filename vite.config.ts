@@ -3,7 +3,8 @@ import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/sergei-dashboard-react/' : '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -11,4 +12,4 @@ export default defineConfig({
     },
   },
   server: { port: 5199 },
-});
+}));
