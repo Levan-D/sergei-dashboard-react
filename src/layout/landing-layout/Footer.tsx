@@ -5,9 +5,9 @@ const linkColumn = ['Official website', 'Explore models', 'Configurator', 'Find 
 
 export default function Footer() {
   return (
-    <footer className="landing-dark">
+    <footer className="landing-dark -mt-0.5">
       <Container noPadding="y" className="pt-10">
-        <div className="flex flex-wrap items-start gap-10 pb-16 w1280:gap-6 w1440:pb-[100px]">
+        <div className="flex flex-col items-start gap-5 pb-16 w640:flex-row w640:flex-wrap w640:gap-6 w960:gap-10 w1280:gap-6 w1440:pb-[100px]">
           <div className="flex w-full max-w-[340px] flex-col gap-5">
             <div className="flex items-center gap-4 w1280:gap-6">
               <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-white/40 text-[13px] font-bold text-white">
@@ -31,7 +31,7 @@ export default function Footer() {
               </p>
             ))}
           </div>
-          <Button variant="secondary" className="w-full w640:w-auto w1280:ml-auto w1280:w-[342px]">
+          <Button variant="secondary" className="w-full w960:ml-auto w960:w-auto w1280:w-[342px]">
             Join the community
           </Button>
         </div>

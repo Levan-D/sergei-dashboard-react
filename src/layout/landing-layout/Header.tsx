@@ -12,12 +12,12 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="absolute top-0 left-0 z-50 w-full bg-black/30">
-      <Container noPadding="y" className="flex h-16 items-center justify-between w640:h-20">
+      <Container noPadding="y" className="flex h-16 items-center justify-between w1280:h-20">
         <Link to={ROUTING.home} className="flex cursor-pointer items-center gap-3 w640:gap-4 w1280:gap-6">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 text-[11px] font-bold text-white w640:h-[54px] w640:w-[54px] w640:text-[13px]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 text-[11px] font-bold text-white w1280:h-[54px] w1280:w-[54px] w1280:text-[13px]">
             BMW
           </div>
-          <p className="font-barlow text-sm font-medium tracking-[0.01em] text-white/70 uppercase w640:text-base">
+          <p className="font-barlow text-sm font-medium tracking-[0.01em] text-white/70 uppercase w1280:text-base">
             BMW &amp; Motority
           </p>
         </Link>
@@ -36,11 +36,11 @@ export default function Header() {
             type="button"
             aria-label="Open menu"
             onClick={() => setMenuOpen(true)}
-            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface text-ink transition-colors hover:bg-surface-2 w640:h-12 w640:w-12 w1280:hidden"
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface text-ink transition-colors hover:bg-surface-2 w1280:hidden"
           >
             <IconBurger size={20} />
           </button>
-          <Button className="h-10 px-4 text-sm w640:h-12 w640:px-6 w640:text-base">OFFICIAL WEBSITE</Button>
+          <Button className="hidden px-4 text-sm w640:px-6 w640:text-base w960:inline-flex">OFFICIAL WEBSITE</Button>
         </div>
       </Container>
       <MobileMenu open={menuOpen} links={navLinks} onClose={() => setMenuOpen(false)} />

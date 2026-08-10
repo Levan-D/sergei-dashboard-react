@@ -15,7 +15,7 @@ function Arrow({ direction, show, onClick }: ArrowProps) {
       aria-label={direction === 'left' ? 'Scroll left' : 'Scroll right'}
       onClick={onClick}
       className={cn(
-        'absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-black/50 text-white backdrop-blur-sm transition-opacity hover:bg-black/70',
+        'absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-line bg-surface text-ink shadow-card transition-opacity hover:bg-surface-2 [@media(pointer:fine)]:flex',
         direction === 'left' ? 'left-2 w1440:left-6' : 'right-2 w1440:right-6',
         !show && 'invisible opacity-0',
       )}
@@ -29,9 +29,10 @@ type Props = {
   children: ReactNode;
   scrollAmount?: number;
   className?: string;
+  trackClassName?: string;
 };
 
-export default function Carousel({ children, scrollAmount = 448, className }: Props) {
+export default function Carousel({ children, scrollAmount = 448, className, trackClassName }: Props) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [showLeft, setShowLeft] = useState(false);
@@ -68,14 +69,14 @@ export default function Carousel({ children, scrollAmount = 448, className }: Pr
     scrollRef.current?.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 
   return (
-    <div className={cn('relative -mx-5 w960:-mx-10 w1440:-mx-20', className)}>
+    <div className={cn('relative -mx-4 w640:-mx-5 w1280:-mx-10 w1440:-mx-20 w1920:-mx-40', className)}>
       <div
         ref={scrollRef}
-        className="[scrollbar-width:none] overflow-x-auto overscroll-x-contain pl-5 [-ms-overflow-style:none] w960:pl-10 w1440:pl-20 [&::-webkit-scrollbar]:hidden"
+        className="[scrollbar-width:none] overflow-x-auto overscroll-x-contain pl-4 [-ms-overflow-style:none] w640:pl-5 w1280:pl-10 w1440:pl-20 w1920:pl-40 [&::-webkit-scrollbar]:hidden"
       >
-        <div ref={contentRef} className="flex w-max gap-4 w640:gap-6">
+        <div ref={contentRef} className={cn('flex w-max gap-4 w1280:gap-6', trackClassName)}>
           {children}
-          <div className="w-5 shrink-0 w960:w-10 w1440:w-20" />
+          <div className="w-4 shrink-0 w640:w-5 w1280:w-10 w1440:w-20 w1920:w-40" />
         </div>
       </div>
       <Arrow direction="left" show={showLeft} onClick={() => scrollByAmount(-1)} />

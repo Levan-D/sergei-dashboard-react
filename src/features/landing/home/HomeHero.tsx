@@ -4,12 +4,12 @@ import { heroImages } from '@/features/landing/data';
 
 export function HomeHero() {
   return (
-    <section className="relative flex min-h-[480px] items-end w640:min-h-[560px] w960:min-h-[720px] w1440:min-h-[860px]">
+    <section className="relative flex min-h-[720px] items-end w1440:min-h-[800px] w1600:min-h-[900px] w1920:min-h-[940px]">
       <div className="absolute inset-0" style={{ background: heroImages.home.bg }} />
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
       <div className="absolute inset-0 bg-gradient-to-l from-black/50 to-transparent to-40%" />
-      <Container noPadding="y" className="relative pb-14 w1440:pb-20">
+      <Container noPadding="y" className="relative pb-10 w1440:pb-20">
         <div className="flex max-w-[624px] flex-col gap-8 w1440:gap-12">
           <div className="flex flex-col gap-6">
             <h1 className="font-condensed text-[36px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w640:text-[44px] w960:text-[64px] w1440:text-[78px]">
@@ -21,8 +21,8 @@ export function HomeHero() {
             </p>
           </div>
           <div className="flex flex-col gap-4 w640:flex-row w640:flex-wrap w960:gap-6">
-            <Button className="w-full w640:w-auto">Explore models</Button>
-            <Button variant="secondary" className="w-full w640:w-auto">
+            <Button className="w-full w640:w-auto w640:flex-1 w960:flex-none">Explore models</Button>
+            <Button variant="secondary" className="w-full w640:w-auto w640:flex-1 w960:flex-none">
               Join the community
             </Button>
           </div>

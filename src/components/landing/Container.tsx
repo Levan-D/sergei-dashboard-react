@@ -4,11 +4,10 @@ import { cn } from '@/lib/cn';
 type PaddingSide = 'all' | 'x' | 'y' | 't' | 'r' | 'b' | 'l';
 
 const PADDING = {
-  all: 'p-5 w960:p-10 w1440:p-20',
-  t: 'pt-5 w960:pt-10 w1440:pt-20',
-  r: 'pr-5 w960:pr-10 w1440:pr-20',
-  b: 'pb-5 w960:pb-10 w1440:pb-20',
-  l: 'pl-5 w960:pl-10 w1440:pl-20',
+  t: 'pt-10 w960:pt-15 w1280:pt-20',
+  r: 'pr-4 w640:pr-5 w1280:pr-10 w1440:pr-20 w1920:pr-40',
+  b: 'pb-10 w960:pb-15 w1280:pb-20',
+  l: 'pl-4 w640:pl-5 w1280:pl-10 w1440:pl-20 w1920:pl-40',
 };
 
 const EDGES = ['t', 'r', 'b', 'l'] as const;
@@ -37,8 +36,8 @@ export default function Container({ className, noPadding, children }: Props) {
   return (
     <div
       className={cn(
-        'mx-auto w-full max-w-[1600px]',
-        kept.length === EDGES.length ? PADDING.all : kept.map((edge) => PADDING[edge]),
+        'mx-auto w-full max-w-[1920px]',
+        kept.map((edge) => PADDING[edge]),
         className,
       )}
     >

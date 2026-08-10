@@ -11,7 +11,10 @@ export default function MobileMenu({ open, links, onClose }: Props) {
   return (
     <div
       onClick={onClose}
-      className={cn('fixed inset-0 z-[100] transition-opacity', open ? 'opacity-100' : 'pointer-events-none opacity-0')}
+      className={cn(
+        'fixed inset-0 z-[100] overflow-hidden transition-opacity',
+        open ? 'opacity-100' : 'pointer-events-none invisible opacity-0',
+      )}
     >
       <div className="absolute inset-0 bg-black/60" />
       <div

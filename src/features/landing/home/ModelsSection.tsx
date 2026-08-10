@@ -4,8 +4,8 @@ import { landingModelPath } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import PillChip from '@/components/landing/PillChip';
+import Carousel from '@/components/landing/Carousel';
 import Button from '@/components/landing/Button';
-import { cn } from '@/lib/cn';
 import { landingModels, bodyTypeFilters, seriesFilters, decadeFilters } from '@/features/landing/data';
 
 type Props = {
@@ -21,16 +21,14 @@ function FilterGroup({ label, options, active, onPick }: Props) {
       <p className="text-base leading-[26px] font-medium tracking-[0.01em] text-ink/80 w640:text-lg w960:text-xl">
         {label}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <Carousel trackClassName="gap-2 w1280:gap-2" scrollAmount={240}>
         {options.map((o) => (
           <PillChip key={o} label={o} active={active === o} onClick={() => onPick(o)} />
         ))}
-      </div>
+      </Carousel>
     </div>
   );
 }
-
-const pages = ['1', '2', '3', '…', '7'];
 
 export function ModelsSection() {
   const [bodyType, setBodyType] = useState('All');
@@ -42,7 +40,7 @@ export function ModelsSection() {
       <Container>
         <SectionTitle className="mb-6 w640:mb-10">Models</SectionTitle>
 
-        <div className="mb-6 flex flex-col gap-4">
+        <div className="mb-6 flex flex-col gap-3 w1280:gap-4">
           <FilterGroup label="Body type" options={bodyTypeFilters} active={bodyType} onPick={setBodyType} />
           <div className="h-px w-full bg-line" />
           <FilterGroup label="Series" options={seriesFilters} active={series} onPick={setSeries} />
@@ -55,10 +53,10 @@ export function ModelsSection() {
             <Link
               key={i}
               to={landingModelPath(m.slug)}
-              className="block w-[calc(50%-8px)] cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] w640:w-[calc(33.333%-11px)] w1440:w-[calc(33.333%-16px)]"
+              className="block w-full cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] min-[450px]:w-[calc(50%-8px)] min-[800px]:w-[calc(33.333%-11px)] w1440:w-[calc(33.333%-16px)]"
             >
               <div
-                className="flex h-[110px] items-center justify-center text-4xl w640:h-[140px] w640:text-5xl w960:h-[180px] w1280:h-[220px] w1280:text-6xl w1440:h-[280px]"
+                className="flex h-[240px] items-center justify-center text-4xl w640:text-5xl w1280:h-[280px] w1280:text-6xl"
                 style={{ background: m.image.bg }}
               >
                 {m.image.emoji}
@@ -81,30 +79,12 @@ export function ModelsSection() {
           ))}
         </div>
 
-        <div className="flex flex-col items-center gap-6">
-          <Button variant="secondary" className="mt-[30px] w-full bg-[#d4d4d8]/40 text-black hover:bg-[#d4d4d8]/60">
-            See more
-          </Button>
-          <div className="flex items-center gap-2 w640:gap-4">
-            <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-xl text-ink/40 hover:bg-surface-2 w640:h-12 w640:w-12">
-              ‹
-            </button>
-            {pages.map((p, i) => (
-              <button
-                key={i}
-                className={cn(
-                  'flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-sm font-medium w640:h-12 w640:w-12 w640:text-base',
-                  p === '1' ? 'bg-[#d4d4d8]/40 text-black' : 'border-2 border-[#d4d4d8] text-black hover:bg-surface-2',
-                )}
-              >
-                {p}
-              </button>
-            ))}
-            <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-xl text-ink hover:bg-surface-2 w640:h-12 w640:w-12">
-              ›
-            </button>
-          </div>
-        </div>
+        <Button
+          variant="secondary"
+          className="mt-4 w-full bg-[#d4d4d8]/40 text-black hover:bg-[#d4d4d8]/60 w640:mt-6 w960:mt-[30px]"
+        >
+          See more
+        </Button>
       </Container>
     </section>
   );

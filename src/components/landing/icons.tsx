@@ -515,3 +515,44 @@ export const IconArrowRight = ({ size = 24, className }: IconProps) => (
     <path d="M14 17L19 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+export const IconBurger = ({ size = 24, className }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconClose = ({ size = 16, className }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M4.5661 12.4964L8.00066 9.0618L11.4352 12.4964C11.7285 12.7897 12.204 12.7897 12.4973 12.4964C12.7906 12.2031 12.7906 11.7275 12.4973 11.4342L9.06278 7.99969L12.4974 4.5651C12.7907 4.2718 12.7907 3.79628 12.4974 3.50298C12.2041 3.20968 11.7285 3.20968 11.4352 3.50298L8.00066 6.93757L4.56608 3.50298C4.27278 3.20968 3.79725 3.20968 3.50396 3.50298C3.21066 3.79628 3.21066 4.2718 3.50396 4.5651L6.93854 7.99969L3.50398 11.4342C3.21068 11.7275 3.21068 12.2031 3.50398 12.4964C3.79727 12.7897 4.2728 12.7897 4.5661 12.4964Z" />
+  </svg>
+);
+
+export const IconChevronRight = ({ size = 24, className }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M10 7L15 12L10 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);

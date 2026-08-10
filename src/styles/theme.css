@@ -1,12 +1,12 @@
 @theme inline {
   --default-transition-duration: 300ms;
   --breakpoint-xs: 375px;
-  --breakpoint-w640: 640px;
-  --breakpoint-w960: 960px;
-  --breakpoint-w1280: 1280px;
-  --breakpoint-w1440: 1440px;
-  --breakpoint-w1600: 1600px;
-  --breakpoint-w1920: 1920px;
+  --breakpoint-w640: 401px;
+  --breakpoint-w960: 641px;
+  --breakpoint-w1280: 961px;
+  --breakpoint-w1440: 1281px;
+  --breakpoint-w1600: 1441px;
+  --breakpoint-w1920: 1601px;
   --container-mobile: 48rem;
   --container-wide: 64rem;
   --color-bg: var(--bg);

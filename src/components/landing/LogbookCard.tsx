@@ -6,7 +6,7 @@ export default function LogbookCard({ logbook }: Props) {
   return (
     <div className="w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-[#333333] transition-transform hover:-translate-y-0.5 w640:w-[320px] w960:w-[420px]">
       <div
-        className="flex h-[180px] items-center justify-center text-5xl w640:h-[220px] w960:h-[280px] w960:text-6xl"
+        className="flex h-[240px] items-center justify-center text-5xl w960:text-6xl w1280:h-[280px]"
         style={{ background: logbook.image.bg }}
       >
         {logbook.image.emoji}
