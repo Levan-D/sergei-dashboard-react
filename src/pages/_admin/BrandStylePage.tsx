@@ -13,7 +13,9 @@ const colors = [
   { label: 'Secondary', hex: '#6F6F6F' },
 ];
 
-function Recommendation({ children }: { children: React.ReactNode }) {
+type Props = { children: React.ReactNode };
+
+function Recommendation({ children }: Props) {
   return (
     <div className="mt-2.5 rounded-el border border-line bg-surface-2 px-2 py-2.5 text-[11px] text-ink-3 @mobile:px-3">
       <strong className="text-ink-2">Recommendations:</strong> {children}

@@ -49,7 +49,9 @@ const dropToMove = (
   onMove(String(e.active.id), String(overId), from < to);
 };
 
-function DragHandle({ size, ...rest }: { size: 'md' | 'sm' | 'xs' } & HTMLAttributes<HTMLDivElement>) {
+type DragHandleProps = { size: 'md' | 'sm' | 'xs' } & HTMLAttributes<HTMLDivElement>;
+
+function DragHandle({ size, ...rest }: DragHandleProps) {
   return (
     <div
       {...rest}
@@ -64,7 +66,9 @@ function DragHandle({ size, ...rest }: { size: 'md' | 'sm' | 'xs' } & HTMLAttrib
   );
 }
 
-function RowItem({ modId, groupId, row }: { modId: string; groupId: string; row: SpecRow }) {
+type RowItemProps = { modId: string; groupId: string; row: SpecRow };
+
+function RowItem({ modId, groupId, row }: RowItemProps) {
   const dispatch = useAppDispatch();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: row.id });
   return (
@@ -104,7 +108,9 @@ function RowItem({ modId, groupId, row }: { modId: string; groupId: string; row:
   );
 }
 
-function GroupItem({ modId, grp }: { modId: string; grp: SpecGroup }) {
+type GroupItemProps = { modId: string; grp: SpecGroup };
+
+function GroupItem({ modId, grp }: GroupItemProps) {
   const dispatch = useAppDispatch();
   const sensors = useDndSensors();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: grp.id });
@@ -164,7 +170,9 @@ function GroupItem({ modId, grp }: { modId: string; grp: SpecGroup }) {
   );
 }
 
-function ModItem({ mod }: { mod: SpecMod }) {
+type ModItemProps = { mod: SpecMod };
+
+function ModItem({ mod }: ModItemProps) {
   const dispatch = useAppDispatch();
   const sensors = useDndSensors();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: mod.id });

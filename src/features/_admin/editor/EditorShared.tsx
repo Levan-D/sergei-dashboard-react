@@ -13,10 +13,12 @@ import { IconPlus, IconX } from '@/components/_admin/icons';
 import PickMediaModal from '@/features/_admin/media/PickMediaModal';
 import Input from '@/components/_admin/forms/Input';
 
-/* ── Gallery ── */
 type GalleryPhoto = { id: number; emoji: string; bg: string };
 
-export function GallerySection({ sub, initial }: { sub: string; initial: GalleryPhoto[] }) {
+/* ── Gallery ── */
+type GallerySectionProps = { sub: string; initial: GalleryPhoto[] };
+
+export function GallerySection({ sub, initial }: GallerySectionProps) {
   const [photos, setPhotos] = useState(initial);
   const [pickOpen, setPickOpen] = useState(false);
   return (
@@ -89,7 +91,9 @@ const fixedLinks = [
   },
 ];
 
-export function ExternalLinksSection({ sub, target }: { sub: string; target: 'model' | 'gen' }) {
+type ExternalLinksSectionProps = { sub: string; target: 'model' | 'gen' };
+
+export function ExternalLinksSection({ sub, target }: ExternalLinksSectionProps) {
   const dispatch = useAppDispatch();
   const links = useAppSelector((s) => (target === 'model' ? s.catalog.modelCustomLinks : s.catalog.genCustomLinks));
   return (
@@ -145,16 +149,14 @@ export function ExternalLinksSection({ sub, target }: { sub: string; target: 'mo
   );
 }
 
-/* ── Publish sidebar card ── */
-export function PublishCard({
-  saveLabel,
-  savedToast,
-  className,
-}: {
+type PublishCardProps = {
   saveLabel: string;
   savedToast: string;
   className?: string;
-}) {
+};
+
+/* ── Publish sidebar card ── */
+export function PublishCard({ saveLabel, savedToast, className }: PublishCardProps) {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   return (
@@ -183,8 +185,10 @@ export function PublishCard({
   );
 }
 
+type InfoCardProps = { rows: { label: string; value: string; muted?: boolean }[] };
+
 /* ── Info sidebar card ── */
-export function InfoCard({ rows }: { rows: { label: string; value: string; muted?: boolean }[] }) {
+export function InfoCard({ rows }: InfoCardProps) {
   return (
     <SectionCard className="mb-0">
       <SectionHeader compact title="Info" />

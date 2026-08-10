@@ -1,18 +1,14 @@
 import { cn } from '@/lib/cn';
 
-export default function Chip({
-  label,
-  active,
-  onClick,
-  withX,
-  className,
-}: {
+type Props = {
   label: string;
   active: boolean;
   onClick?: () => void;
   withX?: boolean;
   className?: string;
-}) {
+};
+
+export default function Chip({ label, active, onClick, withX, className }: Props) {
   return (
     <span
       onClick={onClick}

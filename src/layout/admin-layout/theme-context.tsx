@@ -14,7 +14,9 @@ const getInitialTheme = (): Theme => {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 };
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+type Props = { children: ReactNode };
+
+export function ThemeProvider({ children }: Props) {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {

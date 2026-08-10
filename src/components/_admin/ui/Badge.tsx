@@ -12,15 +12,13 @@ const badgeColors: Record<BadgeColor, string> = {
   gray: 'bg-surface-3 text-ink-2',
 };
 
-export default function Badge({
-  color,
-  className,
-  children,
-}: {
+type Props = {
   color: BadgeColor;
   className?: string;
   children: ReactNode;
-}) {
+};
+
+export default function Badge({ color, className, children }: Props) {
   return (
     <span
       className={cn(

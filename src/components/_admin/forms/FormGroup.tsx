@@ -1,15 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
-export default function FormGroup({
-  label,
-  full,
-  half,
-  hint,
-  className,
-  style,
-  children,
-}: {
+type Props = {
   label?: ReactNode;
   full?: boolean;
   half?: boolean;
@@ -17,15 +9,12 @@ export default function FormGroup({
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
-}) {
+};
+
+export default function FormGroup({ label, full, half, hint, className, style, children }: Props) {
   return (
     <div
-      className={cn(
-        'flex flex-col gap-1.5',
-        full && 'w-full',
-        half && 'w-full @mobile:w-[calc(50%-8px)]',
-        className,
-      )}
+      className={cn('flex flex-col gap-1.5', full && 'w-full', half && 'w-full @mobile:w-[calc(50%-8px)]', className)}
       style={style}
     >
       {label && <label>{label}</label>}

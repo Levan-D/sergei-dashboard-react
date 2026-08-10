@@ -1,16 +1,13 @@
 import { cn } from '@/lib/cn';
 
-export default function Toggle({
-  on,
-  onClick,
-  title,
-  className,
-}: {
+type Props = {
   on: boolean;
   onClick?: (e: React.MouseEvent) => void;
   title?: string;
   className?: string;
-}) {
+};
+
+export default function Toggle({ on, onClick, title, className }: Props) {
   return (
     <div
       title={title}

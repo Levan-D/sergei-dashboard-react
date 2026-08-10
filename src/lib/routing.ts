@@ -15,3 +15,7 @@ export const ROUTING = {
   adminHistory: '/admin/history',
   adminSettings: '/admin/settings',
 } as const;
+
+export const landingModelPath = (model: string) => `/${encodeURIComponent(model)}`;
+export const landingGenPath = (model: string, gen: string) =>
+  `/${encodeURIComponent(model)}/${encodeURIComponent(gen)}`;

@@ -1,6 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
 import useScreenDimensions from '@/hooks/use-screen-dimensions';
+import LandingLayout from '@/layout/landing-layout/LandingLayout';
+import HomePage from '@/pages/landing/HomePage';
+import ModelPage from '@/pages/landing/ModelPage';
+import GenerationPage from '@/pages/landing/GenerationPage';
 import AdminLayout from '@/layout/admin-layout/AdminLayout';
 import DashboardPage from '@/pages/_admin/DashboardPage';
 import LandingPage from '@/pages/_admin/LandingPage';
@@ -19,6 +23,11 @@ export default function App() {
   useScreenDimensions();
   return (
     <Routes>
+      <Route element={<LandingLayout />}>
+        <Route path={ROUTING.home} element={<HomePage />} />
+        <Route path=":model" element={<ModelPage />} />
+        <Route path=":model/:gen" element={<GenerationPage />} />
+      </Route>
       <Route path={ROUTING.admin} element={<AdminLayout />}>
         <Route index element={<DashboardPage />} />
         <Route path={ROUTING.adminLanding} element={<LandingPage />} />
@@ -33,7 +42,7 @@ export default function App() {
         <Route path={ROUTING.adminHistory} element={<HistoryPage />} />
         <Route path={ROUTING.adminSettings} element={<SettingsPage />} />
       </Route>
-      <Route path="*" element={<Navigate to={ROUTING.admin} replace />} />
+      <Route path="*" element={<Navigate to={ROUTING.home} replace />} />
     </Routes>
   );
 }

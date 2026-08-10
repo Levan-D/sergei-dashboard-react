@@ -1,21 +1,16 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
-export default function SectionHeader({
-  title,
-  sub,
-  right,
-  compact,
-  borderTop,
-  stack,
-}: {
+type Props = {
   title: ReactNode;
   sub?: ReactNode;
   right?: ReactNode;
   compact?: boolean;
   borderTop?: boolean;
   stack?: boolean;
-}) {
+};
+
+export default function SectionHeader({ title, sub, right, compact, borderTop, stack }: Props) {
   return (
     <div
       className={cn(

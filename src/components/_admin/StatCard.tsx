@@ -1,17 +1,14 @@
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/cn';
 
-export function StatCard({
-  label,
-  value,
-  sub,
-  valueStyle,
-}: {
+type Props = {
   label: string;
   value: string;
   sub?: string;
   valueStyle?: CSSProperties;
-}) {
+};
+
+export function StatCard({ label, value, sub, valueStyle }: Props) {
   return (
     <div
       className={cn(

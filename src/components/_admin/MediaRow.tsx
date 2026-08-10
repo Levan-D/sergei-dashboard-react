@@ -5,20 +5,16 @@ import { IconImage, IconX } from '@/components/_admin/icons';
 import Button from '@/components/_admin/ui/Button';
 import PickMediaModal from '@/features/_admin/media/PickMediaModal';
 
-/** "Upload zone — or — Choose from Media Library" row used across the app. `stack` lays it out vertically. */
-export function MediaPickRow({
-  icon,
-  text,
-  hint,
-  compact,
-  stack,
-}: {
+type MediaPickRowProps = {
   icon: string;
   text: string;
   hint?: string;
   compact?: boolean;
   stack?: boolean;
-}) {
+};
+
+/** "Upload zone — or — Choose from Media Library" row used across the app. `stack` lays it out vertically. */
+export function MediaPickRow({ icon, text, hint, compact, stack }: MediaPickRowProps) {
   const [pickOpen, setPickOpen] = useState(false);
   return (
     <div
@@ -60,7 +56,9 @@ export function MediaPickRow({
   );
 }
 
-export function MediaSectionLabel({ children, className }: { children: ReactNode; className?: string }) {
+type MediaSectionLabelProps = { children: ReactNode; className?: string };
+
+export function MediaSectionLabel({ children, className }: MediaSectionLabelProps) {
   return (
     <span className={cn('mb-2.5 block text-[11px] font-bold tracking-[.07em] text-ink-3 uppercase', className)}>
       {children}
@@ -68,20 +66,16 @@ export function MediaSectionLabel({ children, className }: { children: ReactNode
   );
 }
 
-/** Currently selected file row with a remove button. */
-export function CurrentMedia({
-  emoji,
-  bg,
-  name,
-  meta,
-  onRemove,
-}: {
+type CurrentMediaProps = {
   emoji: string;
   bg: string;
   name: string;
   meta: string;
   onRemove: () => void;
-}) {
+};
+
+/** Currently selected file row with a remove button. */
+export function CurrentMedia({ emoji, bg, name, meta, onRemove }: CurrentMediaProps) {
   return (
     <div className="mt-2.5 flex items-center gap-2.5 rounded-el border border-line bg-surface-2 p-2.5 px-2 @mobile:px-3">
       <div

@@ -3,17 +3,7 @@ import Avatar from '@/components/_admin/ui/Avatar';
 import Badge from '@/components/_admin/ui/Badge';
 import type { BadgeColor } from '@/components/_admin/ui/Badge';
 
-/** Card rendering of a table row — used where a data table collapses on narrow containers. */
-export function RecordCard({
-  initials,
-  bg,
-  title,
-  meta,
-  description,
-  badge,
-  action,
-  onClick,
-}: {
+type Props = {
   initials: string;
   bg?: string;
   title: string;
@@ -22,11 +12,14 @@ export function RecordCard({
   badge?: { label: ReactNode; color: BadgeColor };
   action?: ReactNode;
   onClick?: () => void;
-}) {
+};
+
+/** Card rendering of a table row — used where a data table collapses on narrow containers. */
+export function RecordCard({ initials, bg, title, meta, description, badge, action, onClick }: Props) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-el border border-line bg-surface-2 p-3${onClick ? ' cursor-pointer hover:border-line-2' : ''}`}
+      className={`rounded-el border border-line bg-surface-2 p-3${onClick ? 'cursor-pointer hover:border-line-2' : ''}`}
     >
       <div className="flex items-center gap-2">
         <Avatar sm initials={initials} bg={bg} />

@@ -1,16 +1,13 @@
 import type { ReactNode } from 'react';
 
-export function NotifyItem({
-  children,
-  meta,
-  read,
-  onClick,
-}: {
+type Props = {
   children: ReactNode;
   meta: string;
   read?: boolean;
   onClick?: () => void;
-}) {
+};
+
+export function NotifyItem({ children, meta, read, onClick }: Props) {
   return (
     <div
       onClick={onClick}

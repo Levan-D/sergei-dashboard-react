@@ -14,8 +14,10 @@ import { MediaPickRow, MediaSectionLabel } from '@/components/_admin/MediaRow';
 import { IconImage, IconVideo, IconCarousel } from '@/components/_admin/icons';
 import Input from '@/components/_admin/forms/Input';
 
+type Props = { prefill?: boolean };
+
 /* ── Hero CTA form fields (shared by the three hero types) ── */
-function HeroCtaFields({ prefill }: { prefill?: boolean }) {
+function HeroCtaFields({ prefill }: Props) {
   return (
     <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
       <div className="h-px w-full bg-line" />

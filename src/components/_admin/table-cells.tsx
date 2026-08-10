@@ -1,20 +1,16 @@
 import type { ReactNode } from 'react';
 import Avatar from '@/components/_admin/ui/Avatar';
 
-/** `<td>` with an avatar + name (+ optional subtitle) — the identity column shared by data tables. */
-export function IdentityCell({
-  initials,
-  bg,
-  name,
-  sub,
-  sm = true,
-}: {
+type IdentityCellProps = {
   initials: string;
   bg?: string;
   name: string;
   sub?: string;
   sm?: boolean;
-}) {
+};
+
+/** `<td>` with an avatar + name (+ optional subtitle) — the identity column shared by data tables. */
+export function IdentityCell({ initials, bg, name, sub, sm = true }: IdentityCellProps) {
   return (
     <td>
       <div className={sm ? 'flex items-center gap-2' : 'flex items-center gap-2.5'}>
@@ -28,13 +24,17 @@ export function IdentityCell({
   );
 }
 
+type MutedCellProps = { children: ReactNode };
+
 /** `<td>` for secondary/muted text (time, date, counts). */
-export function MutedCell({ children }: { children: ReactNode }) {
+export function MutedCell({ children }: MutedCellProps) {
   return <td className="text-ink-3">{children}</td>;
 }
 
+type ActionsCellProps = { children: ReactNode };
+
 /** `<td>` holding a horizontal group of row actions (buttons, toggles). */
-export function ActionsCell({ children }: { children: ReactNode }) {
+export function ActionsCell({ children }: ActionsCellProps) {
   return (
     <td>
       <div className="flex items-center gap-1.5">{children}</div>

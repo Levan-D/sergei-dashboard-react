@@ -1,5 +1,11 @@
 @theme inline {
   --breakpoint-xs: 375px;
+  --breakpoint-w640: 640px;
+  --breakpoint-w960: 960px;
+  --breakpoint-w1280: 1280px;
+  --breakpoint-w1440: 1440px;
+  --breakpoint-w1600: 1600px;
+  --breakpoint-w1920: 1920px;
   --container-mobile: 48rem;
   --container-wide: 64rem;
   --color-bg: var(--bg);
@@ -24,5 +30,7 @@
   --radius-el: 7px;
   --font-sans: 'DM Sans', sans-serif;
   --font-mono: 'DM Mono', monospace;
+  --font-barlow: 'Barlow', sans-serif;
+  --font-condensed: 'Barlow Condensed', sans-serif;
   --shadow-card: var(--shadow);
 }

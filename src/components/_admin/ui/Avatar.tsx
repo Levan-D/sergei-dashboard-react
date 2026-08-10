@@ -1,6 +1,8 @@
 import { cn } from '@/lib/cn';
 
-export default function Avatar({ initials, bg, sm }: { initials: string; bg?: string; sm?: boolean }) {
+type Props = { initials: string; bg?: string; sm?: boolean };
+
+export default function Avatar({ initials, bg, sm }: Props) {
   return (
     <div
       className={cn(

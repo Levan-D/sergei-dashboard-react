@@ -1,20 +1,15 @@
 import { cn } from '@/lib/cn';
 
-export default function UploadZone({
-  icon,
-  text,
-  hint,
-  onClick,
-  compact,
-  className,
-}: {
+type Props = {
   icon: string;
   text: string;
   hint?: string;
   onClick?: () => void;
   compact?: boolean;
   className?: string;
-}) {
+};
+
+export default function UploadZone({ icon, text, hint, onClick, compact, className }: Props) {
   return (
     <div
       onClick={onClick}
