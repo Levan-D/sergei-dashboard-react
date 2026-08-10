@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
+import { IconArrowRight } from '@/components/landing/icons';
 import { cn } from '@/lib/cn';
 import { brandAbout, brandFacts, brandStats } from '@/features/landing/data';
 
@@ -29,7 +30,7 @@ export function BrandSection() {
       <Container className="flex flex-col gap-6 w640:gap-10">
         <SectionTitle>Brand</SectionTitle>
         <div className="flex flex-col items-start gap-6 w640:flex-row w640:gap-10 w1280:gap-16 w1440:gap-[146px]">
-          <div className="w-full shrink-0 overflow-hidden rounded-lg border border-line w640:w-[260px] w960:w-[320px] w1280:w-[420px] w1440:w-[517px]">
+          <div className="w-full shrink-0 overflow-hidden rounded-lg border border-line w640:w-[260px] w960:w-[320px] w1280:w-[420px] w1440:w-[464px]">
             {tabs.map((t) => (
               <button
                 key={t}
@@ -41,7 +42,7 @@ export function BrandSection() {
                 )}
               >
                 {t}
-                {tab === t && <span className="text-2xl">→</span>}
+                {tab === t && <IconArrowRight size={24} className="shrink-0" />}
               </button>
             ))}
           </div>
