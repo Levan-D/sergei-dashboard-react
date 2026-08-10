@@ -9,7 +9,7 @@ export function OwnersStoriesSection() {
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <SectionTitle>Owners' stories</SectionTitle>
-          <p className="cursor-pointer text-base font-medium tracking-[0.01em] text-ink uppercase transition-colors hover:text-ink-2">
+          <p className="t-button cursor-pointer tracking-[0.01em] text-ink uppercase transition-colors hover:text-ink-2">
             All BMW posts
           </p>
         </div>

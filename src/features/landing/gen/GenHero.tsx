@@ -9,16 +9,14 @@ export function GenHero() {
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
       <Container noPadding="y" className="relative pt-24 pb-10">
-        <p className="text-xs tracking-[0.05em] text-white/70 uppercase">Home / M4</p>
+        <p className="t-stat-label tracking-[0.05em] text-white/70 uppercase">Home / M4</p>
       </Container>
       <Container noPadding="y" className="relative pb-14">
         <div className="flex max-w-[624px] flex-col gap-8">
           <div className="flex flex-col gap-3">
-            <p className="text-sm tracking-[0.05em] text-accent-light uppercase">M Division / G82 (2020-2024)</p>
-            <h1 className="font-condensed text-[40px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w960:text-[56px] w1440:text-[64px]">
-              BMW M4 G82 Coupe
-            </h1>
-            <p className="text-base leading-[1.3] tracking-[0.01em] text-white w960:text-lg">
+            <p className="t-eyebrow tracking-[0.05em] text-accent-light uppercase">M Division / G82 (2020-2024)</p>
+            <h1 className="t-h1 text-white">BMW M4 G82 Coupe</h1>
+            <p className="t-lead text-white">
               The fourth-generation M4 arrives wider, faster, and more uncompromising than any before it. A handbuilt
               S58 engine, xDrive availability, and a 6-speed manual — all in one generation.
             </p>
@@ -26,8 +24,8 @@ export function GenHero() {
           <div className="flex flex-wrap gap-x-10 gap-y-4">
             {genHeroStats.map((s) => (
               <div key={s.label} className="flex flex-col gap-1">
-                <p className="text-xs tracking-[0.05em] text-white/60 uppercase">{s.label}</p>
-                <p className="text-xl font-semibold text-white">{s.value}</p>
+                <p className="t-stat-label tracking-[0.05em] text-white/60 uppercase">{s.label}</p>
+                <p className="t-card-name text-white">{s.value}</p>
               </div>
             ))}
           </div>

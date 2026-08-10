@@ -5,6 +5,7 @@ import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import PillChip from '@/components/landing/PillChip';
 import Carousel from '@/components/landing/Carousel';
+import useModelsPerPage from '@/hooks/use-models-per-page';
 import Button from '@/components/landing/Button';
 import { landingModels, bodyTypeFilters, seriesFilters, decadeFilters } from '@/features/landing/data';
 
@@ -18,9 +19,7 @@ type Props = {
 function FilterGroup({ label, options, active, onPick }: Props) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-base leading-[26px] font-medium tracking-[0.01em] text-ink/80 w640:text-lg w960:text-xl">
-        {label}
-      </p>
+      <p className="t-label text-ink/80">{label}</p>
       <Carousel trackClassName="gap-2 w1280:gap-2" scrollAmount={240}>
         {options.map((o) => (
           <PillChip key={o} label={o} active={active === o} onClick={() => onPick(o)} />
@@ -34,6 +33,7 @@ export function ModelsSection() {
   const [bodyType, setBodyType] = useState('All');
   const [series, setSeries] = useState('All');
   const [decade, setDecade] = useState('All');
+  const perPage = useModelsPerPage();
 
   return (
     <section className="bg-bg">
@@ -49,7 +49,7 @@ export function ModelsSection() {
         </div>
 
         <div className="flex flex-wrap gap-4 w1440:gap-6">
-          {landingModels.map((m, i) => (
+          {landingModels.slice(0, perPage).map((m, i) => (
             <Link
               key={i}
               to={landingModelPath(m.slug)}
@@ -62,7 +62,7 @@ export function ModelsSection() {
                 {m.image.emoji}
               </div>
               <div className="flex flex-col gap-1 p-3 w640:gap-4 w640:p-4 w1440:p-6">
-                <p className="text-[10px] leading-[18px] text-accent w640:text-xs w1440:text-sm">
+                <p className="t-eyebrow text-accent">
                   {m.tags.map((t, ti) => (
                     <span key={t}>
                       {ti > 0 && <span> / </span>}
@@ -70,10 +70,8 @@ export function ModelsSection() {
                     </span>
                   ))}
                 </p>
-                <p className="text-base leading-[1.2] font-semibold w640:text-lg w1280:text-xl w1440:text-2xl">
-                  {m.name}
-                </p>
-                <p className="text-sm leading-[24px] font-medium w640:text-base w1440:text-xl">{m.years}</p>
+                <p className="t-card-name">{m.name}</p>
+                <p className="t-card-years">{m.years}</p>
               </div>
             </Link>
           ))}
@@ -81,7 +79,7 @@ export function ModelsSection() {
 
         <Button
           variant="secondary"
-          className="mt-4 w-full bg-[#d4d4d8]/40 text-black hover:bg-[#d4d4d8]/60 w640:mt-6 w960:mt-[30px]"
+          className="mt-6 w-full bg-[#d4d4d8]/40 text-black hover:bg-[#d4d4d8]/60 w960:mt-[30px]"
         >
           See more
         </Button>

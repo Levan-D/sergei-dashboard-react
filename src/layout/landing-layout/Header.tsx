@@ -17,17 +17,12 @@ export default function Header() {
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 text-[11px] font-bold text-white w1280:h-[54px] w1280:w-[54px] w1280:text-[13px]">
             BMW
           </div>
-          <p className="font-barlow text-sm font-medium tracking-[0.01em] text-white/70 uppercase w1280:text-base">
-            BMW &amp; Motority
-          </p>
+          <p className="t-wordmark text-white/70">BMW &amp; Motority</p>
         </Link>
         <div className="flex items-center gap-3 w640:gap-4 w1280:gap-6">
           <nav className="hidden items-center gap-6 w1280:flex">
             {navLinks.map((l) => (
-              <p
-                key={l}
-                className="cursor-pointer font-barlow text-base font-medium tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
-              >
+              <p key={l} className="t-wordmark cursor-pointer text-white/70 transition-colors hover:text-white">
                 {l}
               </p>
             ))}
@@ -40,7 +35,7 @@ export default function Header() {
           >
             <IconBurger size={20} />
           </button>
-          <Button className="hidden px-4 text-sm w640:px-6 w640:text-base w960:inline-flex">OFFICIAL WEBSITE</Button>
+          <Button className="hidden px-4 w960:inline-flex w1280:px-6">OFFICIAL WEBSITE</Button>
         </div>
       </Container>
       <MobileMenu open={menuOpen} links={navLinks} onClose={() => setMenuOpen(false)} />

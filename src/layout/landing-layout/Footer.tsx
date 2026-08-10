@@ -17,16 +17,11 @@ export default function Footer() {
                 BMW &amp; Motority
               </p>
             </div>
-            <p className="text-base leading-[1.25] tracking-[0.01em] text-white/70 uppercase">
-              The Ultimate Driving Machine. On Motority since 2025
-            </p>
+            <p className="t-footer-tag text-white/70">The Ultimate Driving Machine. On Motority since 2025</p>
           </div>
           <div className="flex min-w-[200px] flex-col gap-4 w1280:w-[342px]">
             {linkColumn.map((l) => (
-              <p
-                key={l}
-                className="cursor-pointer text-sm leading-[18px] tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
-              >
+              <p key={l} className="t-footer-link cursor-pointer text-white/70 transition-colors hover:text-white">
                 {l}
               </p>
             ))}
@@ -36,9 +31,7 @@ export default function Footer() {
           </Button>
         </div>
         <div className="border-t border-white/20 py-[22px]">
-          <p className="text-[10px] tracking-[0.01em] text-white/80">
-            2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED
-          </p>
+          <p className="t-caption text-white/80">2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED</p>
         </div>
       </Container>
     </footer>

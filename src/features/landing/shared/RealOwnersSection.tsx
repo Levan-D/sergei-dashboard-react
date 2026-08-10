@@ -15,11 +15,9 @@ export function RealOwnersSection() {
               <SectionTitle>Real owners</SectionTitle>
               <IconChevronRight size={20} className="shrink-0 cursor-pointer text-white w640:hidden" />
             </div>
-            <p className="text-base tracking-[0.01em] text-white/80 w640:text-lg w960:text-2xl w960:leading-[1.1]">
-              BMW owners documenting their journeys on Motority
-            </p>
+            <p className="t-subhead text-white/80">BMW owners documenting their journeys on Motority</p>
           </div>
-          <p className="hidden cursor-pointer items-center gap-2 pt-2 text-base font-medium tracking-[0.01em] text-white/80 uppercase transition-colors hover:text-white w640:flex">
+          <p className="t-button hidden cursor-pointer items-center gap-2 pt-2 tracking-[0.01em] text-white/80 uppercase transition-colors hover:text-white w640:flex">
             Browse all logbooks
             <span className="h-5 w-5 shrink-0 rounded-full border border-current" />
           </p>

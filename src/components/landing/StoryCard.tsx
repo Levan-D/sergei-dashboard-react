@@ -20,12 +20,12 @@ export default function StoryCard({ story }: StoryCardProps) {
       {!story.imageLast && <StoryImage story={story} />}
       <div className="flex flex-col gap-3 p-6">
         <div className="flex flex-col gap-1 border-b border-line pb-3">
-          <p className="text-xl font-semibold">{story.car}</p>
-          <p className="text-sm text-ink-2">{story.meta}</p>
+          <p className="t-card-name">{story.car}</p>
+          <p className="t-lb-meta text-ink-2">{story.meta}</p>
         </div>
-        {story.tag && <p className="text-xs tracking-[0.05em] text-ink-3 uppercase">{story.tag}</p>}
-        <p className="text-base font-bold tracking-[0.01em] uppercase">{story.title}</p>
-        <p className="line-clamp-3 text-sm leading-[1.4] text-ink-2">{story.text}</p>
+        {story.tag && <p className="t-eyebrow tracking-[0.05em] text-ink-3 uppercase">{story.tag}</p>}
+        <p className="t-card-name uppercase">{story.title}</p>
+        <p className="t-body line-clamp-3 text-ink-2">{story.text}</p>
         <div className="mt-1 flex items-center gap-2">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[10px] font-bold">
             {story.author
@@ -33,8 +33,8 @@ export default function StoryCard({ story }: StoryCardProps) {
               .map((w) => w[0])
               .join('')}
           </div>
-          <p className="text-sm font-medium">{story.author}</p>
-          <div className="ml-auto flex items-center gap-3 text-sm text-ink-2">
+          <p className="t-lb-meta font-medium">{story.author}</p>
+          <div className="t-lb-meta ml-auto flex items-center gap-3 text-ink-2">
             <span className="flex items-center gap-1">
               <IconRepost size={16} /> {story.reposts}
             </span>

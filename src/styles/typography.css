@@ -1,0 +1,300 @@
+@layer components {
+  .t-h1 {
+    font-family: var(--font-condensed);
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 401px) {
+    .t-h1 {
+      font-size: 60px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-h1 {
+      font-size: 78px;
+    }
+  }
+
+  .t-h2 {
+    font-family: var(--font-condensed);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 401px) {
+    .t-h2 {
+      font-size: 32px;
+    }
+  }
+  @media (min-width: 641px) {
+    .t-h2 {
+      font-size: 40px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-h2 {
+      font-size: 48px;
+    }
+  }
+
+  .t-lead {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  @media (min-width: 401px) {
+    .t-lead {
+      font-size: 20px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-lead {
+      font-size: 24px;
+    }
+  }
+
+  .t-subhead {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  @media (min-width: 641px) {
+    .t-subhead {
+      font-size: 20px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-subhead {
+      font-size: 24px;
+    }
+  }
+
+  .t-tab {
+    font-family: var(--font-barlow);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 401px) {
+    .t-tab {
+      font-size: 18px;
+    }
+  }
+  @media (min-width: 641px) {
+    .t-tab {
+      font-size: 20px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-tab {
+      font-size: 24px;
+    }
+  }
+
+  .t-card-name {
+    font-family: var(--font-barlow);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+  @media (min-width: 961px) {
+    .t-card-name {
+      font-size: 24px;
+    }
+  }
+
+  .t-lb-name {
+    font-family: var(--font-barlow);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  @media (min-width: 641px) {
+    .t-lb-name {
+      font-size: 20px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-lb-name {
+      font-size: 24px;
+    }
+  }
+
+  .t-body {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  @media (min-width: 401px) {
+    .t-body {
+      font-size: 16px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-body {
+      font-size: 20px;
+    }
+  }
+
+  .t-label {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: 0.01em;
+  }
+  @media (min-width: 961px) {
+    .t-label {
+      font-size: 20px;
+    }
+  }
+
+  .t-card-years {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  @media (min-width: 961px) {
+    .t-card-years {
+      font-size: 20px;
+    }
+  }
+
+  .t-lb-meta {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  @media (min-width: 641px) {
+    .t-lb-meta {
+      font-size: 16px;
+    }
+  }
+  @media (min-width: 961px) {
+    .t-lb-meta {
+      font-size: 20px;
+    }
+  }
+
+  .t-lb-owner {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  @media (min-width: 401px) {
+    .t-lb-owner {
+      font-size: 16px;
+    }
+  }
+  @media (min-width: 641px) {
+    .t-lb-owner {
+      font-size: 20px;
+    }
+  }
+
+  .t-pill {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+  @media (min-width: 961px) {
+    .t-pill {
+      font-size: 16px;
+    }
+  }
+
+  .t-lb-stat-val {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  @media (min-width: 641px) {
+    .t-lb-stat-val {
+      font-size: 18px;
+    }
+  }
+
+  .t-stat-label {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+  @media (min-width: 961px) {
+    .t-stat-label {
+      font-size: 14px;
+    }
+  }
+
+  .t-wordmark {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 401px) {
+    .t-wordmark {
+      font-size: 16px;
+    }
+  }
+
+  .t-eyebrow {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .t-button {
+    font-family: var(--font-barlow);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .t-footer-tag {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .t-footer-link {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .t-caption {
+    font-family: var(--font-barlow);
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+  }
+}

@@ -35,7 +35,7 @@ export function ModificationsSection() {
         <SectionTitle>Modifications</SectionTitle>
 
         <div className="flex w-full max-w-[320px] flex-col gap-1.5">
-          <label className="text-xs text-ink-2 uppercase">Modifications</label>
+          <label className="t-stat-label text-ink-2 uppercase">Modifications</label>
           <Select options={['3.0 AT 510 hp – Competition', '3.0 AT 480 hp', '3.0 MT 480 hp']} />
         </div>
 
@@ -47,8 +47,8 @@ export function ModificationsSection() {
             >
               <h.icon size={24} className="shrink-0 text-ink-2" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm text-ink-2">{h.label}</p>
-                <p className="text-base font-semibold uppercase">{h.value}</p>
+                <p className="t-body text-ink-2">{h.label}</p>
+                <p className="t-card-name uppercase">{h.value}</p>
               </div>
             </div>
           ))}
@@ -59,12 +59,12 @@ export function ModificationsSection() {
             <div key={ci} className="flex min-w-0 flex-1 flex-col gap-8">
               {column.map((group) => (
                 <div key={group.title} className="flex flex-col gap-2">
-                  <p className="text-xs font-bold tracking-[0.05em] text-accent uppercase">{group.title}</p>
+                  <p className="t-card-years text-accent uppercase">{group.title}</p>
                   <div className="flex flex-col">
                     {group.rows.map((r) => (
                       <div key={r.label} className="flex items-start justify-between gap-6 border-b border-line py-2">
-                        <p className="max-w-[55%] text-[13px] text-ink-2 uppercase">{r.label}</p>
-                        <p className="text-right text-[13px] font-medium">{r.value}</p>
+                        <p className="t-body max-w-[55%] text-ink-2 uppercase">{r.label}</p>
+                        <p className="t-body text-right font-medium">{r.value}</p>
                       </div>
                     ))}
                   </div>

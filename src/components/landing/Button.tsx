@@ -15,7 +15,7 @@ export default function Button({ variant = 'primary', className, children, ...re
   return (
     <button
       className={cn(
-        'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg px-6 font-barlow text-base font-medium transition-colors w1280:h-12',
+        't-button inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg px-6 transition-colors w1280:h-12',
         variants[variant],
         className,
       )}

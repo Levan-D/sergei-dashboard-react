@@ -40,7 +40,7 @@ export default function MobileMenu({ open, links, onClose }: Props) {
               key={l}
               type="button"
               onClick={onClose}
-              className="cursor-pointer border-b border-line px-5 py-4 text-left font-barlow text-base font-medium text-ink uppercase transition-colors first:border-t hover:bg-surface-2"
+              className="t-wordmark cursor-pointer border-b border-line px-5 py-4 text-left text-ink uppercase transition-colors first:border-t hover:bg-surface-2"
             >
               {l}
             </button>

@@ -21,8 +21,8 @@ function PairList({ pairs }: Props) {
     <div className="flex flex-col">
       {pairs.map((p) => (
         <div key={p.name} className="flex items-center justify-between gap-4 border-b border-line py-3 w960:py-4">
-          <p className="text-base text-ink-2 w960:text-xl">{p.name}</p>
-          <p className="text-right text-base font-medium w960:text-xl">{p.value}</p>
+          <p className="t-body text-ink-2">{p.name}</p>
+          <p className="t-body text-right font-medium">{p.value}</p>
         </div>
       ))}
     </div>
@@ -43,7 +43,7 @@ export function BrandSection() {
                 type="button"
                 onClick={() => setTab(t)}
                 className={cn(
-                  'flex h-13 flex-1 cursor-pointer items-center justify-center border-r border-line px-2 text-center text-sm font-semibold tracking-[0.01em] uppercase transition-colors last:border-r-0 w960:h-16 w960:w-full w960:flex-none w960:justify-between w960:border-r-0 w960:border-b w960:px-4 w960:text-left w960:text-xl w960:last:border-b-0 w1440:text-2xl',
+                  't-tab flex h-13 flex-1 cursor-pointer items-center justify-center border-r border-line px-2 text-center transition-colors last:border-r-0 w960:h-16 w960:w-full w960:flex-none w960:justify-between w960:border-r-0 w960:border-b w960:px-4 w960:text-left w960:last:border-b-0',
                   tab === t ? 'bg-surface text-ink' : 'text-ink/60 hover:text-ink',
                 )}
               >
@@ -57,7 +57,7 @@ export function BrandSection() {
             {tab === 'About' && (
               <div className="flex flex-col gap-4 w960:gap-6">
                 {brandAbout.map((p, i) => (
-                  <p key={i} className="text-base leading-[1.2] w640:text-lg w960:text-xl">
+                  <p key={i} className="t-body">
                     {p}
                   </p>
                 ))}

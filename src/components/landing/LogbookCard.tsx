@@ -13,14 +13,14 @@ export default function LogbookCard({ logbook }: Props) {
       </div>
       <div className="flex flex-col gap-4 p-4 w640:p-6">
         <div className="flex flex-col gap-2">
-          <p className="text-xl font-semibold text-white w960:text-2xl">{logbook.car}</p>
-          <p className="text-base text-white/60 w640:text-lg w960:text-xl">{logbook.meta}</p>
+          <p className="t-lb-name text-white">{logbook.car}</p>
+          <p className="t-lb-meta text-white/60">{logbook.meta}</p>
         </div>
         <div className="flex gap-2">
           {logbook.stats.map((s) => (
             <div key={s.label} className="flex flex-1 flex-col gap-1.5">
-              <p className="text-sm leading-[17px] text-white/60 uppercase">{s.label}</p>
-              <p className="text-lg leading-[22px] font-medium text-white">{s.value}</p>
+              <p className="t-stat-label text-white/60 uppercase">{s.label}</p>
+              <p className="t-lb-stat-val text-white">{s.value}</p>
             </div>
           ))}
         </div>
@@ -32,7 +32,7 @@ export default function LogbookCard({ logbook }: Props) {
               .map((w) => w[0])
               .join('')}
           </div>
-          <p className="text-xl font-medium text-white">{logbook.name}</p>
+          <p className="t-lb-owner text-white">{logbook.name}</p>
         </div>
       </div>
     </div>

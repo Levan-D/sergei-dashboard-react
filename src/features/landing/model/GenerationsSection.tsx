@@ -14,11 +14,11 @@ export function GenerationsSection() {
           <SectionTitle>Generations</SectionTitle>
           <div className="flex flex-wrap gap-4">
             <div className="flex w-[200px] flex-col gap-1.5">
-              <label className="text-xs text-ink-2 uppercase">Sort by</label>
+              <label className="t-stat-label text-ink-2 uppercase">Sort by</label>
               <Select options={['Most recent', 'Oldest first', 'Most popular']} />
             </div>
             <div className="flex w-[200px] flex-col gap-1.5">
-              <label className="text-xs text-ink-2 uppercase">Body type</label>
+              <label className="t-stat-label text-ink-2 uppercase">Body type</label>
               <Select options={['All', 'Coupe', 'Convertible']} />
             </div>
           </div>
@@ -37,9 +37,9 @@ export function GenerationsSection() {
                 {g.image.emoji}
               </div>
               <div className="flex flex-col gap-2 p-6">
-                <p className="text-sm text-accent uppercase">{g.body}</p>
-                <p className="text-2xl leading-[1.2] font-semibold">{g.name}</p>
-                <p className="text-xl font-medium">{g.years}</p>
+                <p className="t-eyebrow text-accent uppercase">{g.body}</p>
+                <p className="t-card-name">{g.name}</p>
+                <p className="t-card-years">{g.years}</p>
               </div>
             </Link>
           ))}

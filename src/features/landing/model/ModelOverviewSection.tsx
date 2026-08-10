@@ -11,7 +11,7 @@ export function ModelOverviewSection() {
           <SectionTitle>Model overview</SectionTitle>
           <div className="flex flex-col gap-5">
             {modelOverview.map((p, i) => (
-              <p key={i} className="text-base leading-[1.4] text-ink-2 w960:text-lg">
+              <p key={i} className="t-body text-ink-2">
                 {p}
               </p>
             ))}
