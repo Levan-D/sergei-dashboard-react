@@ -19,8 +19,8 @@ export default function LogbookCard({ logbook }: Props) {
         <div className="flex gap-2">
           {logbook.stats.map((s) => (
             <div key={s.label} className="flex flex-1 flex-col gap-1.5">
-              <p className="text-sm text-white/60 uppercase">{s.label}</p>
-              <p className="text-lg font-medium text-white">{s.value}</p>
+              <p className="text-sm leading-[17px] text-white/60 uppercase">{s.label}</p>
+              <p className="text-lg leading-[22px] font-medium text-white">{s.value}</p>
             </div>
           ))}
         </div>

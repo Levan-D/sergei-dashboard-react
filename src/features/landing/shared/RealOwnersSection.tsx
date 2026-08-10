@@ -1,6 +1,7 @@
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import LogbookCard from '@/components/landing/LogbookCard';
+import Carousel from '@/components/landing/Carousel';
 import { ownerLogbooks } from '@/features/landing/data';
 
 export function RealOwnersSection() {
@@ -14,15 +15,16 @@ export function RealOwnersSection() {
               BMW owners documenting their journeys on Motority
             </p>
           </div>
-          <p className="cursor-pointer pt-2 text-base font-medium tracking-[0.01em] text-white uppercase transition-colors hover:text-white/70">
-            Browse all logbooks ◉
+          <p className="flex cursor-pointer items-center gap-2 pt-2 text-base font-medium tracking-[0.01em] text-white/80 uppercase transition-colors hover:text-white">
+            Browse all logbooks
+            <span className="h-5 w-5 shrink-0 rounded-full border border-current" />
           </p>
         </div>
-        <div className="mt-6 flex gap-4 overflow-x-auto overscroll-x-contain pb-2 w640:mt-10 w640:gap-6">
+        <Carousel className="mt-6 w640:mt-[60px]">
           {ownerLogbooks.map((l, i) => (
             <LogbookCard key={i} logbook={l} />
           ))}
-        </div>
+        </Carousel>
       </Container>
     </section>
   );

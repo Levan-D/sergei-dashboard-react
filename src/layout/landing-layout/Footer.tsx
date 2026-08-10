@@ -21,18 +21,16 @@ export default function Footer() {
               The Ultimate Driving Machine. On Motority since 2025
             </p>
           </div>
-          {[0, 1].map((col) => (
-            <div key={col} className="flex min-w-[200px] flex-col gap-4 w1280:w-[342px]">
-              {linkColumn.map((l) => (
-                <p
-                  key={l}
-                  className="cursor-pointer text-sm tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
-                >
-                  {l}
-                </p>
-              ))}
-            </div>
-          ))}
+          <div className="flex min-w-[200px] flex-col gap-4 w1280:w-[342px]">
+            {linkColumn.map((l) => (
+              <p
+                key={l}
+                className="cursor-pointer text-sm tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
+              >
+                {l}
+              </p>
+            ))}
+          </div>
           <Button variant="secondary" className="w-full w640:w-auto w1280:ml-auto w1280:w-[342px]">
             Join the community
           </Button>
