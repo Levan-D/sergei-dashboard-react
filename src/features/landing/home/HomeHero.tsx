@@ -10,9 +10,9 @@ export function HomeHero() {
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
       <div className="absolute inset-0 bg-gradient-to-l from-black/50 to-transparent to-40%" />
       <Container noPadding="y" className="relative pb-10 w1440:pb-20">
-        <div className="flex max-w-[624px] flex-col gap-8 w1440:gap-12">
+        <div className="flex max-w-[624px] flex-col gap-12">
           <div className="flex flex-col gap-6">
-            <h1 className="font-condensed text-[36px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w640:text-[44px] w960:text-[64px] w1440:text-[78px]">
+            <h1 className="font-condensed text-[36px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w640:text-[44px] w960:text-[64px] w1280:text-[78px]">
               The ultimate driving machine
             </h1>
             <p className="max-w-[585px] text-base leading-[1.1] tracking-[0.01em] text-white w640:text-lg w960:text-2xl">

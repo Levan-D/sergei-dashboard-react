@@ -33,7 +33,7 @@ export function BrandSection() {
   const [tab, setTab] = useState<Tab>('About');
   return (
     <section className="bg-surface-2">
-      <Container className="flex flex-col gap-6 w640:gap-10">
+      <Container className="flex flex-col gap-6 w960:gap-10">
         <SectionTitle>Brand</SectionTitle>
         <div className="flex flex-col items-start gap-6 w960:flex-row w960:gap-4 w1280:gap-[calc(8.333%+26px)]">
           <div className="flex w-full shrink-0 overflow-hidden rounded-lg border border-line w960:block w960:w-[320px] w1280:w-[calc(33.333%-16px)]">
@@ -55,7 +55,7 @@ export function BrandSection() {
           </div>
           <div className="w-full min-w-0 flex-1">
             {tab === 'About' && (
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 w960:gap-6">
                 {brandAbout.map((p, i) => (
                   <p key={i} className="text-base leading-[1.2] w640:text-lg w960:text-xl">
                     {p}

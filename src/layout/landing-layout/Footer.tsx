@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="landing-dark -mt-0.5">
       <Container noPadding="y" className="pt-10">
-        <div className="flex flex-col items-start gap-5 pb-16 w640:flex-row w640:flex-wrap w640:gap-6 w960:gap-10 w1280:gap-6 w1440:pb-[100px]">
+        <div className="flex flex-col items-start gap-5 pb-[60px] w640:flex-row w640:flex-wrap w640:gap-6 w640:pb-[120px] w960:gap-10 w1280:gap-6">
           <div className="flex w-full max-w-[340px] flex-col gap-5">
             <div className="flex items-center gap-4 w1280:gap-6">
               <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-white/40 text-[13px] font-bold text-white">
@@ -25,7 +25,7 @@ export default function Footer() {
             {linkColumn.map((l) => (
               <p
                 key={l}
-                className="cursor-pointer text-sm tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
+                className="cursor-pointer text-sm leading-[18px] tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
               >
                 {l}
               </p>
@@ -35,7 +35,7 @@ export default function Footer() {
             Join the community
           </Button>
         </div>
-        <div className="border-t border-white/20 py-6">
+        <div className="border-t border-white/20 py-[22px]">
           <p className="text-[10px] tracking-[0.01em] text-white/80">
             2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED
           </p>
