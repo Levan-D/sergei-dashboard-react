@@ -20,26 +20,23 @@ export function LivePreview() {
             </div>
           </div>
           <div className="px-2.5 py-2">
-            <div className="mb-[5px] text-[6px] font-bold text-white">MODELS</div>
+            <p className="mb-[5px] text-[6px] font-bold text-white">MODELS</p>
             <div className="mb-[7px] flex gap-[3px]">
-              <div
-                className="rounded-lg px-[5px] py-0.5 text-[5px]"
-                style={{ background: '#1e3a5f', color: '#60a5fa' }}
-              >
+              <p className="rounded-lg px-[5px] py-0.5 text-[5px]" style={{ background: '#1e3a5f', color: '#60a5fa' }}>
                 All
-              </div>
-              <div
+              </p>
+              <p
                 className="rounded-lg border px-[5px] py-0.5 text-[5px]"
                 style={{ borderColor: '#333', color: '#888' }}
               >
                 Coupe
-              </div>
-              <div
+              </p>
+              <p
                 className="rounded-lg border px-[5px] py-0.5 text-[5px]"
                 style={{ borderColor: '#333', color: '#888' }}
               >
                 Sedan
-              </div>
+              </p>
             </div>
             <div className="mt-1.5 flex gap-[5px]">
               {[
@@ -55,17 +52,17 @@ export function LivePreview() {
                     {m.code}
                   </div>
                   <div className="px-1 py-[3px]">
-                    <div className="text-[5px] font-bold text-white">{m.name}</div>
-                    <div className="text-[4px]" style={{ color: '#888' }}>
+                    <p className="text-[5px] font-bold text-white">{m.name}</p>
+                    <p className="text-[4px]" style={{ color: '#888' }}>
                       {m.year}
-                    </div>
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="px-2.5 py-1.5" style={{ borderTop: '1px solid #1a1a1a' }}>
-            <div className="mb-1 text-[5px] font-bold text-white">REAL OWNERS</div>
+            <p className="mb-1 text-[5px] font-bold text-white">REAL OWNERS</p>
             <div className="flex gap-[3px]">
               {['BMW M4 Competition', 'BMW X5 G05'].map((n) => (
                 <div
@@ -73,17 +70,15 @@ export function LivePreview() {
                   className="flex h-[22px] flex-1 items-end rounded-[3px] p-[3px]"
                   style={{ background: '#111' }}
                 >
-                  <div className="text-[4px]" style={{ color: '#aaa' }}>
+                  <p className="text-[4px]" style={{ color: '#aaa' }}>
                     {n}
-                  </div>
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="mt-2.5 rounded-md bg-surface-2 px-2.5 py-2 text-[10px] text-ink-3">
-          Changes apply after Save ↑
-        </div>
+        <p className="mt-2.5 rounded-md bg-surface-2 px-2.5 py-2 text-[10px] text-ink-3">Changes apply after Save ↑</p>
       </div>
     </div>
   );

@@ -14,9 +14,9 @@ export function RealOwnersSection() {
               BMW owners documenting their journeys on Motority
             </p>
           </div>
-          <span className="cursor-pointer pt-2 text-base font-medium tracking-[0.01em] text-white uppercase transition-colors duration-150 hover:text-white/70">
+          <p className="cursor-pointer pt-2 text-base font-medium tracking-[0.01em] text-white uppercase transition-colors hover:text-white/70">
             Browse all logbooks ◉
-          </span>
+          </p>
         </div>
         <div className="mt-6 flex gap-4 overflow-x-auto overscroll-x-contain pb-2 w640:mt-10 w640:gap-6">
           {ownerLogbooks.map((l, i) => (

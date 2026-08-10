@@ -68,26 +68,27 @@ export default function PickMediaModal({ open, onClose }: Props) {
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] gap-2 p-5 @mobile:gap-3">
         {mediaFiles.map((f) => (
-          <div
+          <button
+            type="button"
             key={f.name}
             onClick={() => setSelected(f.name)}
             className={cn(
-              'relative cursor-pointer overflow-hidden rounded-el border bg-surface-2 transition-all duration-150',
+              'relative block w-full cursor-pointer overflow-hidden rounded-el border bg-surface-2 text-left transition-all',
               selected === f.name
                 ? "border-accent shadow-[0_0_0_2px_var(--accent-bg)] after:absolute after:top-1 after:right-1 after:flex after:h-[18px] after:w-[18px] after:items-center after:justify-center after:rounded-full after:bg-accent after:text-[10px] after:font-bold after:text-white after:content-['✓']"
                 : 'border-line hover:-translate-y-px hover:border-line-2',
             )}
           >
-            <div className="flex h-[90px] items-center justify-center text-[22px]" style={{ background: f.bg }}>
+            <span className="flex h-[90px] items-center justify-center text-[22px]" style={{ background: f.bg }}>
               {f.emoji}
-            </div>
-            <div className="px-2.5 py-2">
-              <div className="overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap text-ink">
+            </span>
+            <span className="block px-2.5 py-2">
+              <span className="block overflow-hidden text-xs font-semibold text-ellipsis whitespace-nowrap text-ink">
                 {f.name}
-              </div>
-              <div className="text-[11px] text-ink-3">{f.meta}</div>
-            </div>
-          </div>
+              </span>
+              <span className="block text-[11px] text-ink-3">{f.meta}</span>
+            </span>
+          </button>
         ))}
       </div>
     </Modal>

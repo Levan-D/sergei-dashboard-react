@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { landingGenPath } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
@@ -6,7 +6,6 @@ import Select from '@/components/_admin/forms/Select';
 import { landingGens } from '@/features/landing/data';
 
 export function GenerationsSection() {
-  const navigate = useNavigate();
   const { model = 'm4' } = useParams();
   return (
     <section className="bg-bg">
@@ -26,10 +25,10 @@ export function GenerationsSection() {
         </div>
         <div className="flex flex-wrap gap-6">
           {landingGens.map((g) => (
-            <div
+            <Link
               key={g.slug}
-              onClick={() => navigate(landingGenPath(model, g.slug))}
-              className="w-full cursor-pointer overflow-hidden rounded-lg border border-line transition-colors duration-150 hover:border-line-2 w960:w-[calc(50%-12px)]"
+              to={landingGenPath(model, g.slug)}
+              className="block w-full cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] w960:w-[calc(50%-12px)]"
             >
               <div
                 className="flex h-[240px] items-center justify-center text-6xl w960:h-[320px]"
@@ -38,11 +37,11 @@ export function GenerationsSection() {
                 {g.image.emoji}
               </div>
               <div className="flex flex-col gap-2 p-6">
-                <div className="text-sm text-accent uppercase">{g.body}</div>
-                <div className="text-2xl leading-[1.2] font-semibold">{g.name}</div>
-                <div className="text-xl font-medium">{g.years}</div>
+                <p className="text-sm text-accent uppercase">{g.body}</p>
+                <p className="text-2xl leading-[1.2] font-semibold">{g.name}</p>
+                <p className="text-xl font-medium">{g.years}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </Container>

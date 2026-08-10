@@ -24,9 +24,9 @@ export default function Sidebar({ className, onNavigate }: Props) {
         <div className="flex h-7 w-7 items-center justify-center rounded-el bg-accent text-xs font-bold text-white">
           M
         </div>
-        <div className="text-sm font-semibold text-ink">
+        <p className="text-sm font-semibold text-ink">
           Motority <span className="font-normal text-ink-2">Admin</span>
-        </div>
+        </p>
       </div>
 
       <div className="flex-1 overflow-y-auto overscroll-contain px-2 py-2.5">
@@ -35,17 +35,18 @@ export default function Sidebar({ className, onNavigate }: Props) {
           return (
             <div key={path}>
               {section && (
-                <div className="px-2 pt-2 pb-1.5 text-[10px] font-semibold tracking-[.08em] text-ink-3 uppercase md:px-3 md:pt-3">
+                <p className="px-2 pt-2 pb-1.5 text-[10px] font-semibold tracking-[.08em] text-ink-3 uppercase md:px-3 md:pt-3">
                   {section}
-                </div>
+                </p>
               )}
-              <div
+              <button
+                type="button"
                 onClick={() => {
                   navigate(path);
                   onNavigate?.();
                 }}
                 className={cn(
-                  'mb-px flex cursor-pointer items-center gap-2.5 rounded-el px-2 py-2 text-[13.5px] font-medium transition-all duration-150 md:px-3',
+                  'mb-px flex w-full cursor-pointer items-center gap-2.5 rounded-el px-2 py-2 text-left text-[13.5px] font-medium transition-all md:px-3',
                   active ? 'bg-accent-bg text-accent-light' : 'text-ink-2 hover:bg-surface-2 hover:text-ink',
                 )}
               >
@@ -56,15 +57,16 @@ export default function Sidebar({ className, onNavigate }: Props) {
                     {badge}
                   </span>
                 )}
-              </div>
+              </button>
             </div>
           );
         })}
       </div>
 
       <div className="border-t border-line p-2 md:p-3">
-        <div
-          className="cursor-pointer px-1 pb-2.5"
+        <button
+          type="button"
+          className="block w-full cursor-pointer px-1 pb-2.5"
           onClick={() => {
             toggleTheme();
             showToast(theme === 'dark' ? '☀️ Light theme enabled' : '🌙 Dark theme enabled');
@@ -73,7 +75,7 @@ export default function Sidebar({ className, onNavigate }: Props) {
           <div className="relative flex rounded-lg border border-line bg-surface-3 p-[3px]">
             <div
               className={cn(
-                'z-[1] flex flex-1 items-center justify-center gap-[5px] rounded-md px-1 py-1.5 text-xs font-semibold transition-colors duration-200 select-none',
+                'z-[1] flex flex-1 items-center justify-center gap-[5px] rounded-md px-1 py-1.5 text-xs font-semibold transition-colors select-none',
                 theme === 'dark' ? 'text-ink' : 'text-ink-3',
               )}
             >
@@ -82,7 +84,7 @@ export default function Sidebar({ className, onNavigate }: Props) {
             </div>
             <div
               className={cn(
-                'z-[1] flex flex-1 items-center justify-center gap-[5px] rounded-md px-1 py-1.5 text-xs font-semibold transition-colors duration-200 select-none',
+                'z-[1] flex flex-1 items-center justify-center gap-[5px] rounded-md px-1 py-1.5 text-xs font-semibold transition-colors select-none',
                 theme === 'light' ? 'text-ink' : 'text-ink-3',
               )}
             >
@@ -94,12 +96,12 @@ export default function Sidebar({ className, onNavigate }: Props) {
               style={{ transform: theme === 'light' ? 'translateX(100%)' : 'none' }}
             />
           </div>
-        </div>
+        </button>
         <div className="flex cursor-pointer items-center gap-2.5 rounded-el p-2 hover:bg-surface-2">
           <Avatar initials="AK" />
           <div>
-            <div className="text-[13px] font-semibold text-ink">Anna Kowalski</div>
-            <div className="text-[11px] text-ink-3">Super Admin</div>
+            <p className="text-[13px] font-semibold text-ink">Anna Kowalski</p>
+            <p className="text-[11px] text-ink-3">Super Admin</p>
           </div>
         </div>
       </div>

@@ -49,12 +49,13 @@ const dropToMove = (
   onMove(String(e.active.id), String(overId), from < to);
 };
 
-type DragHandleProps = { size: 'md' | 'sm' | 'xs' } & HTMLAttributes<HTMLDivElement>;
+type DragHandleProps = { size: 'md' | 'sm' | 'xs' } & HTMLAttributes<HTMLButtonElement>;
 
 function DragHandle({ size, ...rest }: DragHandleProps) {
   return (
-    <div
+    <button
       {...rest}
+      type="button"
       className={cn(
         'flex shrink-0 cursor-grab touch-none items-center justify-center rounded p-0.5 px-1 text-ink-3 hover:bg-surface-3 hover:text-ink-2 active:cursor-grabbing',
         size === 'sm' && 'opacity-70',
@@ -62,7 +63,7 @@ function DragHandle({ size, ...rest }: DragHandleProps) {
       )}
     >
       {size === 'xs' ? <IconDrag4 size={9} /> : <IconDrag6 size={size === 'sm' ? 10 : 12} />}
-    </div>
+    </button>
   );
 }
 
@@ -76,7 +77,7 @@ function RowItem({ modId, groupId, row }: RowItemProps) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
-        'group flex items-center gap-2 border-b border-line px-2 py-1.5 transition-colors duration-100 last:border-b-0 hover:bg-surface-2 @mobile:px-3',
+        'group flex items-center gap-2 border-b border-line px-2 py-1.5 transition-colors last:border-b-0 hover:bg-surface-2 @mobile:px-3',
         isDragging && 'relative z-10 bg-surface-2',
       )}
     >
@@ -100,7 +101,7 @@ function RowItem({ modId, groupId, row }: RowItemProps) {
           dispatch(removeRow({ modId, groupId, rowId: row.id }));
           showToast('🗑️ Row removed');
         }}
-        className="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-ink-3 opacity-0 transition-opacity duration-150 group-hover:opacity-100 hover:bg-red-bg hover:text-red"
+        className="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-ink-3 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-bg hover:text-red"
       >
         <IconX size={10} sw={2.5} />
       </button>
@@ -188,7 +189,7 @@ function ModItem({ mod }: ModItemProps) {
       <div className="flex items-center gap-2.5 border-b border-line bg-surface-2 px-3 py-2 @mobile:px-4 @mobile:py-3">
         <DragHandle size="md" {...attributes} {...listeners} />
         <div className="flex-1">
-          <div className="mb-[3px] text-[10px] font-semibold tracking-[.06em] text-ink-3 uppercase">Modification</div>
+          <p className="mb-[3px] text-[10px] font-semibold tracking-[.06em] text-ink-3 uppercase">Modification</p>
           <Input
             type="text"
             placeholder="e.g. 3.0 AT 480 hp"

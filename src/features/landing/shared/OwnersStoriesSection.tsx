@@ -9,9 +9,9 @@ export function OwnersStoriesSection() {
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <SectionTitle>Owners' stories</SectionTitle>
-          <span className="cursor-pointer text-base font-medium tracking-[0.01em] text-ink uppercase transition-colors duration-150 hover:text-ink-2">
+          <p className="cursor-pointer text-base font-medium tracking-[0.01em] text-ink uppercase transition-colors hover:text-ink-2">
             All BMW posts
-          </span>
+          </p>
         </div>
         <div className="mt-10 columns-1 gap-6 w960:columns-2 w1440:columns-3">
           {ownerStories.map((s, i) => (

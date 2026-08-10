@@ -63,8 +63,8 @@ export function ModelsOnLanding() {
                     {m.emoji}
                   </div>
                   <div>
-                    <div className="text-[13.5px] font-semibold text-ink">{m.name}</div>
-                    <div className="text-[11px] text-ink-3">{m.meta}</div>
+                    <p className="text-[13.5px] font-semibold text-ink">{m.name}</p>
+                    <p className="text-[11px] text-ink-3">{m.meta}</p>
                   </div>
                 </div>
               </td>
@@ -96,13 +96,13 @@ export function ModelsOnLanding() {
                 {m.emoji}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[13.5px] font-semibold text-ink">{m.name}</div>
-                <div className="text-[11px] text-ink-3">{m.meta}</div>
+                <p className="truncate text-[13.5px] font-semibold text-ink">{m.name}</p>
+                <p className="text-[11px] text-ink-3">{m.meta}</p>
               </div>
               <Toggle on={m.visible} title="Visible on landing" onClick={() => toggleVisible(m.name)} />
             </div>
             <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
-              <span className="text-[12px] text-ink-3">{m.generations} gens</span>
+              <p className="text-[12px] text-ink-3">{m.generations} gens</p>
               <Badge color={m.badge}>{m.logbooks}</Badge>
               <div className="ml-auto flex gap-1.5">
                 <Button variant="ghost" sm onClick={() => navigate(ROUTING.adminCatalog)}>

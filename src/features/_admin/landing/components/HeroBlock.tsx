@@ -99,7 +99,7 @@ export function HeroBlock() {
             key={t.id}
             onClick={() => dispatch(setHeroType(t.id))}
             className={cn(
-              'inline-flex cursor-pointer items-center gap-1.5 rounded-el border px-3 py-[7px] font-sans text-[12.5px] font-semibold transition-all duration-150 @mobile:px-4',
+              'inline-flex cursor-pointer items-center gap-1.5 rounded-el border px-3 py-[7px] font-sans text-[12.5px] font-semibold transition-all @mobile:px-4',
               heroType === t.id
                 ? 'border-line bg-surface text-accent-light shadow-[0_1px_4px_rgba(0,0,0,.15)] [&_svg]:opacity-100'
                 : 'border-transparent bg-transparent text-ink-3 hover:border-line hover:bg-surface hover:text-ink [&_svg]:opacity-70 [&_svg]:hover:opacity-100',
@@ -163,8 +163,8 @@ export function HeroBlock() {
                   {s.emoji}
                 </div>
                 <div>
-                  <div className="text-[13px] font-semibold text-ink">{s.name}</div>
-                  <div className="mt-0.5 text-[11px] text-ink-3">{s.meta}</div>
+                  <p className="text-[13px] font-semibold text-ink">{s.name}</p>
+                  <p className="mt-0.5 text-[11px] text-ink-3">{s.meta}</p>
                 </div>
                 <div className="ml-auto flex gap-1.5">
                   <Button variant="ghost" sm onClick={() => showToast(`✏️ Slide ${s.num} editing`)}>
@@ -187,8 +187,8 @@ export function HeroBlock() {
                   </span>
                 </div>
                 <div className="p-3">
-                  <div className="truncate text-[13px] font-semibold text-ink">{s.name}</div>
-                  <div className="mt-0.5 text-[11px] text-ink-3">{s.meta}</div>
+                  <p className="truncate text-[13px] font-semibold text-ink">{s.name}</p>
+                  <p className="mt-0.5 text-[11px] text-ink-3">{s.meta}</p>
                   <div className="mt-2.5 flex gap-1.5">
                     <Button variant="ghost" sm onClick={() => showToast(`✏️ Slide ${s.num} editing`)}>
                       Edit

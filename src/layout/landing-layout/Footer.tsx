@@ -13,9 +13,9 @@ export default function Footer() {
               <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-white/40 text-[13px] font-bold text-white">
                 BMW
               </div>
-              <div className="font-barlow text-base font-medium tracking-[0.01em] text-white uppercase">
+              <p className="font-barlow text-base font-medium tracking-[0.01em] text-white uppercase">
                 BMW &amp; Motority
-              </div>
+              </p>
             </div>
             <p className="text-base leading-[1.25] tracking-[0.01em] text-white/70 uppercase">
               The Ultimate Driving Machine. On Motority since 2025
@@ -24,12 +24,12 @@ export default function Footer() {
           {[0, 1].map((col) => (
             <div key={col} className="flex min-w-[200px] flex-col gap-4 w1280:w-[342px]">
               {linkColumn.map((l) => (
-                <span
+                <p
                   key={l}
-                  className="cursor-pointer text-sm tracking-[0.01em] text-white/70 uppercase transition-colors duration-150 hover:text-white"
+                  className="cursor-pointer text-sm tracking-[0.01em] text-white/70 uppercase transition-colors hover:text-white"
                 >
                   {l}
-                </span>
+                </p>
               ))}
             </div>
           ))}

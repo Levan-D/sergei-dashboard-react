@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { landingModelPath } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
@@ -18,9 +18,9 @@ type Props = {
 function FilterGroup({ label, options, active, onPick }: Props) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-base leading-[1.1] font-medium tracking-[0.01em] text-ink/80 w640:text-lg w960:text-xl">
+      <p className="text-base leading-[1.1] font-medium tracking-[0.01em] text-ink/80 w640:text-lg w960:text-xl">
         {label}
-      </div>
+      </p>
       <div className="flex flex-wrap gap-2">
         {options.map((o) => (
           <PillChip key={o} label={o} active={active === o} onClick={() => onPick(o)} />
@@ -33,7 +33,6 @@ function FilterGroup({ label, options, active, onPick }: Props) {
 const pages = ['1', '2', '3', '…', '7'];
 
 export function ModelsSection() {
-  const navigate = useNavigate();
   const [bodyType, setBodyType] = useState('All');
   const [series, setSeries] = useState('All');
   const [decade, setDecade] = useState('All');
@@ -53,10 +52,10 @@ export function ModelsSection() {
 
         <div className="flex flex-wrap gap-4 w1440:gap-6">
           {landingModels.map((m, i) => (
-            <div
+            <Link
               key={i}
-              onClick={() => navigate(landingModelPath(m.slug))}
-              className="w-[calc(50%-8px)] cursor-pointer overflow-hidden rounded-lg border border-line transition-colors duration-150 hover:border-line-2 w640:w-[calc(33.333%-11px)] w1440:w-[calc(33.333%-16px)]"
+              to={landingModelPath(m.slug)}
+              className="block w-[calc(50%-8px)] cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] w640:w-[calc(33.333%-11px)] w1440:w-[calc(33.333%-16px)]"
             >
               <div
                 className="flex h-[110px] items-center justify-center text-4xl w640:h-[140px] w640:text-5xl w960:h-[180px] w1280:h-[220px] w1280:text-6xl w1440:h-[280px]"
@@ -65,20 +64,20 @@ export function ModelsSection() {
                 {m.image.emoji}
               </div>
               <div className="flex flex-col gap-1 p-3 w640:gap-2 w640:p-4 w1440:p-6">
-                <div className="text-[10px] text-accent w640:text-xs w1440:text-sm">
+                <p className="text-[10px] text-accent w640:text-xs w1440:text-sm">
                   {m.tags.map((t, ti) => (
                     <span key={t}>
                       {ti > 0 && <span> / </span>}
                       <span className="uppercase">{t}</span>
                     </span>
                   ))}
-                </div>
-                <div className="text-base leading-[1.2] font-semibold w640:text-lg w1280:text-xl w1440:text-2xl">
+                </p>
+                <p className="text-base leading-[1.2] font-semibold w640:text-lg w1280:text-xl w1440:text-2xl">
                   {m.name}
-                </div>
-                <div className="text-sm font-medium w640:text-base w1440:text-xl">{m.years}</div>
+                </p>
+                <p className="text-sm font-medium w640:text-base w1440:text-xl">{m.years}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

@@ -14,8 +14,8 @@ function PairList({ pairs }: Props) {
     <div className="flex max-w-[923px] flex-col">
       {pairs.map((p) => (
         <div key={p.name} className="flex items-center justify-between gap-4 border-b border-line py-3 w960:py-4">
-          <span className="text-base text-ink-2 w960:text-xl">{p.name}</span>
-          <span className="text-right text-base font-medium w960:text-xl">{p.value}</span>
+          <p className="text-base text-ink-2 w960:text-xl">{p.name}</p>
+          <p className="text-right text-base font-medium w960:text-xl">{p.value}</p>
         </div>
       ))}
     </div>
@@ -31,24 +31,25 @@ export function BrandSection() {
         <div className="flex flex-col items-start gap-6 w640:flex-row w640:gap-10 w1280:gap-16 w1440:gap-[146px]">
           <div className="w-full shrink-0 overflow-hidden rounded-lg border border-line w640:w-[260px] w960:w-[320px] w1280:w-[420px] w1440:w-[517px]">
             {tabs.map((t) => (
-              <div
+              <button
                 key={t}
+                type="button"
                 onClick={() => setTab(t)}
                 className={cn(
-                  'flex h-14 cursor-pointer items-center justify-between border-b border-line px-4 text-lg font-semibold tracking-[0.01em] uppercase transition-colors duration-150 last:border-b-0 w960:h-16 w960:text-xl w1440:text-2xl',
+                  'flex h-14 w-full cursor-pointer items-center justify-between border-b border-line px-4 text-left text-lg font-semibold tracking-[0.01em] uppercase transition-colors last:border-b-0 w960:h-16 w960:text-xl w1440:text-2xl',
                   tab === t ? 'bg-surface text-ink' : 'text-ink/60 hover:text-ink',
                 )}
               >
                 {t}
                 {tab === t && <span className="text-2xl">→</span>}
-              </div>
+              </button>
             ))}
           </div>
           <div className="min-w-0 flex-1">
             {tab === 'About' && (
               <div className="flex max-w-[923px] flex-col gap-6">
                 {brandAbout.map((p, i) => (
-                  <p key={i} className="text-base leading-[1.2] w640:text-lg w960:text-xl w960:leading-[1.2]">
+                  <p key={i} className="text-base leading-[1.2] w640:text-lg w960:text-xl">
                     {p}
                   </p>
                 ))}

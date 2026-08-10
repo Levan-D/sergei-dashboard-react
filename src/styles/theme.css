@@ -1,4 +1,5 @@
 @theme inline {
+  --default-transition-duration: 300ms;
   --breakpoint-xs: 375px;
   --breakpoint-w640: 640px;
   --breakpoint-w960: 960px;

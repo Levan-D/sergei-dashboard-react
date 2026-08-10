@@ -46,37 +46,36 @@ export default function Select({ options, value, defaultValue, onChange, placeho
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          'flex w-full cursor-pointer items-center justify-between gap-2 rounded-el border bg-surface-2 px-2 py-2 text-left font-sans text-[13.5px] text-ink transition-colors duration-150 @mobile:px-3',
+          'flex w-full cursor-pointer items-center justify-between gap-2 rounded-el border bg-surface-2 px-2 py-2 text-left font-sans text-[13.5px] text-ink transition-colors @mobile:px-3',
           open ? 'border-accent' : 'border-line',
         )}
       >
         <span className={cn('truncate', !selected && 'text-ink-3')}>{selected || placeholder}</span>
-        <IconChevronDown
-          size={14}
-          className={cn('shrink-0 text-ink-3 transition-transform duration-150', open && 'rotate-180')}
-        />
+        <IconChevronDown size={14} className={cn('shrink-0 text-ink-3 transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
         <div className="absolute top-full right-0 left-0 z-50 mt-1 max-h-[260px] overflow-y-auto overscroll-contain rounded-el border border-line bg-surface-2 py-1 shadow-card">
           {placeholder && (
-            <div
+            <button
+              type="button"
               onClick={() => pick('')}
-              className="cursor-pointer px-2 py-1.5 text-[13.5px] text-ink-3 transition-colors duration-100 hover:bg-surface-3 @mobile:px-3"
+              className="block w-full cursor-pointer px-2 py-1.5 text-left text-[13.5px] text-ink-3 transition-colors hover:bg-surface-3 @mobile:px-3"
             >
               {placeholder}
-            </div>
+            </button>
           )}
           {options.map((opt) => (
-            <div
+            <button
               key={opt}
+              type="button"
               onClick={() => pick(opt)}
               className={cn(
-                'cursor-pointer px-2 py-1.5 text-[13.5px] transition-colors duration-100 hover:bg-surface-3 @mobile:px-3',
+                'block w-full cursor-pointer px-2 py-1.5 text-left text-[13.5px] transition-colors hover:bg-surface-3 @mobile:px-3',
                 opt === selected ? 'font-semibold text-accent-light' : 'text-ink',
               )}
             >
               {opt}
-            </div>
+            </button>
           ))}
         </div>
       )}

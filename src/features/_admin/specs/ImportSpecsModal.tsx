@@ -31,10 +31,10 @@ export default function ImportSpecsModal({ open, onClose }: Props) {
     >
       <div className="flex flex-col gap-3 p-5 @mobile:gap-4">
         <div className="flex items-center gap-2 rounded-card border border-line bg-surface-2 p-3.5 @mobile:gap-3">
-          <div className="text-2xl">📄</div>
+          <p className="text-2xl">📄</p>
           <div className="flex-1">
-            <div className="text-[13px] font-semibold text-ink">Download template first</div>
-            <div className="mt-0.5 text-xs text-ink-3">Fill in your specs data, then upload the file below</div>
+            <p className="text-[13px] font-semibold text-ink">Download template first</p>
+            <p className="mt-0.5 text-xs text-ink-3">Fill in your specs data, then upload the file below</p>
           </div>
           <Button variant="ghost" sm onClick={() => showToast('📥 specs-template.xlsx downloading...')}>
             Download
@@ -46,9 +46,9 @@ export default function ImportSpecsModal({ open, onClose }: Props) {
           hint=".xlsx · max 10MB"
           onClick={() => showToast('📁 File picker opened — select .xlsx')}
         />
-        <div className="rounded-el bg-surface-2 px-2 py-2.5 text-xs text-ink-3 @mobile:px-3">
+        <p className="rounded-el bg-surface-2 px-2 py-2.5 text-xs text-ink-3 @mobile:px-3">
           ⚠️ Importing will overwrite all existing specs for this generation. This cannot be undone.
-        </div>
+        </p>
       </div>
     </Modal>
   );

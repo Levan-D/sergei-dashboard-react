@@ -40,9 +40,9 @@ export default function InviteUserModal({ open, onClose }: Props) {
         <FormGroup label="Role">
           <Select options={['Admin', 'Super Admin']} />
         </FormGroup>
-        <div className="rounded-el bg-surface-2 p-2 text-xs text-ink-3 @mobile:p-3">
+        <p className="rounded-el bg-surface-2 p-2 text-xs text-ink-3 @mobile:p-3">
           A temporary password will be sent to this email. The user must change it on first login.
-        </div>
+        </p>
       </div>
     </Modal>
   );

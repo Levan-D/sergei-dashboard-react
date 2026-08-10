@@ -20,13 +20,13 @@ export function StatCard({ label, value, sub, valueStyle }: Props) {
       )}
     >
       <div className="min-w-0">
-        <div className="text-xs font-medium text-ink-3 @sm:mb-2">{label}</div>
-        {sub && <div className="mt-1 text-xs text-ink-3 @sm:hidden">{sub}</div>}
+        <p className="text-xs font-medium text-ink-3 @sm:mb-2">{label}</p>
+        {sub && <p className="mt-1 text-xs text-ink-3 @sm:hidden">{sub}</p>}
       </div>
-      <div className="shrink-0 font-mono text-[28px] font-bold text-ink @max-sm:text-right" style={valueStyle}>
+      <p className="shrink-0 font-mono text-[28px] font-bold text-ink @max-sm:text-right" style={valueStyle}>
         {value}
-      </div>
-      {sub && <div className="mt-1 text-xs text-ink-3 @max-sm:hidden">{sub}</div>}
+      </p>
+      {sub && <p className="mt-1 text-xs text-ink-3 @max-sm:hidden">{sub}</p>}
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default function Button({ variant = 'primary', sm, className, children, .
   return (
     <button
       className={cn(
-        'inline-flex cursor-pointer items-center gap-1.5 rounded-el border-none font-sans font-semibold transition-all duration-150',
+        'inline-flex cursor-pointer items-center gap-1.5 rounded-el border-none font-sans font-semibold transition-all',
         sm ? 'px-[11px] py-[5px] text-xs' : 'px-3.5 py-[7px] text-[13px]',
         btnVariants[variant],
         className,

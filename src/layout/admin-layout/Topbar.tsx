@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { ROUTING } from '@/lib/routing';
@@ -35,7 +35,7 @@ export default function Topbar({ onMenuClick }: Props) {
         {isSubPage && (
           <button
             onClick={() => navigate(ROUTING.adminCatalog)}
-            className="mr-1 flex cursor-pointer items-center gap-1.5 border-none bg-transparent pr-2 text-[13px] font-semibold text-ink-3 transition-colors duration-150 hover:text-ink md:pr-3"
+            className="mr-1 flex cursor-pointer items-center gap-1.5 border-none bg-transparent pr-2 text-[13px] font-semibold text-ink-3 transition-colors hover:text-ink md:pr-3"
           >
             <IconArrowLeft size={16} sw={2.5} />
           </button>
@@ -43,15 +43,15 @@ export default function Topbar({ onMenuClick }: Props) {
         <div className="flex items-center gap-1.5 text-[13px]">
           {isSubPage && (
             <>
-              <span className="cursor-pointer font-medium text-ink-3" onClick={() => navigate(ROUTING.adminCatalog)}>
+              <Link to={ROUTING.adminCatalog} className="cursor-pointer font-medium text-ink-3">
                 Cars Catalog
-              </span>
-              <span className="text-line-2">/</span>
+              </Link>
+              <p className="text-line-2">/</p>
             </>
           )}
-          <span className={cn('font-semibold text-ink', isSubPage ? 'text-sm' : 'text-[15px]')}>
+          <p className={cn('font-semibold text-ink', isSubPage ? 'text-sm' : 'text-[15px]')}>
             {isSubPage ? breadcrumb : titleForPath(pathname)}
-          </span>
+          </p>
         </div>
       </div>
       <div className="ml-auto flex items-center gap-2">

@@ -9,7 +9,8 @@ type Props = {
 
 export default function Toggle({ on, onClick, title, className }: Props) {
   return (
-    <div
+    <button
+      type="button"
       title={title}
       onClick={onClick}
       className={cn(
@@ -24,6 +25,6 @@ export default function Toggle({ on, onClick, title, className }: Props) {
           on && 'translate-x-4',
         )}
       />
-    </div>
+    </button>
   );
 }

@@ -19,7 +19,7 @@ export default function FormGroup({ label, full, half, hint, className, style, c
     >
       {label && <label>{label}</label>}
       {children}
-      {hint && <div className="mt-1 text-[11px] text-ink-3">{hint}</div>}
+      {hint && <p className="mt-1 text-[11px] text-ink-3">{hint}</p>}
     </div>
   );
 }

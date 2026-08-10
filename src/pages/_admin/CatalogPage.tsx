@@ -20,7 +20,7 @@ import Table from '@/components/_admin/ui/Table';
 import { MutedCell, ActionsCell } from '@/components/_admin/table-cells';
 
 const cardClass =
-  'w-full cursor-pointer overflow-hidden rounded-el border border-line bg-surface-2 transition-colors duration-150 hover:border-line-2';
+  'w-full cursor-pointer overflow-hidden rounded-el border border-line bg-surface-2 transition-colors hover:border-line-2';
 
 export default function CatalogPage() {
   const dispatch = useAppDispatch();
@@ -42,16 +42,17 @@ export default function CatalogPage() {
     <div className="rounded-card border border-line bg-surface">
       <div className="flex gap-0.5 border-b border-line px-5 pt-3 @mobile:pt-4">
         {(['models', 'gen'] as const).map((t) => (
-          <div
+          <button
+            type="button"
             key={t}
             onClick={() => dispatch(setTab(t))}
             className={cn(
-              'cursor-pointer border-b-2 px-3 py-2 text-[13px] font-semibold transition-all duration-150 @mobile:px-4',
+              'cursor-pointer border-b-2 px-3 py-2 text-left text-[13px] font-semibold transition-all @mobile:px-4',
               tab === t ? 'border-accent text-accent-light' : 'border-transparent text-ink-3 hover:text-ink',
             )}
           >
             {t === 'models' ? 'Models' : 'Generations'}
-          </div>
+          </button>
         ))}
       </div>
 
@@ -80,7 +81,7 @@ export default function CatalogPage() {
               {models.map((m) => (
                 <tr key={m.name} className="cursor-pointer" onClick={() => openModel(m.name)}>
                   <td>
-                    <div className="text-[13.5px] font-semibold text-ink">{m.name}</div>
+                    <p className="text-[13.5px] font-semibold text-ink">{m.name}</p>
                   </td>
                   <MutedCell>{m.years}</MutedCell>
                   <td>{m.generations}</td>
@@ -117,8 +118,8 @@ export default function CatalogPage() {
               <div key={m.name} onClick={() => openModel(m.name)} className={cardClass}>
                 <div className="flex items-center gap-2.5 p-3">
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[13.5px] font-semibold text-ink">{m.name}</div>
-                    <div className="text-[11px] text-ink-3">{m.years}</div>
+                    <p className="truncate text-[13.5px] font-semibold text-ink">{m.name}</p>
+                    <p className="text-[11px] text-ink-3">{m.years}</p>
                   </div>
                   <Toggle
                     on={m.visible}
@@ -131,7 +132,7 @@ export default function CatalogPage() {
                   />
                 </div>
                 <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
-                  <span className="text-[12px] text-ink-3">{m.generations} gens</span>
+                  <p className="text-[12px] text-ink-3">{m.generations} gens</p>
                   <Badge color={m.badge}>{m.logbooks}</Badge>
                   <Button
                     variant="ghost"
@@ -173,9 +174,9 @@ export default function CatalogPage() {
 
           {!genFilter ? (
             <div className="px-5 py-12 text-center text-ink-3">
-              <div className="mb-2 text-[32px] @mobile:mb-3">📋</div>
-              <div className="mb-1 text-sm font-semibold text-ink-2">Select a model</div>
-              <div className="text-[13px]">Choose a model above to view and manage its generations</div>
+              <p className="mb-2 text-[32px] @mobile:mb-3">📋</p>
+              <p className="mb-1 text-sm font-semibold text-ink-2">Select a model</p>
+              <p className="text-[13px]">Choose a model above to view and manage its generations</p>
             </div>
           ) : (
             <div>
@@ -200,7 +201,7 @@ export default function CatalogPage() {
                   {filteredGens.map((g) => (
                     <tr key={g.name} className="cursor-pointer" onClick={() => openGen(g.name, genFilter)}>
                       <td>
-                        <div className="text-[13.5px] font-semibold text-ink">{g.name}</div>
+                        <p className="text-[13.5px] font-semibold text-ink">{g.name}</p>
                       </td>
                       <MutedCell>{g.years}</MutedCell>
                       <td>
@@ -236,8 +237,8 @@ export default function CatalogPage() {
                   <div key={g.name} onClick={() => openGen(g.name, genFilter)} className={cardClass}>
                     <div className="flex items-center gap-2.5 p-3">
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-[13.5px] font-semibold text-ink">{g.name}</div>
-                        <div className="text-[11px] text-ink-3">{g.years}</div>
+                        <p className="truncate text-[13.5px] font-semibold text-ink">{g.name}</p>
+                        <p className="text-[11px] text-ink-3">{g.years}</p>
                       </div>
                       <Toggle
                         on={g.visible}

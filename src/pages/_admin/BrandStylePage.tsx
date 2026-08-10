@@ -39,8 +39,8 @@ export default function BrandStylePage() {
           }
         />
         <div className="border-b border-line p-5">
-          <div className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Brand Logo</div>
-          <div className="mb-3.5 text-xs text-ink-3">Primary logo shown in the site header and on landing pages.</div>
+          <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Brand Logo</p>
+          <p className="mb-3.5 text-xs text-ink-3">Primary logo shown in the site header and on landing pages.</p>
           <MediaPickRow
             stack
             icon="🖼️"
@@ -65,8 +65,8 @@ export default function BrandStylePage() {
           </Recommendation>
         </div>
         <div className="p-5">
-          <div className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Favicon</div>
-          <div className="mb-3.5 text-xs text-ink-3">Shown in browser tabs and bookmarks.</div>
+          <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Favicon</p>
+          <p className="mb-3.5 text-xs text-ink-3">Shown in browser tabs and bookmarks.</p>
           <MediaPickRow
             stack
             icon="📌"
@@ -94,8 +94,9 @@ export default function BrandStylePage() {
         <div className="flex gap-2 p-5 @mobile:gap-3">
           {colors.map((c) => (
             <div key={c.label} className="flex flex-1 flex-col gap-1.5">
-              <div
-                className="h-12 w-full cursor-pointer rounded-el border border-line transition-transform duration-100 hover:scale-[1.04]"
+              <button
+                type="button"
+                className="h-12 w-full cursor-pointer rounded-el border border-line transition-transform hover:scale-[1.04]"
                 style={{ background: c.hex }}
                 onClick={() => showToast(`🎨 Color picker — ${c.label}`)}
               />
@@ -119,41 +120,47 @@ export default function BrandStylePage() {
             </Button>
           }
         />
-        <div
-          className="flex cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 @mobile:gap-3 @mobile:py-3"
+        <button
+          type="button"
+          className="flex w-full cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 text-left @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('✅ BMW Type Next selected')}
         >
-          <div className="w-[100px] text-xl font-bold text-ink">Aa</div>
-          <div>
-            <div className="text-[13px] font-semibold text-ink">BMW Type Next</div>
-            <div className="text-xs text-ink-3">Brand font · Uploaded</div>
-          </div>
+          <span className="block w-[100px] text-xl font-bold text-ink">Aa</span>
+          <span className="block">
+            <span className="block text-[13px] font-semibold text-ink">BMW Type Next</span>
+            <span className="block text-xs text-ink-3">Brand font · Uploaded</span>
+          </span>
           <Badge color="blue" className="ml-auto">
             Selected
           </Badge>
-        </div>
-        <div
-          className="flex cursor-pointer items-center gap-2 border-b border-line px-5 py-2 hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
+        </button>
+        <button
+          type="button"
+          className="flex w-full cursor-pointer items-center gap-2 border-b border-line px-5 py-2 text-left hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('✅ Helvetica Neue selected')}
         >
-          <div className="w-[100px] text-xl font-bold text-ink" style={{ fontFamily: 'Helvetica,Arial,sans-serif' }}>
+          <span
+            className="block w-[100px] text-xl font-bold text-ink"
+            style={{ fontFamily: 'Helvetica,Arial,sans-serif' }}
+          >
             Aa
-          </div>
-          <div>
-            <div className="text-[13px] font-semibold text-ink">Helvetica Neue</div>
-            <div className="text-xs text-ink-3">System font</div>
-          </div>
-        </div>
-        <div
-          className="flex cursor-pointer items-center gap-2 px-5 py-2 hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
+          </span>
+          <span className="block">
+            <span className="block text-[13px] font-semibold text-ink">Helvetica Neue</span>
+            <span className="block text-xs text-ink-3">System font</span>
+          </span>
+        </button>
+        <button
+          type="button"
+          className="flex w-full cursor-pointer items-center gap-2 px-5 py-2 text-left hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
           onClick={() => showToast('📁 Font upload — .woff, .woff2, .ttf')}
         >
-          <div className="w-[100px] text-xl font-bold text-ink-3">+</div>
-          <div>
-            <div className="text-[13px] font-semibold text-ink-3">Upload custom font</div>
-            <div className="text-xs text-ink-3">.woff, .woff2, .ttf</div>
-          </div>
-        </div>
+          <span className="block w-[100px] text-xl font-bold text-ink-3">+</span>
+          <span className="block">
+            <span className="block text-[13px] font-semibold text-ink-3">Upload custom font</span>
+            <span className="block text-xs text-ink-3">.woff, .woff2, .ttf</span>
+          </span>
+        </button>
       </SectionCard>
     </div>
   );

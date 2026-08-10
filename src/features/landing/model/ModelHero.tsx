@@ -9,12 +9,12 @@ export function ModelHero() {
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
       <Container noPadding="y" className="relative pt-24 pb-10">
-        <div className="text-xs tracking-[0.05em] text-white/70 uppercase">Home / M4</div>
+        <p className="text-xs tracking-[0.05em] text-white/70 uppercase">Home / M4</p>
       </Container>
       <Container noPadding="y" className="relative pb-14">
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
-            <div className="text-sm tracking-[0.05em] text-accent-light uppercase">M Division</div>
+            <p className="text-sm tracking-[0.05em] text-accent-light uppercase">M Division</p>
             <h1 className="font-condensed text-[44px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w960:text-[64px] w1440:text-[78px]">
               BMW M4
             </h1>
@@ -24,10 +24,10 @@ export function ModelHero() {
             {landingGens.slice(0, 3).map((g) => (
               <div
                 key={g.slug}
-                className="cursor-pointer rounded-lg border border-white/30 px-4 py-2 transition-colors duration-150 hover:border-white/60"
+                className="cursor-pointer rounded-lg border border-white/30 px-4 py-2 transition-colors hover:border-white/60"
               >
-                <div className="text-xs text-white/60 uppercase">Generation {g.slug.toUpperCase()}</div>
-                <div className="text-base font-semibold text-white">BMW M4</div>
+                <p className="text-xs text-white/60 uppercase">Generation {g.slug.toUpperCase()}</p>
+                <p className="text-base font-semibold text-white">BMW M4</p>
               </div>
             ))}
           </div>

@@ -23,18 +23,19 @@ export function MediaPickRow({ icon, text, hint, compact, stack }: MediaPickRowP
         stack && '@max-mobile:flex-col @max-mobile:items-stretch',
       )}
     >
-      <div
+      <button
+        type="button"
         onClick={() => showToast('📁 File picker opened')}
         className={cn(
-          'min-w-[180px] flex-1 cursor-pointer rounded-card border-2 border-dashed border-line-2 text-center transition-all duration-150 hover:border-accent hover:bg-accent-bg',
+          'min-w-[180px] flex-1 cursor-pointer rounded-card border-2 border-dashed border-line-2 text-center transition-all hover:border-accent hover:bg-accent-bg',
           stack && '@max-mobile:min-w-0 @max-mobile:flex-none',
           compact ? 'p-3 @mobile:p-4' : 'px-5 py-3 @mobile:py-4',
         )}
       >
-        <div className={cn('mb-2', compact ? 'text-lg' : 'text-[28px]')}>{icon}</div>
-        <div className="text-[13px] text-ink-2">{text}</div>
-        {hint && <div className="mt-1 text-[11px] text-ink-3">{hint}</div>}
-      </div>
+        <span className={cn('mb-2 block', compact ? 'text-lg' : 'text-[28px]')}>{icon}</span>
+        <span className="block text-[13px] text-ink-2">{text}</span>
+        {hint && <span className="mt-1 block text-[11px] text-ink-3">{hint}</span>}
+      </button>
       <div
         className={cn(
           'shrink-0 rounded-[20px] border border-line bg-surface-3 px-[9px] py-[3px] text-[11px] font-semibold text-ink-3',
@@ -85,8 +86,8 @@ export function CurrentMedia({ emoji, bg, name, meta, onRemove }: CurrentMediaPr
         {emoji}
       </div>
       <div>
-        <div className="text-[13px] font-semibold text-ink">{name}</div>
-        <div className="mt-0.5 text-[11px] text-ink-3">{meta}</div>
+        <p className="text-[13px] font-semibold text-ink">{name}</p>
+        <p className="mt-0.5 text-[11px] text-ink-3">{meta}</p>
       </div>
       <button
         onClick={onRemove}

@@ -9,12 +9,12 @@ export function GenHero() {
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
       <Container noPadding="y" className="relative pt-24 pb-10">
-        <div className="text-xs tracking-[0.05em] text-white/70 uppercase">Home / M4</div>
+        <p className="text-xs tracking-[0.05em] text-white/70 uppercase">Home / M4</p>
       </Container>
       <Container noPadding="y" className="relative pb-14">
         <div className="flex max-w-[624px] flex-col gap-8">
           <div className="flex flex-col gap-3">
-            <div className="text-sm tracking-[0.05em] text-accent-light uppercase">M Division / G82 (2020-2024)</div>
+            <p className="text-sm tracking-[0.05em] text-accent-light uppercase">M Division / G82 (2020-2024)</p>
             <h1 className="font-condensed text-[40px] leading-[1.1] font-semibold tracking-[0.01em] text-white uppercase w960:text-[56px] w1440:text-[64px]">
               BMW M4 G82 Coupe
             </h1>
@@ -26,8 +26,8 @@ export function GenHero() {
           <div className="flex flex-wrap gap-x-10 gap-y-4">
             {genHeroStats.map((s) => (
               <div key={s.label} className="flex flex-col gap-1">
-                <div className="text-xs tracking-[0.05em] text-white/60 uppercase">{s.label}</div>
-                <div className="text-xl font-semibold text-white">{s.value}</div>
+                <p className="text-xs tracking-[0.05em] text-white/60 uppercase">{s.label}</p>
+                <p className="text-xl font-semibold text-white">{s.value}</p>
               </div>
             ))}
           </div>

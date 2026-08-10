@@ -64,7 +64,7 @@ export function SecondScreen() {
               key={i}
               className="flex w-full flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
             >
-              <div className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</div>
+              <p className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</p>
               <Input type="text" placeholder="Fact name" defaultValue={f.name} />
               <Input type="text" placeholder="Fact value" defaultValue={f.value} />
             </div>
@@ -73,10 +73,10 @@ export function SecondScreen() {
       </div>
       <div className="p-5">
         <div className="mb-2 flex items-center gap-2 @mobile:mb-3">
-          <div className="text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Motority Stats</div>
-          <span className="rounded-[20px] border border-line bg-surface-3 px-2 py-0.5 text-[11px] text-ink-3">
+          <p className="text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Motority Stats</p>
+          <p className="rounded-[20px] border border-line bg-surface-3 px-2 py-0.5 text-[11px] text-ink-3">
             Read-only · auto-updated
-          </span>
+          </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
           {motorityStats.map((s) => (
@@ -84,19 +84,17 @@ export function SecondScreen() {
               key={s.label}
               className="w-full rounded-el border border-line bg-surface-2 p-3.5 @sm:w-[calc(50%-5px)] @mobile:w-[calc((100%-20px)/3)]"
             >
-              <div className="mb-1 text-[11px] text-ink-3">{s.label}</div>
-              <div
+              <p className="mb-1 text-[11px] text-ink-3">{s.label}</p>
+              <p
                 className={cn('font-mono font-bold', s.small ? 'text-[15px]' : 'text-[22px]')}
                 style={{ color: s.color ?? 'var(--text)' }}
               >
                 {s.value}
-              </div>
+              </p>
             </div>
           ))}
         </div>
-        <div className="mt-2.5 text-[11px] text-ink-3">
-          Stats are pulled live from Motority and cannot be edited here.
-        </div>
+        <p className="mt-2.5 text-[11px] text-ink-3">Stats are pulled live from Motority and cannot be edited here.</p>
       </div>
     </SectionCard>
   );

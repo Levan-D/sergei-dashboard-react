@@ -29,8 +29,8 @@ export default function Modal({ open, onClose, title, sub, footer, width, childr
         >
           <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-5 md:px-6">
             <div>
-              <div className="text-base font-bold text-ink">{title}</div>
-              {sub && <div className="mt-1.5 text-xs text-ink-3">{sub}</div>}
+              <p className="text-base font-bold text-ink">{title}</p>
+              {sub && <p className="mt-1.5 text-xs text-ink-3">{sub}</p>}
             </div>
             <button
               onClick={onClose}

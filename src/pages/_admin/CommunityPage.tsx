@@ -110,10 +110,10 @@ export default function CommunityPage() {
               <div className="flex items-center gap-2.5 p-3">
                 <Avatar sm initials={l.initials} bg={l.bg} />
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-[13.5px] font-semibold text-ink">{l.name}</div>
-                  <div className="truncate text-[11px] text-ink-3">{l.car}</div>
+                  <p className="truncate text-[13.5px] font-semibold text-ink">{l.name}</p>
+                  <p className="truncate text-[11px] text-ink-3">{l.car}</p>
                 </div>
-                <span className="text-[11px] text-ink-3">{l.date}</span>
+                <p className="text-[11px] text-ink-3">{l.date}</p>
               </div>
               <div className="flex items-center gap-4 border-t border-line px-3 py-2.5 text-[12px] text-ink-3">
                 <span>

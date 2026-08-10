@@ -46,21 +46,22 @@ export function GallerySection({ sub, initial }: GallerySectionProps) {
                 setPhotos((ph) => ph.filter((x) => x.id !== p.id));
                 showToast('🗑️ Photo removed');
               }}
-              className="absolute top-[5px] right-[5px] flex h-[22px] w-[22px] cursor-pointer items-center justify-center rounded-full border-none bg-black/70 text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+              className="absolute top-[5px] right-[5px] flex h-[22px] w-[22px] cursor-pointer items-center justify-center rounded-full border-none bg-black/70 text-white opacity-0 transition-opacity group-hover:opacity-100"
             >
               <IconX size={10} sw={2.5} />
             </button>
           </div>
         ))}
-        <div
+        <button
+          type="button"
           onClick={() => showToast('📁 File picker opened')}
-          className="flex aspect-[4/3] w-[calc(33.333%-7px)] cursor-pointer flex-col items-center justify-center gap-1 rounded-el border-2 border-dashed border-line-2 text-[11px] font-semibold text-ink-3 transition-all duration-150 hover:border-accent hover:bg-accent-bg hover:text-accent-light @mobile:w-[calc(20%-8px)]"
+          className="flex aspect-[4/3] w-[calc(33.333%-7px)] cursor-pointer flex-col items-center justify-center gap-1 rounded-el border-2 border-dashed border-line-2 text-[11px] font-semibold text-ink-3 transition-all hover:border-accent hover:bg-accent-bg hover:text-accent-light @mobile:w-[calc(20%-8px)]"
         >
           <IconPlus size={20} sw={1.5} />
           <span>Upload</span>
-        </div>
+        </button>
       </div>
-      <div className="px-5 pb-3 text-[11px] text-ink-3 @mobile:pb-4">Drag to reorder · JPG, WebP · max 5MB each</div>
+      <p className="px-5 pb-3 text-[11px] text-ink-3 @mobile:pb-4">Drag to reorder · JPG, WebP · max 5MB each</p>
       <PickMediaModal open={pickOpen} onClose={() => setPickOpen(false)} />
     </SectionCard>
   );
@@ -195,8 +196,8 @@ export function InfoCard({ rows }: InfoCardProps) {
       <div className="flex flex-col gap-2 px-3 py-3.5 @mobile:px-4">
         {rows.map((r) => (
           <div key={r.label} className="flex justify-between text-xs">
-            <span className="text-ink-3">{r.label}</span>
-            <span className={r.muted ? 'text-ink-3' : 'font-semibold'}>{r.value}</span>
+            <p className="text-ink-3">{r.label}</p>
+            <p className={r.muted ? 'text-ink-3' : 'font-semibold'}>{r.value}</p>
           </div>
         ))}
         <div className="my-1 h-px bg-line" />

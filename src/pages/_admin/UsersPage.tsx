@@ -107,15 +107,15 @@ export default function UsersPage() {
             <div className="flex items-center gap-2.5 p-3">
               <Avatar initials={u.initials} bg={u.bg} />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[13.5px] font-semibold text-ink">{u.name}</div>
-                <div className="truncate text-[11px] text-ink-3">{u.email}</div>
+                <p className="truncate text-[13.5px] font-semibold text-ink">{u.name}</p>
+                <p className="truncate text-[11px] text-ink-3">{u.email}</p>
               </div>
               <Badge color={u.roleBadge}>{u.role}</Badge>
             </div>
             <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
-              <span className="text-[11px] text-ink-3">{u.login}</span>
+              <p className="text-[11px] text-ink-3">{u.login}</p>
               {u.you ? (
-                <span className="ml-auto text-xs text-ink-3">You</span>
+                <p className="ml-auto text-xs text-ink-3">You</p>
               ) : (
                 <div className="ml-auto flex gap-1.5">
                   <Button variant="ghost" sm onClick={() => setModal('role')}>
