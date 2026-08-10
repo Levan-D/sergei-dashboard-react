@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
+import MobileMenu from '@/layout/landing-layout/MobileMenu';
+import { IconBurger } from '@/components/landing/icons';
 
 const navLinks = ['Explore models', 'Configurator', 'Find a dealer'];
 
 export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <header className="absolute top-0 left-0 z-50 w-full bg-black/30">
       <Container noPadding="y" className="flex h-16 items-center justify-between w640:h-20">
@@ -17,7 +21,7 @@ export default function Header() {
             BMW &amp; Motority
           </p>
         </Link>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 w640:gap-4 w1280:gap-6">
           <nav className="hidden items-center gap-6 w1280:flex">
             {navLinks.map((l) => (
               <p
@@ -28,9 +32,18 @@ export default function Header() {
               </p>
             ))}
           </nav>
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setMenuOpen(true)}
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface text-ink transition-colors hover:bg-surface-2 w640:h-12 w640:w-12 w1280:hidden"
+          >
+            <IconBurger size={20} />
+          </button>
           <Button className="h-10 px-4 text-sm w640:h-12 w640:px-6 w640:text-base">OFFICIAL WEBSITE</Button>
         </div>
       </Container>
+      <MobileMenu open={menuOpen} links={navLinks} onClose={() => setMenuOpen(false)} />
     </header>
   );
 }
