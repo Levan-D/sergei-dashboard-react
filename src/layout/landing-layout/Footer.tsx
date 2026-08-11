@@ -30,7 +30,7 @@ export default function Footer() {
             Join the community
           </Button>
         </div>
-        <div className="border-t border-white/20 py-[22px]">
+        <div className="border-t border-white/20 py-[23.5px]">
           <p className="t-caption text-white/80">2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED</p>
         </div>
       </Container>

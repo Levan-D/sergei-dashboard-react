@@ -35,7 +35,7 @@ export function BrandSection() {
     <section className="bg-surface-2">
       <Container className="flex flex-col gap-6 w960:gap-10">
         <SectionTitle>Brand</SectionTitle>
-        <div className="flex flex-col items-start gap-6 w960:flex-row w960:gap-4 w1280:gap-[calc(8.333%+26px)]">
+        <div className="flex flex-col items-start gap-6 w960:flex-row w960:gap-16 w1280:gap-[calc(8.333%+26px)]">
           <div className="flex w-full shrink-0 overflow-hidden rounded-lg border border-line w960:block w960:w-[320px] w1280:w-[calc(33.333%-16px)]">
             {tabs.map((t) => (
               <button
@@ -43,13 +43,13 @@ export function BrandSection() {
                 type="button"
                 onClick={() => setTab(t)}
                 className={cn(
-                  't-tab flex h-13 flex-1 cursor-pointer items-center justify-center border-r border-line px-2 text-center transition-colors last:border-r-0 w960:h-16 w960:w-full w960:flex-none w960:justify-between w960:border-r-0 w960:border-b w960:px-4 w960:text-left w960:last:border-b-0',
+                  't-tab flex h-[42px] flex-1 cursor-pointer items-center justify-center border-r border-line px-2 text-center transition-colors last:border-r-0 w640:h-13 w960:h-16 w960:w-full w960:flex-none w960:justify-between w960:border-r-0 w960:border-b w960:px-4 w960:text-left w960:last:border-b-0',
                   tab === t ? 'bg-surface text-ink' : 'text-ink/60 hover:text-ink',
                 )}
               >
                 <span className="w960:hidden">{shortLabels[t]}</span>
                 <span className="hidden w960:inline">{t}</span>
-                {tab === t && <IconArrowRight size={24} className="hidden shrink-0 w960:block" />}
+                {tab === t && <IconArrowRight size={32} className="hidden shrink-0 w960:block" />}
               </button>
             ))}
           </div>
