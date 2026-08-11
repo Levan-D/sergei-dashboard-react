@@ -187,6 +187,7 @@ export type OwnerStory = {
   comments: number;
   likes: number;
   image?: MockImage;
+  images?: MockImage[];
   imageLast?: boolean;
 };
 
@@ -203,7 +204,11 @@ export const ownerStories: OwnerStory[] = [
     reposts: 10,
     comments: 10,
     likes: 10,
-    image: img('linear-gradient(135deg,#6b7280,#374151)', '🏎️'),
+    images: [
+      img('linear-gradient(135deg,#6b7280,#374151)', '🏎️'),
+      img('linear-gradient(135deg,#7f1d1d,#450a0a)', '🚗'),
+      img('linear-gradient(135deg,#334155,#0f172a)', '🚙'),
+    ],
   },
   {
     car: 'BMW M4 COMPETITION',
@@ -225,7 +230,10 @@ export const ownerStories: OwnerStory[] = [
     reposts: 10,
     comments: 10,
     likes: 10,
-    image: img('linear-gradient(135deg,#374151,#0b0f14)', '🚗'),
+    images: [
+      img('linear-gradient(135deg,#374151,#0b0f14)', '🚗'),
+      img('linear-gradient(135deg,#3f6212,#1a2e05)', '🚕'),
+    ],
   },
   {
     car: 'BMW M4 COMPETITION',

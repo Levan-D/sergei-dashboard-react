@@ -1,36 +1,44 @@
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
+import { HeroSlideshow } from '@/features/landing/shared/HeroSlideshow';
+import { HeroFacts } from '@/features/landing/shared/HeroFacts';
+import { IconChevronRight } from '@/components/landing/icons';
 import { heroImages, genHeroStats } from '@/features/landing/data';
+
+const slides = [
+  heroImages.gen.bg,
+  'linear-gradient(115deg, #303845 0%, #506070 55%, #232a33 100%)',
+  'linear-gradient(115deg, #40342c 0%, #70604e 55%, #2c241e 100%)',
+  'linear-gradient(115deg, #2a3230 0%, #506a60 55%, #1e2624 100%)',
+];
 
 export function GenHero() {
   return (
-    <section className="relative flex min-h-[560px] flex-col justify-end w960:min-h-[680px]">
-      <div className="absolute inset-0" style={{ background: heroImages.gen.bg }} />
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
-      <Container noPadding="y" className="relative pt-24 pb-10">
-        <p className="t-stat-label tracking-[0.05em] text-white/70 uppercase">Home / M4</p>
+    <section className="relative flex min-h-[720px] flex-col justify-between w1440:min-h-[800px] w1600:min-h-[900px] w1920:min-h-[940px]">
+      <HeroSlideshow slides={slides} />
+      <div className="pointer-events-none absolute inset-0 bg-black/20" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/50 to-transparent to-45%" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-black/50 to-transparent to-40%" />
+      <Container noPadding="y" className="relative pt-[84px] w1280:pt-[100px]">
+        <div className="t-wordmark flex items-center gap-1">
+          <span className="text-white/60">Home</span>
+          <IconChevronRight size={12} className="text-white" />
+          <span className="text-white">M4</span>
+        </div>
       </Container>
-      <Container noPadding="y" className="relative pb-14">
-        <div className="flex max-w-[624px] flex-col gap-8">
-          <div className="flex flex-col gap-3">
-            <p className="t-eyebrow tracking-[0.05em] text-accent-light uppercase">M Division / G82 (2020-2024)</p>
+      <Container noPadding="y" className="relative pb-14 w1280:pb-20">
+        <div className="flex max-w-[585px] flex-col gap-8 w1280:gap-12">
+          <div className="flex flex-col gap-3 w1280:gap-6">
+            <p className="t-card-years text-accent-sky uppercase">M Division / Competition / 2021 - Present</p>
             <h1 className="t-h1 text-white">BMW M4 G82 Coupe</h1>
             <p className="t-lead text-white">
               The fourth-generation M4 arrives wider, faster, and more uncompromising than any before it. A handbuilt
               S58 engine, xDrive availability, and a 6-speed manual — all in one generation.
             </p>
           </div>
-          <div className="flex flex-wrap gap-x-10 gap-y-4">
-            {genHeroStats.map((s) => (
-              <div key={s.label} className="flex flex-col gap-1">
-                <p className="t-stat-label tracking-[0.05em] text-white/60 uppercase">{s.label}</p>
-                <p className="t-card-name text-white">{s.value}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-4">
-            <Button>Join the community</Button>
+          <HeroFacts items={genHeroStats.map((s) => ({ label: s.label, value: s.value }))} />
+          <div className="flex flex-wrap gap-4 w1280:gap-6">
+            <Button variant="secondary">Join the community</Button>
             <Button variant="ghost">Configure yours</Button>
           </div>
         </div>

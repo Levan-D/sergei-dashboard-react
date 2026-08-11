@@ -544,6 +544,22 @@ export const IconClose = ({ size = 16, className }: IconProps) => (
   </svg>
 );
 
+export const IconSort = ({ size = 20, className }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path
+      d="M7 13.833V14.5H3V13.833H7ZM12 9.66699V10.333H3V9.66699H12ZM17 5.5V6.16699H3V5.5H17Z"
+      stroke="currentColor"
+    />
+  </svg>
+);
+
 export const IconChevronRight = ({ size = 24, className }: IconProps) => (
   <svg
     width={size}
