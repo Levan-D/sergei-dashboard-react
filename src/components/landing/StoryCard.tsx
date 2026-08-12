@@ -1,24 +1,27 @@
 import { useState, type MouseEvent } from 'react';
 import type { OwnerStory } from '@/features/landing/data';
 import { IconRepost, IconComment, IconHeart, IconChevronRight } from '@/components/landing/icons';
+import PaneSlider from '@/components/landing/PaneSlider';
 import { cn } from '@/lib/cn';
 
 type MediaArrowProps = {
   direction: 'prev' | 'next';
-  disabled: boolean;
+  show: boolean;
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 
-function MediaArrow({ direction, disabled, onClick }: MediaArrowProps) {
+function MediaArrow({ direction, show, onClick }: MediaArrowProps) {
   return (
     <button
       type="button"
       aria-label={direction === 'prev' ? 'Previous image' : 'Next image'}
-      disabled={disabled}
       onClick={onClick}
-      className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-2 border-line-2 bg-surface-2 text-ink transition-colors hover:bg-surface-3 disabled:cursor-default disabled:hover:bg-surface-2"
+      className={cn(
+        'hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full border-2 border-line-2 bg-surface-2 text-ink transition-opacity hover:bg-surface-3 w960:[@media(pointer:fine)]:flex',
+        !show && 'invisible opacity-0',
+      )}
     >
-      <IconChevronRight size={20} className={cn(direction === 'prev' && 'rotate-180', disabled && 'opacity-20')} />
+      <IconChevronRight size={20} className={direction === 'prev' ? 'rotate-180' : undefined} />
     </button>
   );
 }
@@ -29,23 +32,34 @@ function StoryMedia({ story }: StoryMediaProps) {
   const images = story.images ?? (story.image ? [story.image] : []);
   const [index, setIndex] = useState(0);
   if (images.length === 0) return null;
-  const current = images[Math.min(index, images.length - 1)];
+
+  const stepBy = (delta: number) => setIndex((i) => Math.min(Math.max(i + delta, 0), images.length - 1));
 
   const step = (delta: number) => (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setIndex((i) => Math.min(Math.max(i + delta, 0), images.length - 1));
+    stepBy(delta);
   };
 
   return (
-    <div
-      className="group relative flex h-[220px] items-center justify-center text-5xl w1280:h-[300px]"
-      style={{ background: current.bg }}
-    >
-      {current.emoji}
+    <div className="relative h-[220px] w1280:h-[300px]">
+      <PaneSlider
+        slides={images.map((image, i) => (
+          <div
+            key={i}
+            className="flex h-full w-full items-center justify-center text-5xl"
+            style={{ background: image.bg }}
+          >
+            {image.emoji}
+          </div>
+        ))}
+        active={index}
+        onStep={stepBy}
+        className="h-full"
+      />
       {images.length > 1 && (
-        <div className="absolute inset-x-4 top-1/2 flex -translate-y-1/2 items-center justify-between opacity-0 transition-opacity group-hover:opacity-100">
-          <MediaArrow direction="prev" disabled={index === 0} onClick={step(-1)} />
-          <MediaArrow direction="next" disabled={index === images.length - 1} onClick={step(1)} />
+        <div className="absolute inset-x-4 top-1/2 flex -translate-y-1/2 items-center justify-between">
+          <MediaArrow direction="prev" show={index > 0} onClick={step(-1)} />
+          <MediaArrow direction="next" show={index < images.length - 1} onClick={step(1)} />
         </div>
       )}
     </div>
@@ -57,7 +71,7 @@ type StoryCardProps = { story: OwnerStory };
 export default function StoryCard({ story }: StoryCardProps) {
   return (
     <div className="mb-6 cursor-pointer break-inside-avoid overflow-hidden rounded-lg bg-surface transition-transform">
-      {!story.imageLast && <StoryMedia story={story} />}
+      <StoryMedia story={story} />
       <div className="flex flex-col gap-3 p-6 w1280:gap-4">
         <div className="flex flex-col gap-1 border-b border-line pb-3 w1280:gap-2 w1280:pb-4">
           <p className="t-card-name">{story.car}</p>
@@ -87,7 +101,6 @@ export default function StoryCard({ story }: StoryCardProps) {
           </div>
         </div>
       </div>
-      {story.imageLast && <StoryMedia story={story} />}
     </div>
   );
 }

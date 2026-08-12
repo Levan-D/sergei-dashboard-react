@@ -8,7 +8,7 @@ export function ModelOverviewSection() {
     <section className="bg-surface-2">
       <Container>
         <SectionTitle className="mb-8 w1280:mb-10">Model overview</SectionTitle>
-        <div className="flex flex-col items-start gap-10 w1440:flex-row w1440:gap-[146px]">
+        <div className="flex flex-col items-start gap-10 w1280:flex-row w1280:gap-[64px] w1440:gap-[146px]">
           <div className="flex flex-col gap-5 w1280:gap-6">
             {modelOverview.map((p, i) => (
               <p key={i} className="t-body leading-[1.4]">

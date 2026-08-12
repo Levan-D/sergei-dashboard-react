@@ -4,7 +4,7 @@ type Props = { title: string };
 
 export function TechSpecsCard({ title }: Props) {
   return (
-    <aside className="w-full shrink-0 w1440:w-[464px]">
+    <aside className="w-full shrink-0 w1280:w-[335px] w1440:w-[464px]">
       <p className="t-h3">{title}</p>
       <div className="mt-4 flex flex-col gap-2 border-b border-line pb-4 w1280:mt-6">
         <p className="t-card-years font-semibold text-accent">{techSpecs.linkLabel}</p>

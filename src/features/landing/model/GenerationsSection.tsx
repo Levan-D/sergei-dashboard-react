@@ -22,32 +22,32 @@ export function GenerationsSection() {
           </button>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col gap-4 w960:flex-row">
             <SelectField
               label="Sort by"
               options={['Most recent', 'Oldest first', 'Most popular']}
-              className="w-full w640:w-[340px]"
+              className="w-full w960:flex-1 w1280:w-[340px] w1280:grow-0"
             />
             <SelectField
               label="Body type"
               options={['All', 'Coupe', 'Convertible']}
-              className="w-full w640:w-[340px]"
+              className="w-full w960:flex-1 w1280:w-[340px] w1280:grow-0"
             />
           </div>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-4 w1440:gap-6">
             {landingGens.map((g) => (
               <Link
                 key={g.slug}
                 to={landingGenPath(model, g.slug)}
-                className="block w-full cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] w960:w-[calc(50%-12px)]"
+                className="block w-full cursor-pointer overflow-hidden rounded-lg border border-line transition-colors hover:bg-[#ebebeb] min-[450px]:w-[calc(50%-8px)] w1440:w-[calc(50%-12px)]"
               >
                 <div
-                  className="flex h-[240px] items-center justify-center text-6xl w960:h-[320px] w1280:h-[360px]"
+                  className="flex h-[240px] items-center justify-center text-4xl w640:text-5xl w1280:h-[280px] w1280:text-6xl"
                   style={{ background: g.image.bg }}
                 >
                   {g.image.emoji}
                 </div>
-                <div className="flex flex-col gap-2 p-6 w1280:gap-4">
+                <div className="flex flex-col gap-1 p-3 w640:gap-4 w640:p-4 w1440:p-6">
                   <p className="t-spec-label text-accent uppercase">{g.body}</p>
                   <p className="t-card-name">{g.name}</p>
                   <p className="t-card-years">{g.years}</p>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Container from '@/components/landing/Container';
+import PaneSlider from '@/components/landing/PaneSlider';
 import { IconArrowRight } from '@/components/landing/icons';
 import { cn } from '@/lib/cn';
 
@@ -22,18 +23,20 @@ export function HeroSlideshow({ slides }: Props) {
 
   return (
     <>
-      {slides.map((bg, i) => (
-        <div
-          key={i}
-          className="absolute inset-0 transition-opacity duration-[900ms]"
-          style={{ background: bg, opacity: i === active ? 1 : 0 }}
-        />
-      ))}
+      <PaneSlider
+        slides={slides.map((bg, i) => (
+          <div key={i} className="h-full w-full" style={{ background: bg }} />
+        ))}
+        active={active}
+        loop
+        onStep={(direction) => goTo((active + direction + slides.length) % slides.length)}
+        className="absolute inset-0"
+      />
       <button
         type="button"
         aria-label="Next slide"
         onClick={advance}
-        className="absolute top-1/2 right-4 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl bg-accent text-white transition-transform hover:scale-105 w640:right-5 w1280:right-10 w1440:right-20 w1920:right-40"
+        className="absolute top-1/2 right-4 z-20 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl bg-accent text-white transition-transform hover:scale-105 w640:right-5 w1280:right-10 w1440:right-20 w1920:right-40 w960:[@media(pointer:fine)]:flex"
       >
         <IconArrowRight size={20} />
       </button>

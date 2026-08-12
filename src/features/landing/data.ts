@@ -188,7 +188,6 @@ export type OwnerStory = {
   likes: number;
   image?: MockImage;
   images?: MockImage[];
-  imageLast?: boolean;
 };
 
 const storyText =
@@ -256,7 +255,6 @@ export const ownerStories: OwnerStory[] = [
     comments: 10,
     likes: 10,
     image: img('linear-gradient(135deg,#14532d,#052e16)', '🚙'),
-    imageLast: true,
   },
   {
     car: 'BMW M4 COMPETITION',

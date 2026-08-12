@@ -15,7 +15,7 @@ function Arrow({ direction, show, onClick }: ArrowProps) {
       aria-label={direction === 'left' ? 'Scroll left' : 'Scroll right'}
       onClick={onClick}
       className={cn(
-        'absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl bg-accent text-white transition-opacity hover:bg-accent-light [@media(pointer:fine)]:flex',
+        'absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl bg-accent text-white transition-opacity hover:bg-accent-light w960:[@media(pointer:fine)]:flex',
         direction === 'left' ? 'left-2 w1440:left-6' : 'right-2 w1440:right-6',
         !show && 'invisible opacity-0',
       )}

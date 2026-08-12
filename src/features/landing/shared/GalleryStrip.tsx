@@ -12,9 +12,9 @@ export function GalleryStrip() {
             <div
               key={i}
               className={twMerge(
-                'flex h-[240px] w-[75vw] shrink-0 items-center justify-center overflow-hidden text-7xl w960:h-[340px] w960:w-[480px] w1280:h-[460px] w1280:w-[700px]',
+                'flex h-[460px] w-[700px] shrink-0 items-center justify-center overflow-hidden text-7xl',
                 i === 0 && 'rounded-l-lg',
-                i +1 === galleryImages.length && 'rounded-r-lg',
+                i + 1 === galleryImages.length && 'rounded-r-lg',
               )}
               style={{ background: g.bg }}
             >
