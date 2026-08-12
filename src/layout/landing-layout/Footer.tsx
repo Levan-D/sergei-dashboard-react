@@ -4,6 +4,7 @@ import Button from '@/components/landing/Button';
 import Highlight from '@/components/landing/Highlight';
 import { ROUTING } from '@/lib/routing';
 import { scrollToId } from '@/lib/scroll';
+import { brand } from '@/lib/brand';
 
 const deadLinks = [
   { id: '1r', label: 'Configurator' },
@@ -32,10 +33,10 @@ export default function Footer() {
           <div className="flex w-full max-w-[340px] flex-col gap-5">
             <div className="flex items-center gap-4 w1280:gap-6">
               <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-white/40 text-[13px] font-bold text-white">
-                BMW
+                {brand.name}
               </div>
               <p className="font-barlow text-base font-medium tracking-[0.01em] text-white uppercase">
-                BMW &amp; Motority
+                {brand.name} &amp; Motority
               </p>
             </div>
             <p className="t-footer-tag text-white/70">The Ultimate Driving Machine. On Motority since 2025</p>
@@ -60,7 +61,7 @@ export default function Footer() {
           </Highlight>
         </div>
         <div className="border-t border-white/20 py-[23.5px]">
-          <p className="t-caption text-white/80">2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED</p>
+          <p className="t-caption text-white/80">2026 {brand.name} BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED</p>
         </div>
       </Container>
     </footer>

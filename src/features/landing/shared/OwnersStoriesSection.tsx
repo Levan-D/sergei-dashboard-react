@@ -5,7 +5,7 @@ import StoryCard from '@/components/landing/StoryCard';
 import { useGetCatalogLogbookPostsQuery, type CatalogPostType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
 import { brand, brandPostsUrl } from '@/lib/brand';
 import { coverStyle, mediaUrl } from '@/lib/media';
-import { ownerStories, type OwnerStory } from '@/features/landing/data';
+import type { OwnerStory } from '@/features/landing/data';
 
 function toOwnerStory(post: CatalogPostType): OwnerStory {
   const media = (post.items ?? []).flatMap((item) => [
@@ -18,33 +18,35 @@ function toOwnerStory(post: CatalogPostType): OwnerStory {
     .slice(0, 5)
     .map((bg) => ({ bg, emoji: '' }));
   const category = post.category;
+  const poster = post.sub_author ?? post.author?.owner_author;
   return {
     car: post.author?.name ?? '',
     meta: [post.author?.generation_name, post.author?.owner_author?.slug].filter(Boolean).join(' / '),
     tag: (typeof category === 'string' ? category : category?.name) ?? undefined,
     title: post.title ?? '',
     text: post.announce ?? post.announce_generated ?? '',
-    author: post.author?.owner_author?.name ?? post.author?.name ?? '',
+    author: poster?.name ?? post.author?.name ?? '',
     reposts: post.statistics?.reposts ?? 0,
     comments: post.statistics?.comments ?? 0,
     likes: post.statistics?.likes ?? 0,
     images: images.length ? images : undefined,
     url: post.url,
-    avatar: mediaUrl(post.author?.owner_author?.picture, 'small') ?? undefined,
+    avatar: mediaUrl(poster?.picture, 'small') ?? undefined,
   };
 }
 
 export function OwnersStoriesSection() {
   const { model, gen } = useParams();
-  const { data } = useGetCatalogLogbookPostsQuery({
+  const { data, isFetching, isError } = useGetCatalogLogbookPostsQuery({
     type: 'car',
     make: brand.makeSlug,
     model: model ?? '',
-    generation: gen ?? '',
     page: 1,
     perPage: 9,
   });
-  const stories = data?.items?.length ? data.items.map(toOwnerStory) : ownerStories;
+  const stories = (data?.items ?? []).map(toOwnerStory);
+
+  if (isFetching || isError || data?.items?.length === 0) return <></>;
 
   return (
     <section className="bg-surface-2">

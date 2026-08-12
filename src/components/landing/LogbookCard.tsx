@@ -3,21 +3,21 @@ import type { OwnerLogbook } from '@/features/landing/data';
 type Props = { logbook: OwnerLogbook };
 
 const cardClass =
-  'block w-[280px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-[#333333] w640:w-[320px] w960:w-[360px] w1280:w-[384px] w1440:w-[420px]';
+  'flex w-[280px] shrink-0 cursor-pointer flex-col self-stretch overflow-hidden rounded-lg bg-[#333333] w640:w-[320px] w960:w-[360px] w1280:w-[384px] w1440:w-[420px]';
 
 export default function LogbookCard({ logbook }: Props) {
   const body = (
     <>
       <div
-        className="flex h-[220px] items-center justify-center text-5xl w640:h-[240px] w960:h-[280px] w960:text-6xl"
+        className="flex h-[220px] shrink-0 items-center justify-center text-5xl w640:h-[240px] w960:h-[280px] w960:text-6xl"
         style={{ background: logbook.image.bg }}
       >
         {logbook.image.emoji}
       </div>
-      <div className="flex flex-col gap-3 p-4 w1280:gap-4 w1280:p-6">
+      <div className="flex flex-1 flex-col gap-3 p-4 w1280:gap-4 w1280:p-6">
         <div className="flex flex-col gap-2">
-          <p className="t-lb-name text-white">{logbook.car}</p>
-          <p className="t-lb-meta text-white/60">{logbook.meta}</p>
+          <p className="t-lb-name line-clamp-1 text-white">{logbook.car}</p>
+          <p className="t-lb-meta line-clamp-1 text-white/60">{logbook.meta}</p>
         </div>
         <div className="flex gap-2">
           {logbook.stats.map((s) => (
@@ -27,7 +27,7 @@ export default function LogbookCard({ logbook }: Props) {
             </div>
           ))}
         </div>
-        <div className="h-px bg-white/20" />
+        <div className="mt-auto h-px bg-white/20" />
         <div className="flex items-center gap-2">
           <div
             style={logbook.avatar ? { background: `url("${logbook.avatar}") center / cover no-repeat` } : undefined}
@@ -39,7 +39,7 @@ export default function LogbookCard({ logbook }: Props) {
                 .map((w) => w[0])
                 .join('')}
           </div>
-          <p className="t-lb-owner text-white">{logbook.name}</p>
+          <p className="t-lb-owner line-clamp-1 min-w-0 text-white">{logbook.name}</p>
         </div>
       </div>
     </>

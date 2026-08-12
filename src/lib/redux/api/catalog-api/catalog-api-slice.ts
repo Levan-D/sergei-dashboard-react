@@ -149,6 +149,7 @@ export type CatalogPostType = {
   category?: { name?: string } | string | null;
   items?: CatalogPostItemType[] | null;
   author?: TopLogbookAuthorType | null;
+  sub_author?: TopLogbookAuthorType | null;
 };
 
 export const catalogApiSlice = createApi({

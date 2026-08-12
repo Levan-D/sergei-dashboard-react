@@ -8,7 +8,7 @@ import Highlight from '@/components/landing/Highlight';
 import { useGetTopLogbooksQuery, type TopLogbookAuthorType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
 import { brand, brandCatalogUrl } from '@/lib/brand';
 import { mediaUrl } from '@/lib/media';
-import { ownerLogbooks, type OwnerLogbook } from '@/features/landing/data';
+import type { OwnerLogbook } from '@/features/landing/data';
 
 const fmtCount = (n?: number) => (typeof n === 'number' ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '—');
 
@@ -32,16 +32,16 @@ function toOwnerLogbook(author: TopLogbookAuthorType): OwnerLogbook {
 
 export function RealOwnersSection() {
   const { model, gen } = useParams();
-  const { data } = useGetTopLogbooksQuery({
+  const { data, isFetching, isError } = useGetTopLogbooksQuery({
     type: 'car',
     make: brand.makeSlug,
-    model: model ?? '',
-    generation: gen ?? '',
     page: 1,
     perPage: 10,
   });
-  const logbooks = data?.items?.length ? data.items.map(toOwnerLogbook) : ownerLogbooks;
+  const logbooks = (data?.items ?? []).map(toOwnerLogbook);
   const catalogUrl = brandCatalogUrl(model, gen);
+
+  if (isFetching || isError || data?.items?.length === 0) return <></>;
 
   return (
     <section className="landing-dark">
