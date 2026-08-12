@@ -1,6 +1,7 @@
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import SelectField from '@/components/landing/SelectField';
+import Highlight from '@/components/landing/Highlight';
 import { modSpecColumns } from '@/features/landing/data';
 import {
   IconEngine,
@@ -34,11 +35,13 @@ export function ModificationsSection() {
       <Container className="flex flex-col gap-10">
         <SectionTitle>Modifications</SectionTitle>
 
-        <SelectField
-          label="Modification"
-          options={['3.0 AT 510 hp – Competition', '3.0 AT 480 hp', '3.0 MT 480 hp', '3.0 AT 550 hp – CSL']}
-          className="w-full w640:w-[340px] w1280:w-[464px]"
-        />
+        <Highlight id="11b" className="block self-start">
+          <SelectField
+            label="Modification"
+            options={['3.0 AT 510 hp – Competition', '3.0 AT 480 hp', '3.0 MT 480 hp', '3.0 AT 550 hp – CSL']}
+            className="w-full w640:w-[340px] w1280:w-[464px]"
+          />
+        </Highlight>
 
         <div className="flex flex-wrap gap-y-4 w1280:gap-y-6">
           {highlights.map((h) => (

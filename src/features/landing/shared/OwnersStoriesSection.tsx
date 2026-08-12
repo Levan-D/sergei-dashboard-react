@@ -40,7 +40,7 @@ export function OwnersStoriesSection() {
   const { data, isFetching, isError } = useGetCatalogLogbookPostsQuery({
     type: 'car',
     make: brand.makeSlug,
-    model: model ?? '',
+    // model: model ?? '',  TODO: comment this out
     page: 1,
     perPage: 9,
   });

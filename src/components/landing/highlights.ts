@@ -13,7 +13,7 @@ export const HIGHLIGHTS = [
   { id: '2r', note: 'Destination unknown — route not defined', location: 'Navbar — Find a dealer' },
   {
     id: '3r',
-    note: 'Explore has no endpoint for this: models are only listed per make, with no body/series/decade filtering and no model images. We need a dedicated endpoint for this section + its filters.',
+    note: 'Cards come from Admin → Catalog → Models (visibility in Admin → Landing → Models on landing). Still needs an endpoint to serve them: Explore only lists models per make, with no body/series/decade filtering and no model images.',
     location: 'Home — models grid (cards)',
   },
   {
@@ -41,9 +41,44 @@ export const HIGHLIGHTS = [
     location: 'Model page — generations Sort by / Body type dropdowns',
   },
   {
+    id: '8r',
+    note: 'We need an endpoint for this — these tech specs are not configurable in the admin panel either.',
+    location: 'Model page — Model overview → Last generation specs card',
+  },
+  {
     id: '6b',
     note: 'Admin panel → Catalog → Model editor (name, years, description)',
     location: 'Model hero — eyebrow, title, lead',
+  },
+  {
+    id: '9r',
+    note: 'Only “Logbooks on Motority” exists (log_books_count). Rating is all-null on generations, and there is no posts count or “on Motority since” date anywhere.',
+    location: 'Generation page — stats strip',
+  },
+  {
+    id: '10b',
+    note: 'Cards come from Admin → Catalog → Generations (created per model, with visibility toggles)',
+    location: 'Model page — generations grid',
+  },
+  {
+    id: '11b',
+    note: 'Comes from Admin → Catalog → Generation editor → Technical Specifications: the modification picker plus its groups and rows',
+    location: 'Generation page — modifications section',
+  },
+  {
+    id: '9b',
+    note: 'Admin panel → Catalog → Generation editor → Technical Specifications (modifications, groups, characteristics)',
+    location: 'Generation page — Generation overview → Technical specifications card',
+  },
+  {
+    id: '8b',
+    note: 'Admin panel → Catalog → Generation editor (name, years, description) — but the eyebrow’s “M Division / Competition” has no source in API or admin.',
+    location: 'Generation hero — eyebrow, title, lead',
+  },
+  {
+    id: '7b',
+    note: 'Admin panel → Catalog → Model editor → Gallery',
+    location: 'Model page — gallery strip',
   },
   {
     id: '5b',

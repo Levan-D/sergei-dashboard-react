@@ -17,7 +17,9 @@ export default function ModelPage() {
       </Highlight>
       <ModelOverviewSection />
       <GenerationsSection />
-      <GalleryStrip />
+      <Highlight id="7b" size="lg" className="block">
+        <GalleryStrip />
+      </Highlight>
       <RealOwnersSection />
       <OwnersStoriesSection />
     </div>
