@@ -1,6 +1,8 @@
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
+import Highlight from '@/components/landing/Highlight';
 import { heroImages } from '@/features/landing/data';
+import { scrollToId } from '@/lib/scroll';
 
 export function HomeHero() {
   return (
@@ -11,18 +13,24 @@ export function HomeHero() {
       <div className="absolute inset-0 bg-gradient-to-l from-black/50 to-transparent to-40%" />
       <Container noPadding="y" className="relative pb-10 w1440:pb-20">
         <div className="flex max-w-[624px] flex-col gap-12">
-          <div className="flex flex-col gap-6">
-            <h1 className="t-h1 text-white">The ultimate driving machine</h1>
-            <p className="t-lead max-w-[585px] text-white">
-              Over a century of precision engineering. From the mountains of Bavaria to every road on earth –
-              performance is not a feature, it's a philosophy.
-            </p>
-          </div>
+          <Highlight id="1b" size="lg" className="self-start">
+            <div className="flex flex-col gap-6">
+              <h1 className="t-h1 text-white">The ultimate driving machine</h1>
+              <p className="t-lead max-w-[585px] text-white">
+                Over a century of precision engineering. From the mountains of Bavaria to every road on earth –
+                performance is not a feature, it's a philosophy.
+              </p>
+            </div>
+          </Highlight>
           <div className="flex flex-col gap-4 w640:flex-row w640:flex-wrap w960:gap-6">
-            <Button className="w-full w640:w-auto w640:flex-1 w960:flex-none">Explore models</Button>
-            <Button variant="secondary" className="w-full w640:w-auto w640:flex-1 w960:flex-none">
-              Join the community
+            <Button onClick={() => scrollToId('models')} className="w-full w640:w-auto w640:flex-1 w960:flex-none">
+              Explore models
             </Button>
+            <Highlight id="2b" className="w-full w640:flex-1 w960:w-auto w960:flex-none">
+              <Button variant="secondary" className="w-full">
+                Join the community
+              </Button>
+            </Highlight>
           </div>
         </div>
       </Container>

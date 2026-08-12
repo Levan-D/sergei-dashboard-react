@@ -36,7 +36,7 @@ export function ModelsSection() {
   const perPage = useModelsPerPage();
 
   return (
-    <section className="bg-bg">
+    <section id="models" className="scroll-mt-16 bg-bg w1280:scroll-mt-20">
       <Container>
         <SectionTitle className="mb-6 w640:mb-10">Models</SectionTitle>
 

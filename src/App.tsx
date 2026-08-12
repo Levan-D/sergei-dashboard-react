@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
+import { reportHighlights } from '@/components/landing/highlights';
 import useScreenDimensions from '@/hooks/use-screen-dimensions';
 import LandingLayout from '@/layout/landing-layout/LandingLayout';
 import HomePage from '@/pages/landing/HomePage';
@@ -21,6 +23,11 @@ import SettingsPage from '@/pages/_admin/SettingsPage';
 
 export default function App() {
   useScreenDimensions();
+
+  useEffect(() => {
+    reportHighlights();
+  }, []);
+
   return (
     <Routes>
       <Route element={<LandingLayout />}>
