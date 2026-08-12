@@ -3,37 +3,42 @@ import { landingGenPath } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import SelectField from '@/components/landing/SelectField';
+import Highlight from '@/components/landing/Highlight';
 import { IconSort } from '@/components/landing/icons';
 import { landingGens } from '@/features/landing/data';
 
 export function GenerationsSection() {
   const { model = 'm4' } = useParams();
   return (
-    <section className="bg-bg">
+    <section id="generations" className="scroll-mt-16 bg-bg w1280:scroll-mt-20">
       <Container className="flex flex-col gap-10">
         <div className="flex items-center justify-between gap-4">
           <SectionTitle>Generations</SectionTitle>
-          <button
-            type="button"
-            aria-label="Sort generations"
-            className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 border-line-2 text-ink transition-colors hover:bg-surface-2"
-          >
-            <IconSort size={20} />
-          </button>
+          <Highlight id="6r" className="shrink-0">
+            <button
+              type="button"
+              aria-label="Sort generations"
+              className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-lg border-2 border-line-2 text-ink transition-colors hover:bg-surface-2"
+            >
+              <IconSort size={20} />
+            </button>
+          </Highlight>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-4 w960:flex-row">
-            <SelectField
-              label="Sort by"
-              options={['Most recent', 'Oldest first', 'Most popular']}
-              className="w-full w960:flex-1 w1280:w-[340px] w1280:grow-0"
-            />
-            <SelectField
-              label="Body type"
-              options={['All', 'Coupe', 'Convertible']}
-              className="w-full w960:flex-1 w1280:w-[340px] w1280:grow-0"
-            />
-          </div>
+          <Highlight id="7r" size="lg" className="block self-start">
+            <div className="flex flex-col gap-4 w960:flex-row">
+              <SelectField
+                label="Sort by"
+                options={['Most recent', 'Oldest first', 'Most popular']}
+                className="w-full w960:flex-1 w1280:w-[340px] w1280:max-w-[340px]"
+              />
+              <SelectField
+                label="Body type"
+                options={['All', 'Coupe', 'Convertible']}
+                className="w-full w960:flex-1 w1280:w-[340px] w1280:max-w-[340px]"
+              />
+            </div>
+          </Highlight>
           <div className="flex flex-wrap gap-4 w1440:gap-6">
             {landingGens.map((g) => (
               <Link

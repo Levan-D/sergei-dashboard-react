@@ -36,6 +36,7 @@ function StoryMedia({ story }: StoryMediaProps) {
   const stepBy = (delta: number) => setIndex((i) => Math.min(Math.max(i + delta, 0), images.length - 1));
 
   const step = (delta: number) => (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     e.stopPropagation();
     stepBy(delta);
   };
@@ -68,9 +69,12 @@ function StoryMedia({ story }: StoryMediaProps) {
 
 type StoryCardProps = { story: OwnerStory };
 
+const cardClass =
+  'mb-6 block cursor-pointer break-inside-avoid overflow-hidden rounded-lg bg-surface transition-transform';
+
 export default function StoryCard({ story }: StoryCardProps) {
-  return (
-    <div className="mb-6 cursor-pointer break-inside-avoid overflow-hidden rounded-lg bg-surface transition-transform">
+  const body = (
+    <>
       <StoryMedia story={story} />
       <div className="flex flex-col gap-3 p-6 w1280:gap-4">
         <div className="flex flex-col gap-1 border-b border-line pb-3 w1280:gap-2 w1280:pb-4">
@@ -81,11 +85,15 @@ export default function StoryCard({ story }: StoryCardProps) {
         <p className="t-card-name uppercase">{story.title}</p>
         <p className="t-body line-clamp-3 leading-[1.4] text-ink-2">{story.text}</p>
         <div className="mt-1 flex items-center gap-2 border-t border-line pt-3 w1280:pt-4">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-[10px] font-bold w1280:h-8 w1280:w-8">
-            {story.author
-              .split(' ')
-              .map((w) => w[0])
-              .join('')}
+          <div
+            style={story.avatar ? { background: `url("${story.avatar}") center / cover no-repeat` } : undefined}
+            className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-surface-2 text-[10px] font-bold w1280:h-8 w1280:w-8"
+          >
+            {!story.avatar &&
+              story.author
+                .split(' ')
+                .map((w) => w[0])
+                .join('')}
           </div>
           <p className="t-lb-meta font-medium">{story.author}</p>
           <div className="t-lb-meta ml-auto flex items-center gap-3 font-medium text-ink w1280:gap-4">
@@ -101,6 +109,16 @@ export default function StoryCard({ story }: StoryCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
+
+  if (story.url) {
+    return (
+      <a href={story.url} target="_blank" rel="noopener noreferrer" className={cardClass}>
+        {body}
+      </a>
+    );
+  }
+
+  return <div className={cardClass}>{body}</div>;
 }

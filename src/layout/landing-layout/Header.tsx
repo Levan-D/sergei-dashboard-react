@@ -8,6 +8,7 @@ import MobileMenu from '@/layout/landing-layout/MobileMenu';
 import { IconBurger } from '@/components/landing/icons';
 import { scrollToId } from '@/lib/scroll';
 import { highlightsToggle, useHighlightsEnabled } from '@/components/landing/highlights';
+import { brand } from '@/lib/brand';
 import { cn } from '@/lib/cn';
 
 const navLinks = ['Explore models', 'Configurator', 'Find a dealer'];
@@ -48,9 +49,9 @@ export default function Header() {
           className="flex cursor-pointer items-center gap-3 w640:gap-4 w1280:gap-6"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 text-[11px] font-bold text-white w1280:h-[54px] w1280:w-[54px] w1280:text-[13px]">
-            BMW
+            {brand.name}
           </div>
-          <p className="t-wordmark text-white/70">BMW &amp; Motority</p>
+          <p className="t-wordmark text-white/70">{brand.name} &amp; Motority</p>
         </Link>
         <div className="flex items-center gap-3 w640:gap-4 w1280:gap-6">
           <nav className="hidden items-center gap-6 w1280:flex">

@@ -1,9 +1,30 @@
+import { useLocation, useNavigate } from 'react-router-dom';
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
+import Highlight from '@/components/landing/Highlight';
+import { ROUTING } from '@/lib/routing';
+import { scrollToId } from '@/lib/scroll';
 
-const linkColumn = ['Official website', 'Explore models', 'Configurator', 'Find a dealer'];
+const deadLinks = [
+  { id: '1r', label: 'Configurator' },
+  { id: '2r', label: 'Find a dealer' },
+] as const;
+
+const linkClass = 't-footer-link cursor-pointer text-white/70 transition-colors hover:text-white';
 
 export default function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const goToModels = () => {
+    if (location.pathname === ROUTING.home) {
+      scrollToId('models');
+    } else {
+      navigate(ROUTING.home);
+      window.setTimeout(() => scrollToId('models'), 120);
+    }
+  };
+
   return (
     <footer className="landing-dark -mt-0.5">
       <Container noPadding="y" className="pt-10">
@@ -19,16 +40,24 @@ export default function Footer() {
             </div>
             <p className="t-footer-tag text-white/70">The Ultimate Driving Machine. On Motority since 2025</p>
           </div>
-          <div className="flex min-w-[200px] flex-col gap-4 w1280:w-[342px]">
-            {linkColumn.map((l) => (
-              <p key={l} className="t-footer-link cursor-pointer text-white/70 transition-colors hover:text-white">
-                {l}
-              </p>
+          <div className="flex min-w-[200px] flex-col items-start gap-4 w1280:w-[342px]">
+            <a href="https://motority.com/" target="_blank" rel="noopener noreferrer" className={linkClass}>
+              Official website
+            </a>
+            <p onClick={goToModels} className={linkClass}>
+              Explore models
+            </p>
+            {deadLinks.map((l) => (
+              <Highlight key={l.id} id={l.id}>
+                <p className={linkClass}>{l.label}</p>
+              </Highlight>
             ))}
           </div>
-          <Button variant="secondary" className="w-full w960:ml-auto w960:w-auto w1280:w-[342px]">
-            Join the community
-          </Button>
+          <Highlight id="2b" className="w-full w960:ml-auto w960:w-auto w1280:w-[342px]">
+            <Button variant="secondary" className="w-full">
+              Join the community
+            </Button>
+          </Highlight>
         </div>
         <div className="border-t border-white/20 py-[23.5px]">
           <p className="t-caption text-white/80">2026 BMW BRAND PAGE ON MOTORITY. ALL RIGHTS RESERVED</p>

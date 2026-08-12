@@ -121,6 +121,8 @@ export type OwnerLogbook = {
   meta: string;
   stats: { label: string; value: string }[];
   image: MockImage;
+  url?: string;
+  avatar?: string;
 };
 
 export const ownerLogbooks: OwnerLogbook[] = [
@@ -188,6 +190,8 @@ export type OwnerStory = {
   likes: number;
   image?: MockImage;
   images?: MockImage[];
+  url?: string;
+  avatar?: string;
 };
 
 const storyText =

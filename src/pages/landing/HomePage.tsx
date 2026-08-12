@@ -8,9 +8,7 @@ export default function HomePage() {
   return (
     <div className="overflow-x-clip">
       <HomeHero />
-      <Highlight id="3b" size="lg" className="block w-full">
-        <BrandSection />
-      </Highlight>
+      <BrandSection />
       <ModelsSection />
       <RealOwnersSection />
     </div>

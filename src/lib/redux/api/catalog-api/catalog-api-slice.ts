@@ -4,11 +4,17 @@ import { baseQuery } from '@/lib/redux/api/base-query';
 export type VehicleKind = 'car' | 'moto' | 'racing' | 'truck';
 
 export type CatalogLogoType = {
+  id?: string | null;
   url?: string;
   url_domain?: string;
   image_small?: string;
   image_medium?: string;
   image_big?: string;
+  media_type?: string;
+  filetype?: string;
+  width?: number | null;
+  height?: number | null;
+  default?: boolean | null;
 } | null;
 
 export type PaginatedResponse<T> = {
@@ -70,10 +76,85 @@ export type GetCatalogMakesParamsType = {
   perPage?: number;
 };
 
+export type TopLogbookCountersType = {
+  followers?: number;
+  subscriptions?: number;
+  posts?: number;
+  comments?: number;
+  likes?: number;
+  dislikes?: number;
+  common_followers?: number;
+};
+
+export type TopLogbookAuthorType = {
+  id: number;
+  type?: string;
+  name: string;
+  canonical_name?: string;
+  slug: string;
+  url?: string;
+  rating?: number;
+  position?: number;
+  promoted?: boolean;
+  verification_status?: string;
+  is_vendor?: boolean;
+  ownership?: number | null;
+  vehicle_status?: number | null;
+  engagement_rate?: number;
+  popular_tags?: string[];
+  counters?: TopLogbookCountersType;
+  picture?: CatalogLogoType;
+  cover?: CatalogLogoType;
+  owner_author?: TopLogbookAuthorType | null;
+  make_name?: string | null;
+  model_name?: string | null;
+  generation_name?: string | null;
+};
+
+export type GetTopLogbooksParamsType = {
+  type: VehicleKind;
+  make?: string;
+  model?: string;
+  generation?: string;
+  page?: number;
+  perPage?: number;
+};
+
+export type CatalogPostStatisticsType = {
+  rating?: number;
+  likes?: number;
+  dislikes?: number;
+  views?: number;
+  comments?: number;
+  reposts?: number;
+};
+
+export type CatalogPostItemType = {
+  type?: string;
+  text?: string;
+  media?: CatalogLogoType;
+  gallery?: { data?: CatalogLogoType }[] | null;
+};
+
+export type CatalogPostType = {
+  id: number;
+  title?: string | null;
+  announce?: string | null;
+  announce_generated?: string | null;
+  slug: string;
+  type?: string;
+  created_at?: string;
+  url?: string;
+  statistics?: CatalogPostStatisticsType;
+  category?: { name?: string } | string | null;
+  items?: CatalogPostItemType[] | null;
+  author?: TopLogbookAuthorType | null;
+};
+
 export const catalogApiSlice = createApi({
   reducerPath: 'catalogApi',
   baseQuery,
-  tagTypes: ['getCatalogMakes', 'catalogModels', 'catalogGenerations'],
+  tagTypes: ['getCatalogMakes', 'catalogModels', 'catalogGenerations', 'getTopLogbooks', 'getCatalogLogbookPosts'],
 
   endpoints: (builder) => ({
     getCatalogMakes: builder.query<PaginatedResponse<CatalogMakeType>, GetCatalogMakesParamsType>({
@@ -126,7 +207,35 @@ export const catalogApiSlice = createApi({
       },
       providesTags: () => [{ type: 'catalogGenerations', id: 'LIST' }],
     }),
+
+    getTopLogbooks: builder.query<PaginatedResponse<TopLogbookAuthorType>, GetTopLogbooksParamsType>({
+      query: ({ type = 'car', make = '', model = '', generation = '', page = 1, perPage = 10 }) =>
+        `/api/v2/public/catalog/logbooks/authors?model-type=${type}&make-slug=${make}&model-slug=${model}&generation-slug=${generation}&page=${page}&per-page=${perPage}`,
+      keepUnusedDataFor: 0,
+
+      transformResponse: (
+        response: { data: PaginatedResponse<TopLogbookAuthorType> } | PaginatedResponse<TopLogbookAuthorType>,
+      ) => ('data' in response ? response.data : response),
+      providesTags: () => [{ type: 'getTopLogbooks', id: 'LIST' }],
+    }),
+
+    getCatalogLogbookPosts: builder.query<PaginatedResponse<CatalogPostType>, GetTopLogbooksParamsType>({
+      query: ({ type = 'car', make = '', model = '', generation = '', page = 1, perPage = 10 }) =>
+        `/api/v2/public/catalog/logbooks/posts?model-type=${type}&make-slug=${make}&model-slug=${model}&generation-slug=${generation}&page=${page}&per-page=${perPage}`,
+      keepUnusedDataFor: 0,
+
+      transformResponse: (
+        response: { data: PaginatedResponse<CatalogPostType> } | PaginatedResponse<CatalogPostType>,
+      ) => ('data' in response ? response.data : response),
+      providesTags: () => [{ type: 'getCatalogLogbookPosts', id: 'LIST' }],
+    }),
   }),
 });
 
-export const { useGetCatalogMakesQuery, useGetCatalogModelsQuery, useGetCatalogGenerationsQuery } = catalogApiSlice;
+export const {
+  useGetCatalogMakesQuery,
+  useGetCatalogModelsQuery,
+  useGetCatalogGenerationsQuery,
+  useGetTopLogbooksQuery,
+  useGetCatalogLogbookPostsQuery,
+} = catalogApiSlice;
