@@ -41,6 +41,7 @@ export function OwnersStoriesSection() {
     type: 'car',
     make: brand.makeSlug,
     // model: model ?? '',  TODO: comment this out
+    // generation: gen ?? '',  TODO: comment this out
     page: 1,
     perPage: 9,
   });

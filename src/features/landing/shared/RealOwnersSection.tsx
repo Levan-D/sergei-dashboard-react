@@ -36,7 +36,7 @@ export function RealOwnersSection() {
     type: 'car',
     make: brand.makeSlug,
     model: model ?? '',
-
+    generation: gen ?? '',
     page: 1,
     perPage: 10,
   });
