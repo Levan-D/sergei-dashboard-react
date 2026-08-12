@@ -35,6 +35,8 @@ export function RealOwnersSection() {
   const { data, isFetching, isError } = useGetTopLogbooksQuery({
     type: 'car',
     make: brand.makeSlug,
+    model: model ?? '',
+
     page: 1,
     perPage: 10,
   });
