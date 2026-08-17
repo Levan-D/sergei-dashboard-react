@@ -26,8 +26,6 @@ export default function Header() {
   const onWordmarkClick = () => {
     if (location.pathname === ROUTING.home) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      window.requestAnimationFrame(() => window.scrollTo({ top: 0 }));
     }
   };
 

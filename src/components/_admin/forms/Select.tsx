@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { IconChevronDown } from '@/components/_admin/icons';
 
@@ -11,12 +11,48 @@ type Props = {
   className?: string;
 };
 
+type MenuPos = { left: number; width: number; top?: number; bottom?: number; maxHeight: number };
+
+const MENU_MAX_H = 260;
+const MENU_GAP = 4;
+
 export default function Select({ options, value, defaultValue, onChange, placeholder, className }: Props) {
   const [open, setOpen] = useState(false);
   const [inner, setInner] = useState(defaultValue ?? (placeholder ? '' : (options[0] ?? '')));
+  const [pos, setPos] = useState<MenuPos | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const selected = value !== undefined ? value : inner;
+
+  useLayoutEffect(() => {
+    if (!open) {
+      setPos(null);
+      return;
+    }
+    const place = () => {
+      const el = triggerRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const below = window.innerHeight - r.bottom - MENU_GAP;
+      const above = r.top - MENU_GAP;
+      const flip = below < Math.min(MENU_MAX_H, 160) && above > below;
+      setPos({
+        left: r.left,
+        width: r.width,
+        top: flip ? undefined : r.bottom + MENU_GAP,
+        bottom: flip ? window.innerHeight - r.top + MENU_GAP : undefined,
+        maxHeight: Math.max(80, Math.min(MENU_MAX_H, flip ? above : below)),
+      });
+    };
+    place();
+    window.addEventListener('scroll', place, true);
+    window.addEventListener('resize', place);
+    return () => {
+      window.removeEventListener('scroll', place, true);
+      window.removeEventListener('resize', place);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -43,6 +79,7 @@ export default function Select({ options, value, defaultValue, onChange, placeho
   return (
     <div ref={rootRef} className={cn('relative w-full', className)}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={cn(
@@ -53,8 +90,11 @@ export default function Select({ options, value, defaultValue, onChange, placeho
         <span className={cn('truncate', !selected && 'text-ink-3')}>{selected || placeholder}</span>
         <IconChevronDown size={14} className={cn('shrink-0 text-ink-3 transition-transform', open && 'rotate-180')} />
       </button>
-      {open && (
-        <div className="absolute top-full right-0 left-0 z-50 mt-1 max-h-[260px] overflow-y-auto overscroll-contain rounded-el border border-line bg-surface-2 py-1 shadow-card">
+      {open && pos && (
+        <div
+          style={{ position: 'fixed', left: pos.left, width: pos.width, top: pos.top, bottom: pos.bottom, maxHeight: pos.maxHeight }}
+          className="z-[2000] overflow-y-auto overscroll-contain rounded-el border border-line bg-surface-2 py-1 shadow-card"
+        >
           {placeholder && (
             <button
               type="button"

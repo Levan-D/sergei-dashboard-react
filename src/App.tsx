@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
 import { reportHighlights } from '@/components/landing/highlights';
 import useScreenDimensions from '@/hooks/use-screen-dimensions';
+import useScrollReset from '@/hooks/use-scroll-reset';
 import LandingLayout from '@/layout/landing-layout/LandingLayout';
 import HomePage from '@/pages/landing/HomePage';
 import ModelPage from '@/pages/landing/ModelPage';
@@ -23,6 +24,7 @@ import SettingsPage from '@/pages/_admin/SettingsPage';
 
 export default function App() {
   useScreenDimensions();
+  useScrollReset();
 
   useEffect(() => {
     reportHighlights();

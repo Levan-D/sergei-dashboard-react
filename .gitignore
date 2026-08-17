@@ -33,3 +33,8 @@ Thumbs.db
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Local notes / working docs
+*.md
+!README.md
+
