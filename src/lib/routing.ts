@@ -14,6 +14,9 @@ export const ROUTING = {
   adminNotifications: '/admin/notifications',
   adminHistory: '/admin/history',
   adminSettings: '/admin/settings',
+
+  // dev
+  devApi: '/dev/api',
 } as const;
 
 export const landingModelPath = (model: string) => `/${encodeURIComponent(model)}`;

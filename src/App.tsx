@@ -21,6 +21,7 @@ import UsersPage from '@/pages/_admin/UsersPage';
 import NotificationsPage from '@/pages/_admin/NotificationsPage';
 import HistoryPage from '@/pages/_admin/HistoryPage';
 import SettingsPage from '@/pages/_admin/SettingsPage';
+import ApiProbePage from '@/pages/dev/ApiProbePage';
 
 export default function App() {
   useScreenDimensions();
@@ -51,6 +52,7 @@ export default function App() {
         <Route path={ROUTING.adminHistory} element={<HistoryPage />} />
         <Route path={ROUTING.adminSettings} element={<SettingsPage />} />
       </Route>
+      <Route path={ROUTING.devApi} element={<ApiProbePage />} />
       <Route path="*" element={<Navigate to={ROUTING.home} replace />} />
     </Routes>
   );
