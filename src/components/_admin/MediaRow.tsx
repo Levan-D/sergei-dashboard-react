@@ -3,6 +3,7 @@ import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { IconImage, IconX } from '@/components/_admin/icons';
 import Button from '@/components/_admin/ui/Button';
+import DropZone, { type DropZoneKind } from '@/components/_admin/forms/DropZone';
 import PickMediaModal from '@/features/_admin/media/PickMediaModal';
 
 type MediaPickRowProps = {
@@ -11,10 +12,14 @@ type MediaPickRowProps = {
   hint?: string;
   compact?: boolean;
   stack?: boolean;
+  kinds?: DropZoneKind[];
+  maxFiles?: number;
+  maxSizeMB?: number;
+  onFiles?: (files: File[]) => void;
 };
 
 /** "Upload zone — or — Choose from Media Library" row used across the app. `stack` lays it out vertically. */
-export function MediaPickRow({ icon, text, hint, compact, stack }: MediaPickRowProps) {
+export function MediaPickRow({ icon, text, hint, compact, stack, kinds, maxFiles, maxSizeMB, onFiles }: MediaPickRowProps) {
   const [pickOpen, setPickOpen] = useState(false);
   return (
     <div
@@ -23,19 +28,17 @@ export function MediaPickRow({ icon, text, hint, compact, stack }: MediaPickRowP
         stack && '@max-mobile:flex-col @max-mobile:items-stretch',
       )}
     >
-      <button
-        type="button"
-        onClick={() => showToast('📁 File picker opened')}
-        className={cn(
-          'min-w-[180px] flex-1 cursor-pointer rounded-card border-2 border-dashed border-line-2 text-center transition-all hover:border-accent hover:bg-accent-bg',
-          stack && '@max-mobile:min-w-0 @max-mobile:flex-none',
-          compact ? 'p-3 @mobile:p-4' : 'px-5 py-3 @mobile:py-4',
-        )}
-      >
-        <span className={cn('mb-2 block', compact ? 'text-lg' : 'text-[28px]')}>{icon}</span>
-        <span className="block text-[13px] text-ink-2">{text}</span>
-        {hint && <span className="mt-1 block text-[11px] text-ink-3">{hint}</span>}
-      </button>
+      <DropZone
+        icon={icon}
+        text={text}
+        hint={hint}
+        compact={compact}
+        kinds={kinds}
+        maxFiles={maxFiles}
+        maxSizeMB={maxSizeMB}
+        onFiles={onFiles ?? (() => showToast('📁 Upload is not wired for this section yet'))}
+        className={cn(stack && '@max-mobile:min-w-0 @max-mobile:flex-none')}
+      />
       <div
         className={cn(
           'shrink-0 rounded-[20px] border border-line bg-surface-3 px-[9px] py-[3px] text-[11px] font-semibold text-ink-3',
@@ -68,25 +71,26 @@ export function MediaSectionLabel({ children, className }: MediaSectionLabelProp
 }
 
 type CurrentMediaProps = {
-  emoji: string;
-  bg: string;
+  emoji?: string;
+  bg?: string;
+  imageUrl?: string;
   name: string;
   meta: string;
   onRemove: () => void;
 };
 
 /** Currently selected file row with a remove button. */
-export function CurrentMedia({ emoji, bg, name, meta, onRemove }: CurrentMediaProps) {
+export function CurrentMedia({ emoji, bg, imageUrl, name, meta, onRemove }: CurrentMediaProps) {
   return (
     <div className="mt-2.5 flex items-center gap-2.5 rounded-el border border-line bg-surface-2 p-2.5 px-2 @mobile:px-3">
       <div
-        className="flex h-[34px] w-12 shrink-0 items-center justify-center rounded-[5px] text-base"
-        style={{ background: bg }}
+        className="flex h-[34px] w-12 shrink-0 items-center justify-center rounded-[5px] bg-cover bg-center text-base"
+        style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : { background: bg }}
       >
-        {emoji}
+        {!imageUrl && emoji}
       </div>
-      <div>
-        <p className="text-[13px] font-semibold text-ink">{name}</p>
+      <div className="min-w-0">
+        <p className="truncate text-[13px] font-semibold text-ink">{name}</p>
         <p className="mt-0.5 text-[11px] text-ink-3">{meta}</p>
       </div>
       <button

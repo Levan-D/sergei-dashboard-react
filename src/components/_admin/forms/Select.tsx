@@ -9,6 +9,7 @@ type Props = {
   onChange?: (value: string) => void;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 type MenuPos = { left: number; width: number; top?: number; bottom?: number; maxHeight: number };
@@ -16,7 +17,7 @@ type MenuPos = { left: number; width: number; top?: number; bottom?: number; max
 const MENU_MAX_H = 260;
 const MENU_GAP = 4;
 
-export default function Select({ options, value, defaultValue, onChange, placeholder, className }: Props) {
+export default function Select({ options, value, defaultValue, onChange, placeholder, className, disabled }: Props) {
   const [open, setOpen] = useState(false);
   const [inner, setInner] = useState(defaultValue ?? (placeholder ? '' : (options[0] ?? '')));
   const [pos, setPos] = useState<MenuPos | null>(null);
@@ -81,9 +82,11 @@ export default function Select({ options, value, defaultValue, onChange, placeho
       <button
         ref={triggerRef}
         type="button"
+        disabled={disabled}
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          'flex w-full cursor-pointer items-center justify-between gap-2 rounded-el border bg-surface-2 px-2 py-2 text-left font-sans text-[13.5px] text-ink transition-colors @mobile:px-3',
+          'flex w-full items-center justify-between gap-2 rounded-el border bg-surface-2 px-2 py-2 text-left font-sans text-[13.5px] text-ink transition-colors @mobile:px-3',
+          disabled ? 'cursor-not-allowed text-ink-3' : 'cursor-pointer',
           open ? 'border-accent' : 'border-line',
         )}
       >

@@ -147,6 +147,6 @@ export function reportHighlights() {
     ...section('admin', 'ADMIN-CONFIGURED CONTENT (blue)'),
   ].join('\n');
 
-  console.log(`%c[Highlights] Paste-ready list for PM\n\n${text}`, 'font-weight:bold');
-  console.log('[Highlights] JSON', numberedHighlights());
+  // console.log(`%c[Highlights] Paste-ready list for PM\n\n${text}`, 'font-weight:bold');
+  // console.log('[Highlights] JSON', numberedHighlights());
 }

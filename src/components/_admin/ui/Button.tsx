@@ -4,6 +4,7 @@ import { cn } from '@/lib/cn';
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost' | 'danger';
   sm?: boolean;
+  loading?: boolean;
 };
 
 const btnVariants = {
@@ -12,18 +13,34 @@ const btnVariants = {
   danger: 'bg-red-bg text-red border border-red/20 hover:bg-red/20',
 };
 
-export default function Button({ variant = 'primary', sm, className, children, ...rest }: Props) {
+/**
+ * `loading` keeps the button at its natural width: the label goes transparent and a
+ * spinner is overlaid on top, so nothing reflows while a mutation is in flight.
+ */
+export default function Button({ variant = 'primary', sm, loading, disabled, className, children, ...rest }: Props) {
   return (
     <button
+      disabled={disabled || loading}
       className={cn(
-        'inline-flex cursor-pointer items-center gap-1.5 rounded-el border-none font-sans font-semibold transition-all',
+        'relative inline-flex cursor-pointer items-center gap-1.5 rounded-el border-none font-sans font-semibold transition-all',
         sm ? 'px-[11px] py-[5px] text-xs' : 'px-3.5 py-[7px] text-[13px]',
         btnVariants[variant],
+        (disabled || loading) && 'cursor-not-allowed opacity-50',
         className,
       )}
       {...rest}
     >
-      {children}
+      <span className={cn('contents', loading && 'invisible')}>{children}</span>
+      {loading && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span
+            className={cn(
+              'animate-spin rounded-full border-2 border-current border-t-transparent opacity-70',
+              sm ? 'h-3 w-3' : 'h-3.5 w-3.5',
+            )}
+          />
+        </span>
+      )}
     </button>
   );
 }

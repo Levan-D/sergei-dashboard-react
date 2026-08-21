@@ -1,21 +1,22 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
+import SiteLoader from '@/features/_admin/site/SiteLoader';
+import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
 import Badge from '@/components/_admin/ui/Badge';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import { CurrentMedia, MediaPickRow } from '@/components/_admin/MediaRow';
 
-const colors = [
-  { label: 'Primary', hex: '#1C69D4' },
-  { label: 'Background', hex: '#000000' },
-  { label: 'Text', hex: '#FFFFFF' },
-  { label: 'Secondary', hex: '#6F6F6F' },
-];
+const fontRowClass = (selected: boolean) =>
+  selected
+    ? 'flex w-full cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 text-left @mobile:gap-3 @mobile:py-3'
+    : 'flex w-full cursor-pointer items-center gap-2 border-b border-line px-5 py-2 text-left hover:bg-surface-2 @mobile:gap-3 @mobile:py-3';
 
-type Props = { children: React.ReactNode };
+type RecommendationProps = { children: React.ReactNode };
 
-function Recommendation({ children }: Props) {
+function Recommendation({ children }: RecommendationProps) {
   return (
     <div className="mt-2.5 rounded-el border border-line bg-surface-2 px-2 py-2.5 text-[11px] text-ink-3 @mobile:px-3">
       <strong className="text-ink-2">Recommendations:</strong> {children}
@@ -23,8 +24,31 @@ function Recommendation({ children }: Props) {
   );
 }
 
-export default function BrandStylePage() {
-  const [logoVisible, setLogoVisible] = useState(true);
+type StyleFormValues = { font: string };
+
+type Props = { site: AutobrandSiteType };
+
+function BrandStyleForm({ site }: Props) {
+  const style = site.brand_style;
+  const logo = style?.logo;
+  const [logoRemoved, setLogoRemoved] = useState(false);
+  const {
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<StyleFormValues>({
+    defaultValues: { font: style?.font ?? 'system' },
+  });
+  const font = watch('font');
+  const brandFont = style?.font && style.font !== 'system' ? style.font : null;
+
+  const colors = [
+    { label: 'Primary', hex: style?.colors?.primary ?? '' },
+    { label: 'Background', hex: style?.colors?.background ?? '' },
+    { label: 'Text', hex: style?.colors?.text ?? '' },
+    { label: 'Secondary', hex: style?.colors?.secondary ?? '' },
+  ];
 
   return (
     <div>
@@ -33,7 +57,7 @@ export default function BrandStylePage() {
           title={<>Logo &amp; Favicon</>}
           sub="Brand identity assets"
           right={
-            <Button sm onClick={() => showToast('✅ Assets saved')}>
+            <Button sm disabled={!logoRemoved} onClick={() => showToast('✅ Assets saved')}>
               Save
             </Button>
           }
@@ -47,14 +71,16 @@ export default function BrandStylePage() {
             text="Drop logo or click to upload"
             hint="SVG preferred · PNG/WebP accepted · transparent background · max 2MB"
           />
-          {logoVisible && (
+          {logo && !logoRemoved && (
             <CurrentMedia
               emoji="🔵"
               bg="#f1f5f9"
-              name="bmw-logo.svg"
-              meta="12 KB · SVG · Vector"
+              name={logo.name ?? `logo #${logo.id}`}
+              meta={[logo.filetype, logo.width && logo.height ? `${logo.width}×${logo.height}` : null]
+                .filter(Boolean)
+                .join(' · ')}
               onRemove={() => {
-                setLogoVisible(false);
+                setLogoRemoved(true);
                 showToast('🗑️ Logo removed');
               }}
             />
@@ -97,13 +123,13 @@ export default function BrandStylePage() {
               <button
                 type="button"
                 className="h-12 w-full cursor-pointer rounded-el border border-line transition-transform hover:scale-[1.04]"
-                style={{ background: c.hex }}
+                style={{ background: c.hex || 'var(--surface3)' }}
                 onClick={() => showToast(`🎨 Color picker — ${c.label}`)}
               />
               <div className="text-[11px] font-medium text-ink-2">
                 {c.label}
                 <br />
-                <span className="font-mono text-[10px]">{c.hex}</span>
+                <span className="font-mono text-[10px]">{c.hex || '—'}</span>
               </div>
             </div>
           ))}
@@ -115,30 +141,26 @@ export default function BrandStylePage() {
           title="Typography"
           sub="Brand font selection"
           right={
-            <Button sm onClick={() => showToast('✅ Font saved')}>
+            <Button sm disabled={!isDirty} onClick={handleSubmit(() => showToast('✅ Font saved'))}>
               Save
             </Button>
           }
         />
-        <button
-          type="button"
-          className="flex w-full cursor-pointer items-center gap-2 border-b border-line bg-accent-bg px-5 py-2 text-left @mobile:gap-3 @mobile:py-3"
-          onClick={() => showToast('✅ BMW Type Next selected')}
-        >
-          <span className="block w-[100px] text-xl font-bold text-ink">Aa</span>
-          <span className="block">
-            <span className="block text-[13px] font-semibold text-ink">BMW Type Next</span>
-            <span className="block text-xs text-ink-3">Brand font · Uploaded</span>
-          </span>
-          <Badge color="blue" className="ml-auto">
-            Selected
-          </Badge>
-        </button>
-        <button
-          type="button"
-          className="flex w-full cursor-pointer items-center gap-2 border-b border-line px-5 py-2 text-left hover:bg-surface-2 @mobile:gap-3 @mobile:py-3"
-          onClick={() => showToast('✅ Helvetica Neue selected')}
-        >
+        {brandFont && (
+          <button type="button" className={fontRowClass(font === brandFont)} onClick={() => setValue('font', brandFont, { shouldDirty: true })}>
+            <span className="block w-[100px] text-xl font-bold text-ink">Aa</span>
+            <span className="block">
+              <span className="block text-[13px] font-semibold text-ink">{brandFont}</span>
+              <span className="block text-xs text-ink-3">Brand font · Uploaded</span>
+            </span>
+            {font === brandFont && (
+              <Badge color="blue" className="ml-auto">
+                Selected
+              </Badge>
+            )}
+          </button>
+        )}
+        <button type="button" className={fontRowClass(font === 'system')} onClick={() => setValue('font', 'system', { shouldDirty: true })}>
           <span
             className="block w-[100px] text-xl font-bold text-ink"
             style={{ fontFamily: 'Helvetica,Arial,sans-serif' }}
@@ -146,9 +168,14 @@ export default function BrandStylePage() {
             Aa
           </span>
           <span className="block">
-            <span className="block text-[13px] font-semibold text-ink">Helvetica Neue</span>
+            <span className="block text-[13px] font-semibold text-ink">System</span>
             <span className="block text-xs text-ink-3">System font</span>
           </span>
+          {font === 'system' && (
+            <Badge color="blue" className="ml-auto">
+              Selected
+            </Badge>
+          )}
         </button>
         <button
           type="button"
@@ -164,4 +191,8 @@ export default function BrandStylePage() {
       </SectionCard>
     </div>
   );
+}
+
+export default function BrandStylePage() {
+  return <SiteLoader>{(site) => <BrandStyleForm site={site} />}</SiteLoader>;
 }

@@ -1,5 +1,10 @@
+import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
+import { brand } from '@/lib/brand';
+import SiteLoader from '@/features/_admin/site/SiteLoader';
+import { useUpdateAdminAboutMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
+import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
@@ -7,32 +12,74 @@ import FormGroup from '@/components/_admin/forms/FormGroup';
 import Input from '@/components/_admin/forms/Input';
 import Textarea from '@/components/_admin/forms/Textarea';
 
-const facts = [
-  { name: 'Founded', value: '1916' },
-  { name: 'Headquarters', value: 'Munich, Germany' },
-  { name: 'Models in lineup', value: '47 models' },
-  { name: 'Global employees', value: '149,475' },
-  { name: 'Annual production', value: '2.5M vehicles' },
-  { name: 'Countries sold in', value: '140+ countries' },
+const fmt = (n: number | null | undefined) => (typeof n === 'number' ? n.toLocaleString('en-US') : '—');
+
+const fmtDelta = (n: number | null | undefined) => {
+  if (typeof n !== 'number') return { value: '—', color: undefined };
+  return { value: n > 0 ? `+${fmt(n)}` : fmt(n), color: n > 0 ? 'var(--green)' : undefined };
+};
+
+const FACT_SLOTS = 6;
+
+const padFacts = (facts: { name: string; value: string }[]) => [
+  ...facts,
+  ...Array.from({ length: Math.max(0, FACT_SLOTS - facts.length) }, () => ({ name: '', value: '' })),
 ];
 
-const motorityStats = [
-  { label: 'Total Logbooks', value: '2,841' },
-  { label: 'Active Owners', value: '1,203' },
-  { label: 'New This Month', value: '+47', color: 'var(--green)' },
-  { label: 'Avg. Ownership', value: '3.2 yr' },
-  { label: 'Top Model', value: 'BMW 3 Series', small: true },
-  { label: 'Avg. Mileage', value: '48k km' },
-];
+type SecondScreenFormValues = {
+  about: string;
+  facts: { name: string; value: string }[];
+};
 
-export function SecondScreen() {
+type Props = { site: AutobrandSiteType };
+
+function SecondScreenForm({ site }: Props) {
+  const stats = site.motority_stats;
+  const [updateAbout, { isLoading: isSaving }] = useUpdateAdminAboutMutation();
+  const {
+    register,
+    watch,
+    reset,
+    handleSubmit,
+    formState: { isDirty },
+  } = useForm<SecondScreenFormValues>({
+    defaultValues: {
+      about: site.about ?? '',
+      facts: padFacts(site.facts ?? []),
+    },
+  });
+  const facts = watch('facts');
+
+  const onSubmit = async (values: SecondScreenFormValues) => {
+    try {
+      await updateAbout({
+        subdomain: brand.makeSlug,
+        about: values.about,
+        facts: values.facts.filter((f) => f.name.trim() || f.value.trim()),
+      }).unwrap();
+      reset(values);
+      showToast('✅ Second screen saved');
+    } catch {
+      showToast('⚠️ Could not save second screen');
+    }
+  };
+
+  const statTiles: { label: string; value: string; color?: string; small?: boolean }[] = [
+    { label: 'Total Logbooks', value: fmt(stats?.total_logbooks) },
+    { label: 'Active Owners', value: fmt(stats?.active_owners) },
+    { label: 'New This Month', ...fmtDelta(stats?.new_this_month) },
+    { label: 'Top Model', value: stats?.top_model ?? '—', small: true },
+    { label: 'Models in catalog', value: fmt(stats?.models_count) },
+    { label: 'Generations', value: fmt(stats?.generations_count) },
+  ];
+
   return (
     <SectionCard>
       <SectionHeader
         title="Second Screen"
         sub={<>About, Facts &amp; Motority Stats block</>}
         right={
-          <Button sm onClick={() => showToast('✅ Second screen saved')}>
+          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
             Save Changes
           </Button>
         }
@@ -45,10 +92,7 @@ export function SecondScreen() {
           </span>
         </div>
         <FormGroup label="Brand Description">
-          <Textarea
-            rows={5}
-            defaultValue="BMW is a German multinational manufacturer of luxury vehicles and motorcycles headquartered in Munich, Bavaria, Germany. The corporation was founded in 1916 and has established itself as one of the most recognisable automotive brands in the world, known for precision engineering and performance-oriented vehicles."
-          />
+          <Textarea rows={5} {...register('about')} />
         </FormGroup>
       </div>
       <div className="border-b border-line p-5">
@@ -59,14 +103,14 @@ export function SecondScreen() {
           </span>
         </div>
         <div className="flex flex-wrap gap-2 @mobile:gap-3">
-          {facts.map((f, i) => (
+          {facts.map((_, i) => (
             <div
               key={i}
               className="flex w-full flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
             >
               <p className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</p>
-              <Input type="text" placeholder="Fact name" defaultValue={f.name} />
-              <Input type="text" placeholder="Fact value" defaultValue={f.value} />
+              <Input type="text" placeholder="Fact name" {...register(`facts.${i}.name`)} />
+              <Input type="text" placeholder="Fact value" {...register(`facts.${i}.value`)} />
             </div>
           ))}
         </div>
@@ -79,7 +123,7 @@ export function SecondScreen() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2.5">
-          {motorityStats.map((s) => (
+          {statTiles.map((s) => (
             <div
               key={s.label}
               className="w-full rounded-el border border-line bg-surface-2 p-3.5 @sm:w-[calc(50%-5px)] @mobile:w-[calc((100%-20px)/3)]"
@@ -98,4 +142,10 @@ export function SecondScreen() {
       </div>
     </SectionCard>
   );
+}
+
+type SecondScreenProps = { silent?: boolean };
+
+export function SecondScreen({ silent }: SecondScreenProps) {
+  return <SiteLoader silent={silent}>{(site) => <SecondScreenForm site={site} />}</SiteLoader>;
 }

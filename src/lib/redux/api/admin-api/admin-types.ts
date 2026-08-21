@@ -41,8 +41,8 @@ export type AutobrandHeroSlideType = {
 
 export type AutobrandHeroType = {
   type?: AutobrandHeroKindType;
-  h1?: string | null;
-  h2?: string | null;
+  headline?: string | null;
+  subheadline?: string | null;
   cta_primary?: AutobrandCtaType | null;
   cta_secondary?: AutobrandCtaType | null;
   image?: AdminMediaType | null;
@@ -64,7 +64,7 @@ export type AutobrandFilterChipType = {
 };
 
 export type AutobrandFiltersType = {
-  decades?: boolean | null;
+  decades_enabled?: boolean | null;
   body_types?: AutobrandFilterChipType[] | null;
   power_types?: AutobrandFilterChipType[] | null;
 };
@@ -87,15 +87,13 @@ export type AutobrandVendorChannelType = {
   id?: number | null;
   name?: string | null;
   slug?: string | null;
-  url?: string | null;
 };
 
 export type AutobrandCommunityType = {
-  enabled?: boolean | null;
+  show_on_landing?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   max_logbooks?: number | null;
-  vendor_channel?: AutobrandVendorChannelType | null;
 };
 
 export type AutobrandMotorityStatsType = {
@@ -103,6 +101,15 @@ export type AutobrandMotorityStatsType = {
   active_owners?: number | null;
   new_this_month?: number | null;
   top_model?: string | null;
+  models_count?: number | null;
+  generations_count?: number | null;
+};
+
+export type AutobrandMakeType = {
+  id?: number | null;
+  name?: string | null;
+  slug?: string | null;
+  logo?: AdminMediaType | null;
 };
 
 export type AutobrandSettingsType = {
@@ -114,9 +121,10 @@ export type AutobrandSettingsType = {
 };
 
 export type AutobrandSiteType = {
+  id?: number;
   subdomain: string;
   domain?: string | null;
-  name?: string | null;
+  make?: AutobrandMakeType | null;
   hero?: AutobrandHeroType | null;
   about?: string | null;
   facts?: AutobrandFactType[] | null;
@@ -126,6 +134,7 @@ export type AutobrandSiteType = {
   community?: AutobrandCommunityType | null;
   brand_style?: AutobrandBrandStyleType | null;
   motority_stats?: AutobrandMotorityStatsType | null;
+  vendor_channel?: AutobrandVendorChannelType | null;
 } & AutobrandSettingsType;
 
 export type AdminMeItemType = {
@@ -179,6 +188,13 @@ export type AdminCatalogGenerationType = {
   slug?: string | null;
   years?: string | null;
   model_id?: number | null;
+};
+
+export const adminMediaUrl = (media?: AdminMediaType | null, size: 'small' | 'medium' | 'big' = 'medium') => {
+  if (!media) return null;
+  const path = (size === 'small' ? media.image_small : size === 'big' ? media.image_big : media.image_medium) ?? media.url;
+  if (!path) return null;
+  return media.url_domain ? `${media.url_domain}${path}` : path;
 };
 
 export const unwrapData = <T>(response: { data: T } | T): T =>

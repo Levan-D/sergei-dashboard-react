@@ -9,8 +9,8 @@ export default function LandingPage() {
     <div className="flex gap-3 @max-wide:flex-col @mobile:gap-4">
       <div className="min-w-0 flex-1">
         <HeroBlock />
-        <SecondScreen />
-        <FiltersConfig />
+        <SecondScreen silent />
+        <FiltersConfig silent />
         <ModelsOnLanding />
       </div>
       <div className="w-[320px] shrink-0 @max-wide:order-first @max-wide:w-full">
