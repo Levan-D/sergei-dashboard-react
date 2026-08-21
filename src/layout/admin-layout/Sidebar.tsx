@@ -1,6 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
+import { brand } from '@/lib/brand';
+import { ROUTING } from '@/lib/routing';
+import { useGetAdminNotificationsQuery } from '@/lib/redux/api/admin-api/notifications/notifications-api';
 import { useTheme } from './theme-context';
 import { navItems, isActivePath } from './nav';
 import { IconMoon, IconSun } from '@/components/_admin/icons';
@@ -12,6 +15,8 @@ export default function Sidebar({ className, onNavigate }: Props) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { data: notifications } = useGetAdminNotificationsQuery({ subdomain: brand.makeSlug });
+  const unreadCount = notifications?.unread_count ?? 0;
 
   return (
     <nav
@@ -30,8 +35,9 @@ export default function Sidebar({ className, onNavigate }: Props) {
       </div>
 
       <div className="flex-1 overflow-y-auto overscroll-contain px-2 py-2.5">
-        {navItems.map(({ path, label, icon: Icon, badge, section }) => {
+        {navItems.map(({ path, label, icon: Icon, section }) => {
           const active = isActivePath(path, pathname);
+          const badge = path === ROUTING.adminNotifications && unreadCount > 0 ? String(unreadCount) : undefined;
           return (
             <div key={path}>
               {section && (

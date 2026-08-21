@@ -144,13 +144,6 @@ export type AdminMeItemType = {
   role: AdminStaffRoleType;
 };
 
-export type AdminNotificationType = {
-  id: number;
-  title?: string | null;
-  body?: string | null;
-  read?: boolean | null;
-  created_at?: string | null;
-};
 
 export type AdminHistoryAuthorType = {
   id?: number | null;

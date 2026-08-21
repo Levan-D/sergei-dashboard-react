@@ -32,7 +32,7 @@ export const navItems: NavEntry[] = [
   { path: ROUTING.adminStyle, label: 'Brand Style', icon: IconGlobe, section: 'Brand' },
   { path: ROUTING.adminCommunity, label: 'Community', icon: IconCommunity },
   { path: ROUTING.adminUsers, label: 'Users & Roles', icon: IconUser, section: 'Admin' },
-  { path: ROUTING.adminNotifications, label: 'Notifications', icon: IconBell, badge: '3' },
+  { path: ROUTING.adminNotifications, label: 'Notifications', icon: IconBell },
   { path: ROUTING.adminHistory, label: 'Version History', icon: IconClock },
   { path: ROUTING.adminSettings, label: 'Settings', icon: IconSettings },
 ];

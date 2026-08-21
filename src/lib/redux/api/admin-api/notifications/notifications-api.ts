@@ -1,23 +1,25 @@
 import { adminApiSlice } from '@/lib/redux/api/admin-api/admin-api-slice';
-import {
-  unwrapData,
-  type AdminListResponseType,
-  type AdminNotificationType,
-} from '@/lib/redux/api/admin-api/admin-types';
+import { unwrapData } from '@/lib/redux/api/admin-api/admin-types';
 
-export type AdminNotificationsResponseType = AdminListResponseType<AdminNotificationType> & {
-  unread_count?: number;
+export type AdminNotificationType = {
+  id: number;
+  type: string;
+  surface: string;
+  surface_label: string;
+  title: string;
+  body: string;
+  meta: string;
+  read: boolean;
+  payload: Record<string, unknown> | unknown[];
+  created_at: string;
 };
 
-/**
- * Brand admin inbox (MOTORITY-4202) — separate from FCM push and from the
- * app's /api/v2/me/interactions feed. Read state is per user, and unread_count
- * drives both the sidebar badge and the Dashboard card.
- *
- * The backend also writes entries here itself: creating a model or generation,
- * and saving hero or style, each add a card. There are no notification
- * settings — Settings has none in the mock either.
- */
+export type AdminNotificationsResponseType = {
+  items: AdminNotificationType[];
+  count: number;
+  unread_count: number;
+};
+
 export type GetAdminNotificationsArgType = { subdomain: string };
 
 export type SendAdminNotificationArgType = {
@@ -33,6 +35,18 @@ export type ReadAdminNotificationArgType = {
 
 export type ReadAllAdminNotificationsArgType = { subdomain: string };
 
+/**
+ * Brand admin inbox (MOTORITY-4202) — separate from FCM push and from the
+ * app's /api/v2/me/interactions feed. Read state is per user, and unread_count
+ * drives both the sidebar badge and the Dashboard card.
+ *
+ * The backend also writes entries here itself: creating a model or generation,
+ * and saving hero or style, each add a card. `payload` is a keyed object when
+ * present and an empty array when not.
+ *
+ * Verified 2026-08-21: the list endpoint ignores page / per-page / limit and
+ * always returns everything — server-side pagination does not exist yet.
+ */
 export const notificationsApi = adminApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAdminNotifications: builder.query<AdminNotificationsResponseType, GetAdminNotificationsArgType>({
