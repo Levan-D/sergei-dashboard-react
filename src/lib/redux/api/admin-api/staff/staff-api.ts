@@ -3,8 +3,20 @@ import {
   unwrapData,
   type AdminListResponseType,
   type AdminStaffRoleType,
-  type AdminStaffType,
 } from '@/lib/redux/api/admin-api/admin-types';
+
+export type AdminStaffType = {
+  id: number;
+  user_id: number;
+  email: string;
+  name: string;
+  role: AdminStaffRoleType;
+  active: boolean;
+  must_change_password: boolean;
+  last_login_at: string | null;
+  invited_at: string | null;
+  you: boolean;
+};
 
 /**
  * Users & Roles (MOTORITY-4199). Two roles: admin and superadmin, identical
@@ -19,7 +31,7 @@ export type GetAdminStaffArgType = { subdomain: string };
 
 export type InviteAdminStaffArgType = {
   subdomain: string;
-  name?: string;
+  fullName: string;
   email: string;
   role: AdminStaffRoleType;
 };
@@ -45,12 +57,17 @@ export const staffApi = adminApiSlice.injectEndpoints({
       providesTags: (_result, _error, { subdomain }) => [{ type: 'adminStaff', id: subdomain }],
     }),
 
-    /** Sends a temp-password email; the invitee changes it on first login via POST /api/public/login. */
+    /**
+     * Sends a temp-password email; the invitee changes it on first login via
+     * POST /api/public/login. JSON only (form-encoded → 415), and the name key
+     * on the wire is snake_case full_name — the validation error labels it
+     * fullName, which is the entity property, not the request field.
+     */
     inviteAdminStaff: builder.mutation<AdminStaffType, InviteAdminStaffArgType>({
-      query: ({ subdomain, ...body }) => ({
+      query: ({ subdomain, fullName, ...body }) => ({
         url: `/api/autobrands/${subdomain}/staff`,
         method: 'POST',
-        body,
+        body: { full_name: fullName, ...body },
       }),
       transformResponse: (response: { data: AdminStaffType } | AdminStaffType) => unwrapData(response),
     }),

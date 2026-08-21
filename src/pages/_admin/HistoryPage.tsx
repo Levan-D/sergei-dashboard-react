@@ -1,16 +1,20 @@
+import { useState } from 'react';
 import { showToast } from '@/lib/toast';
 import Badge from '@/components/_admin/ui/Badge';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
+import ConfirmModal from '@/components/_admin/ConfirmModal';
 import type { BadgeColor } from '@/components/_admin/ui/Badge';
 import Table from '@/components/_admin/ui/Table';
 import { RecordCard } from '@/components/_admin/RecordCard';
 import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
 
-function RestoreButton() {
+type RestoreButtonProps = { onClick: () => void };
+
+function RestoreButton({ onClick }: RestoreButtonProps) {
   return (
     <button
-      onClick={() => showToast('♻️ Restored to this version')}
+      onClick={onClick}
       className="cursor-pointer border-none bg-transparent font-sans text-xs font-semibold text-accent hover:underline"
     >
       Restore
@@ -66,6 +70,13 @@ const entries: {
 ];
 
 export default function HistoryPage() {
+  const [restoreTarget, setRestoreTarget] = useState<string | null>(null);
+
+  const confirmRestore = () => {
+    showToast('♻️ Restored to this version');
+    setRestoreTarget(null);
+  };
+
   return (
     <SectionCard>
       <SectionHeader title="Version History" sub="All content changes" />
@@ -89,7 +100,7 @@ export default function HistoryPage() {
               </td>
               <MutedCell>{e.time}</MutedCell>
               <td>
-                <RestoreButton />
+                <RestoreButton onClick={() => setRestoreTarget(e.object)} />
               </td>
             </tr>
           ))}
@@ -105,10 +116,21 @@ export default function HistoryPage() {
             meta={e.time}
             description={e.object}
             badge={{ label: e.change, color: e.badge }}
-            action={<RestoreButton />}
+            action={<RestoreButton onClick={() => setRestoreTarget(e.object)} />}
           />
         ))}
       </div>
+      <ConfirmModal
+        open={restoreTarget !== null}
+        title="Restore this version?"
+        description={[
+          `The current landing configuration will be replaced with the "${restoreTarget ?? ''}" snapshot.`,
+          'About and Facts are written back to the Motority catalog as well.',
+        ]}
+        actionLabel="Restore"
+        onConfirm={confirmRestore}
+        onClose={() => setRestoreTarget(null)}
+      />
     </SectionCard>
   );
 }

@@ -8,6 +8,7 @@
   --breakpoint-w1600: 1441px;
   --breakpoint-w1920: 1601px;
   --container-mobile: 48rem;
+  --container-table: 54rem;
   --container-wide: 64rem;
   --color-bg: var(--bg);
   --color-surface: var(--surface);

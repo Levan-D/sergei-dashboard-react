@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { ROUTING } from '@/lib/routing';
 import { titleForPath } from './nav';
@@ -61,7 +60,7 @@ export default function Topbar({ onMenuClick }: Props) {
         <IconButton title="Notifications" onClick={() => navigate(ROUTING.adminNotifications)}>
           <IconBell size={15} />
         </IconButton>
-        <IconButton title="View landing" onClick={() => showToast('🔗 bmw.motority.com opened')}>
+        <IconButton title="View landing" onClick={() => window.open(ROUTING.home, '_blank', 'noopener')}>
           <IconExternal size={15} />
         </IconButton>
       </div>
