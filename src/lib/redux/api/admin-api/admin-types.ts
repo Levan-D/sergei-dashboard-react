@@ -145,18 +145,6 @@ export type AdminMeItemType = {
 };
 
 
-export type AdminHistoryAuthorType = {
-  id?: number | null;
-  name?: string | null;
-};
-
-export type AdminHistoryEntryType = {
-  id: number;
-  object?: string | null;
-  change_type?: string | null;
-  author?: AdminHistoryAuthorType | null;
-  created_at?: string | null;
-};
 
 export type AdminCatalogModelType = {
   id: number;

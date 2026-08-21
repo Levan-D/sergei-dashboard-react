@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { showToast } from '@/lib/toast';
+import { brand } from '@/lib/brand';
+import useInfiniteScroll from '@/hooks/use-infinite-scroll';
+import {
+  useGetAdminHistoryQuery,
+  useRestoreAdminVersionMutation,
+  type AdminHistoryEntryType,
+} from '@/lib/redux/api/admin-api/history/history-api';
 import Badge from '@/components/_admin/ui/Badge';
+import Spinner from '@/components/_admin/ui/Spinner';
+import ErrorState from '@/components/_admin/ui/ErrorState';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import ConfirmModal from '@/components/_admin/ConfirmModal';
@@ -8,6 +17,13 @@ import type { BadgeColor } from '@/components/_admin/ui/Badge';
 import Table from '@/components/_admin/ui/Table';
 import { RecordCard } from '@/components/_admin/RecordCard';
 import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
+
+const BATCH_SIZE = 20;
+
+const BADGE_COLORS: BadgeColor[] = ['blue', 'gray', 'green', 'yellow', 'red'];
+
+const badgeColor = (badge: string): BadgeColor =>
+  (BADGE_COLORS as string[]).includes(badge) ? (badge as BadgeColor) : 'gray';
 
 type RestoreButtonProps = { onClick: () => void };
 
@@ -22,65 +38,39 @@ function RestoreButton({ onClick }: RestoreButtonProps) {
   );
 }
 
-const entries: {
-  initials: string;
-  bg?: string;
-  name: string;
-  object: string;
-  change: string;
-  badge: BadgeColor;
-  time: string;
-}[] = [
-  { initials: 'AK', name: 'Anna K.', object: 'BMW M4 description', change: 'Edited', badge: 'blue', time: '2h ago' },
-  {
-    initials: 'MR',
-    bg: 'var(--green)',
-    name: 'Max R.',
-    object: 'Hero Block',
-    change: 'Style changed',
-    badge: 'yellow',
-    time: '5h ago',
-  },
-  {
-    initials: 'YT',
-    bg: '#8b5cf6',
-    name: 'Yuki T.',
-    object: 'BMW X5 G05 generation',
-    change: 'Created',
-    badge: 'green',
-    time: 'Yesterday',
-  },
-  {
-    initials: 'AK',
-    name: 'Anna K.',
-    object: 'Brand Primary Color',
-    change: 'Style changed',
-    badge: 'yellow',
-    time: '2 days ago',
-  },
-  {
-    initials: 'LP',
-    bg: '#f59e0b',
-    name: 'Luca P.',
-    object: 'BMW iX visibility',
-    change: 'Deleted',
-    badge: 'red',
-    time: '3 days ago',
-  },
-];
+type Props = {
+  entries: AdminHistoryEntryType[];
+  count: number;
+};
 
-export default function HistoryPage() {
-  const [restoreTarget, setRestoreTarget] = useState<string | null>(null);
+function HistoryList({ entries, count }: Props) {
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const [restoreTarget, setRestoreTarget] = useState<AdminHistoryEntryType | null>(null);
+  const [restoreVersion, { isLoading: isRestoring }] = useRestoreAdminVersionMutation();
 
-  const confirmRestore = () => {
-    showToast('♻️ Restored to this version');
-    setRestoreTarget(null);
+  const visible = entries.slice(0, visibleCount);
+  const hasMore = visibleCount < entries.length;
+  const sentinelRef = useInfiniteScroll({
+    hasMore,
+    isFetching: false,
+    onLoadMore: () => setVisibleCount((v) => v + BATCH_SIZE),
+  });
+
+  const confirmRestore = async () => {
+    if (!restoreTarget) return;
+    try {
+      await restoreVersion({ subdomain: brand.makeSlug, id: restoreTarget.id }).unwrap();
+      showToast('♻️ Restored to this version');
+      setRestoreTarget(null);
+    } catch {
+      showToast('⚠️ Could not restore this version');
+    }
   };
 
   return (
     <SectionCard>
-      <SectionHeader title="Version History" sub="All content changes" />
-      <Table className="@max-mobile:hidden">
+      <SectionHeader title="Version History" sub={`${count} change${count !== 1 ? 's' : ''}`} />
+      <Table className="@max-table:hidden">
         <thead>
           <tr>
             <th>Editor</th>
@@ -91,46 +81,56 @@ export default function HistoryPage() {
           </tr>
         </thead>
         <tbody>
-          {entries.map((e, i) => (
-            <tr key={i}>
-              <IdentityCell initials={e.initials} bg={e.bg} name={e.name} />
-              <td>{e.object}</td>
+          {visible.map((entry) => (
+            <tr key={entry.id}>
+              <IdentityCell initials={entry.editor.initials} name={entry.editor.name} />
+              <td>{entry.object}</td>
               <td>
-                <Badge color={e.badge}>{e.change}</Badge>
+                <Badge color={badgeColor(entry.badge)}>{entry.change_type_label}</Badge>
               </td>
-              <MutedCell>{e.time}</MutedCell>
+              <MutedCell>{entry.time}</MutedCell>
               <td>
-                <RestoreButton onClick={() => setRestoreTarget(e.object)} />
+                <RestoreButton onClick={() => setRestoreTarget(entry)} />
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
-        {entries.map((e, i) => (
+      <div className="hidden flex-col gap-2 p-3 @max-table:flex">
+        {visible.map((entry) => (
           <RecordCard
-            key={i}
-            initials={e.initials}
-            bg={e.bg}
-            title={e.name}
-            meta={e.time}
-            description={e.object}
-            badge={{ label: e.change, color: e.badge }}
-            action={<RestoreButton onClick={() => setRestoreTarget(e.object)} />}
+            key={entry.id}
+            initials={entry.editor.initials}
+            title={entry.editor.name}
+            meta={entry.time}
+            description={entry.object}
+            badge={{ label: entry.change_type_label, color: badgeColor(entry.badge) }}
+            action={<RestoreButton onClick={() => setRestoreTarget(entry)} />}
           />
         ))}
       </div>
+      {hasMore && (
+        <div ref={sentinelRef}>
+          <Spinner className="py-6" />
+        </div>
+      )}
       <ConfirmModal
         open={restoreTarget !== null}
-        title="Restore this version?"
-        description={[
-          `The current landing configuration will be replaced with the "${restoreTarget ?? ''}" snapshot.`,
-          'About and Facts are written back to the Motority catalog as well.',
-        ]}
+        title="Are you sure you want to restore to this version?"
+        description="Existing data will get overridden."
         actionLabel="Restore"
+        loading={isRestoring}
         onConfirm={confirmRestore}
         onClose={() => setRestoreTarget(null)}
       />
     </SectionCard>
   );
+}
+
+export default function HistoryPage() {
+  const { data, isError, error, isFetching, refetch } = useGetAdminHistoryQuery({ subdomain: brand.makeSlug });
+
+  if (isError && !data) return <ErrorState error={error} isRetrying={isFetching} onRetry={refetch} />;
+  if (!data) return <Spinner />;
+  return <HistoryList entries={data.items} count={data.count} />;
 }

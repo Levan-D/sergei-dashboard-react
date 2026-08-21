@@ -48,7 +48,11 @@ export default function Sidebar({ className, onNavigate }: Props) {
               <button
                 type="button"
                 onClick={() => {
-                  navigate(path);
+                  if (pathname === path) {
+                    document.getElementById('admin-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else {
+                    navigate(path);
+                  }
                   onNavigate?.();
                 }}
                 className={cn(
