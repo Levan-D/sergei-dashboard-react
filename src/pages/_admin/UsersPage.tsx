@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
 import { fmtRelativeTime } from '@/lib/time';
+import { initialsOf } from '@/lib/initials';
 import {
   useGetAdminStaffQuery,
   useDeactivateAdminStaffMutation,
@@ -21,15 +22,6 @@ import Table from '@/components/_admin/ui/Table';
 import { IdentityCell, MutedCell, ActionsCell } from '@/components/_admin/table-cells';
 
 const ROLE_LABELS = { admin: 'Admin', superadmin: 'Super Admin' } as const;
-
-const initialsOf = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 
 type RowActionsProps = {
   member: AdminStaffType;

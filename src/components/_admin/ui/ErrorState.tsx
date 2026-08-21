@@ -59,10 +59,10 @@ export default function ErrorState({
             onRetry?.();
           }}
         >
-          Try again ({retriesLeft} left)
+          Try again
         </Button>
       ) : (
-        onRetry && <p className="mt-3 text-xs text-ink-3">Still failing after several attempts. Reload the page.</p>
+        onRetry && <p className="mt-3 text-xs text-ink-3">Still not working. Please contact Motority support.</p>
       )}
     </div>
   );

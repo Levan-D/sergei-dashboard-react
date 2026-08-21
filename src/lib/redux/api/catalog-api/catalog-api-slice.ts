@@ -155,7 +155,14 @@ export type CatalogPostType = {
 export const catalogApiSlice = createApi({
   reducerPath: 'catalogApi',
   baseQuery,
-  tagTypes: ['getCatalogMakes', 'catalogModels', 'catalogGenerations', 'getTopLogbooks', 'getCatalogLogbookPosts'],
+  tagTypes: [
+    'getCatalogMakes',
+    'catalogModels',
+    'catalogGenerations',
+    'getTopLogbooks',
+    'getNewLogbooks',
+    'getCatalogLogbookPosts',
+  ],
 
   endpoints: (builder) => ({
     getCatalogMakes: builder.query<PaginatedResponse<CatalogMakeType>, GetCatalogMakesParamsType>({
@@ -220,6 +227,20 @@ export const catalogApiSlice = createApi({
       providesTags: () => [{ type: 'getTopLogbooks', id: 'LIST' }],
     }),
 
+    getNewLogbooks: builder.query<
+      PaginatedResponse<TopLogbookAuthorType>,
+      { make: string; page?: number; perPage?: number }
+    >({
+      query: ({ make, page = 1, perPage = 3 }) =>
+        `/api/public/author?page=${page}&per-page=${perPage}&type=logbook&search-type=new&make=${make}`,
+      keepUnusedDataFor: 0,
+
+      transformResponse: (
+        response: { data: PaginatedResponse<TopLogbookAuthorType> } | PaginatedResponse<TopLogbookAuthorType>,
+      ) => ('data' in response ? response.data : response),
+      providesTags: () => [{ type: 'getNewLogbooks', id: 'LIST' }],
+    }),
+
     getCatalogLogbookPosts: builder.query<PaginatedResponse<CatalogPostType>, GetTopLogbooksParamsType>({
       query: ({ type = 'car', make = '', model = '', generation = '', page = 1, perPage = 10 }) =>
         `/api/v2/public/catalog/logbooks/posts?model-type=${type}&make-slug=${make}&model-slug=${model}&generation-slug=${generation}&page=${page}&per-page=${perPage}`,
@@ -238,5 +259,6 @@ export const {
   useGetCatalogModelsQuery,
   useGetCatalogGenerationsQuery,
   useGetTopLogbooksQuery,
+  useGetNewLogbooksQuery,
   useGetCatalogLogbookPostsQuery,
 } = catalogApiSlice;
