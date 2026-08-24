@@ -6,15 +6,19 @@ const TUS_URL = import.meta.env.VITE_TUS_URL ?? 'https://testing-images.motority
 
 export type TusMediaType = 'image' | 'video';
 
+export const tusMediaType = (file: File): TusMediaType => (file.type.startsWith('video') ? 'video' : 'image');
+
 /**
  * Same upload flow as the main frontend's images-api (Uppy + tus, 5MB chunks).
  * Resolves to the file ids the backend knows the uploads by — the last path
- * segment of each uploadURL.
+ * segment of each uploadURL, in the same order as the input files. Omit
+ * mediaType to derive it per file from the mime type.
  */
 export async function uploadFilesTus(
   files: File[],
-  mediaType: TusMediaType = 'image',
+  mediaType?: TusMediaType,
   onProgress?: (percent: number) => void,
+  onFileProgress?: (index: number, percent: number) => void,
 ): Promise<string[]> {
   const uppy = new Uppy().use(Tus, {
     endpoint: TUS_URL,
@@ -23,28 +27,33 @@ export async function uploadFilesTus(
     chunkSize: 5 * 1024 * 1024,
   });
 
-  for (const file of files) {
+  const addedIds = files.map((file) =>
     uppy.addFile({
-      name: `${encodeURIComponent(file.name)}-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: `${file.name}-${Math.floor(1000 + Math.random() * 9000)}`,
       type: file.type,
       data: file,
-      meta: { media_type: mediaType },
-    });
-  }
+      meta: { media_type: mediaType ?? tusMediaType(file) },
+    }),
+  );
 
-  uppy.on('upload-progress', (_file, progress) => {
-    if (onProgress && progress.bytesTotal) {
-      onProgress(Math.round((progress.bytesUploaded / progress.bytesTotal) * 100));
+  uppy.on('upload-progress', (file, progress) => {
+    if (!progress.bytesTotal) return;
+    const percent = Math.round((progress.bytesUploaded / progress.bytesTotal) * 100);
+    if (onProgress) onProgress(percent);
+    if (onFileProgress && file) {
+      const index = addedIds.indexOf(file.id);
+      if (index !== -1) onFileProgress(index, percent);
     }
   });
 
   const result = await uppy.upload();
   const successful = result?.successful ?? [];
   const failed = result?.failed ?? [];
-  if (!successful.length || failed.length) throw new Error('TUS upload failed');
+  if (successful.length !== files.length || failed.length) throw new Error('TUS upload failed');
 
-  return successful.map((f) => {
-    const parts = (f.uploadURL ?? '').split('/');
+  return addedIds.map((addedId) => {
+    const uploaded = successful.find((f) => f.id === addedId);
+    const parts = (uploaded?.uploadURL ?? '').split('/');
     return parts[parts.length - 1];
   });
 }

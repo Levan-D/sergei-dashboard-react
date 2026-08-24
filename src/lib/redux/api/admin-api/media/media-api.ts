@@ -22,8 +22,9 @@ export type GetAdminMediaArgType = {
 
 export type RegisterAdminMediaArgType = {
   subdomain: string;
-  file: number | string;
+  file_id: string;
   kind?: AdminMediaKindType;
+  name?: string;
 };
 
 export type DeleteAdminMediaArgType = {
@@ -36,14 +37,26 @@ export const mediaApi = adminApiSlice.injectEndpoints({
     getAdminMedia: builder.query<AdminListResponseType<AdminMediaType>, GetAdminMediaArgType>({
       query: ({ subdomain, kind }) => `/api/autobrands/${subdomain}/media${kind ? `?kind=${kind}` : ''}`,
       transformResponse: (
-        response: { data: AdminListResponseType<AdminMediaType> } | AdminListResponseType<AdminMediaType>,
-      ) => unwrapData(response),
+        response:
+          | { data: AdminListResponseType<AdminMediaType> | AdminMediaType[] }
+          | AdminListResponseType<AdminMediaType>
+          | AdminMediaType[],
+      ) => {
+        const unwrapped = unwrapData(response);
+        return Array.isArray(unwrapped) ? { items: unwrapped } : unwrapped;
+      },
       providesTags: (_result, _error, { subdomain, kind }) => [
         { type: 'adminMedia', id: `${subdomain}:${kind ?? 'all'}` },
       ],
     }),
 
-    /** Registers an already-uploaded FileInfo into the library. Same file twice returns 409. */
+    /**
+     * Registers an already-uploaded FileInfo into the library. Same file twice
+     * returns 409. The 201 body is a complete library entry, so instead of an
+     * invalidate-and-refetch (which blanks the grid for a beat) it is unshifted
+     * straight into the cached list — new files land at index 0, same as the
+     * server orders them.
+     */
     registerAdminMedia: builder.mutation<AdminMediaType, RegisterAdminMediaArgType>({
       query: ({ subdomain, ...body }) => ({
         url: `/api/autobrands/${subdomain}/media`,
@@ -51,6 +64,15 @@ export const mediaApi = adminApiSlice.injectEndpoints({
         body,
       }),
       transformResponse: (response: { data: AdminMediaType } | AdminMediaType) => unwrapData(response),
+      async onQueryStarted({ subdomain }, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(
+          mediaApi.util.updateQueryData('getAdminMedia', { subdomain }, (draft) => {
+            draft.items.unshift(data);
+            if (typeof draft.count === 'number') draft.count += 1;
+          }),
+        );
+      },
     }),
 
     deleteAdminMedia: builder.mutation<void, DeleteAdminMediaArgType>({
@@ -58,6 +80,19 @@ export const mediaApi = adminApiSlice.injectEndpoints({
         url: `/api/autobrands/${subdomain}/media/${id}`,
         method: 'DELETE',
       }),
+      async onQueryStarted({ subdomain, id }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          mediaApi.util.updateQueryData('getAdminMedia', { subdomain }, (draft) => {
+            draft.items = draft.items.filter((item) => item.id !== id);
+            if (typeof draft.count === 'number') draft.count -= 1;
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
     }),
   }),
 });

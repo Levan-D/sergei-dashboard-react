@@ -7,6 +7,7 @@ import catalog from '@/features/_admin/catalog/catalogSlice';
 import landing from '@/features/_admin/landing/landingSlice';
 import specs from '@/features/_admin/specs/specsSlice';
 import screen from './screenSlice';
+import uploads from './uploadsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     landing,
     specs,
     screen,
+    uploads,
     [catalogApiSlice.reducerPath]: catalogApiSlice.reducer,
     [adminApiSlice.reducerPath]: adminApiSlice.reducer,
     [autobrandApiSlice.reducerPath]: autobrandApiSlice.reducer,

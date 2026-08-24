@@ -20,7 +20,10 @@ import {
   FiPlus,
   FiDownload,
   FiChevronDown,
+  FiChevronLeft,
+  FiChevronRight,
   FiMenu,
+  FiTrash2,
 } from 'react-icons/fi';
 import { RxDragHandleDots2 } from 'react-icons/rx';
 import type { IconType } from 'react-icons';
@@ -62,4 +65,7 @@ export const IconDownload = wrap(FiDownload);
 export const IconDrag6 = wrap(RxDragHandleDots2);
 export const IconDrag4 = wrap(RxDragHandleDots2);
 export const IconChevronDown = wrap(FiChevronDown);
+export const IconChevronLeft = wrap(FiChevronLeft);
+export const IconChevronRight = wrap(FiChevronRight);
 export const IconMenu = wrap(FiMenu);
+export const IconTrash = wrap(FiTrash2);

@@ -10,11 +10,33 @@ export type AdminStaffRoleType = 'admin' | 'superadmin';
 
 export type AdminMediaKindType = 'image' | 'video' | 'logo';
 
+export type AdminFileInfoType = {
+  id: string;
+  url?: string | null;
+  size?: number | null;
+  duration?: number | null;
+  handled?: boolean | null;
+  filetype?: string | null;
+  filename?: string | null;
+  image_big?: string | null;
+  image_medium?: string | null;
+  image_small?: string | null;
+  height?: number | null;
+  width?: number | null;
+  media_type?: 'image' | 'video' | null;
+  url_domain?: string | null;
+  order?: number | null;
+  default?: boolean | null;
+};
+
 export type AdminMediaType = {
   id: number | string;
-  file_id?: number | string | null;
+  file_id?: string | null;
+  file?: AdminFileInfoType | null;
   kind?: AdminMediaKindType;
   name?: string | null;
+  meta?: string | null;
+  media_type?: 'image' | 'video' | null;
   filetype?: string | null;
   size?: number | null;
   width?: number | null;
@@ -161,11 +183,31 @@ export type AdminCatalogGenerationType = {
   model_id?: number | null;
 };
 
-export const adminMediaUrl = (media?: AdminMediaType | null, size: 'small' | 'medium' | 'big' = 'medium') => {
+const MEDIA_SIZES = ['small', 'medium', 'big'] as const;
+
+export type AdminMediaSizeType = (typeof MEDIA_SIZES)[number];
+
+/**
+ * Same fallback cascade as the main frontend's handleMediaUrl: the requested
+ * size first, then the remaining sizes, then the original file — except for
+ * videos, whose original is the mp4 and must never be served as an image.
+ */
+export const adminMediaUrl = (media?: AdminMediaType | null, size: AdminMediaSizeType = 'medium') => {
   if (!media) return null;
-  const path = (size === 'small' ? media.image_small : size === 'big' ? media.image_big : media.image_medium) ?? media.url;
+  const info = media.file ?? media;
+  const bySize = { small: info.image_small, medium: info.image_medium, big: info.image_big };
+  const sizeOrder = [size, ...MEDIA_SIZES.filter((s) => s !== size)];
+  const path = sizeOrder.map((s) => bySize[s]).find(Boolean) ?? (info.media_type === 'video' ? null : info.url);
   if (!path) return null;
-  return media.url_domain ? `${media.url_domain}${path}` : path;
+  return info.url_domain ? `${info.url_domain}${path}` : path;
+};
+
+/** Raw file url (the actual mp4 for videos — image_* slots hold the poster). */
+export const adminMediaFileUrl = (media?: AdminMediaType | null) => {
+  if (!media) return null;
+  const info = media.file ?? media;
+  if (!info.url) return null;
+  return info.url_domain ? `${info.url_domain}${info.url}` : info.url;
 };
 
 export const unwrapData = <T>(response: { data: T } | T): T =>

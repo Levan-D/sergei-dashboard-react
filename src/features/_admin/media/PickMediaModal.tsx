@@ -7,7 +7,7 @@ import Chip from '@/components/_admin/ui/Chip';
 import { IconImage } from '@/components/_admin/icons';
 import { mediaFiles } from './data';
 
-const mediaFilters = ['All', 'Images', 'Videos', 'Logos'];
+const mediaFilters = ['All', 'Images', 'Videos'];
 
 type Props = { open: boolean; onClose: () => void };
 

@@ -158,7 +158,7 @@ function HeroForm({ site }: Props) {
   const uploadOne = async (local: LocalFileType | null, mediaType: TusMediaType) => {
     if (!local) return undefined;
     const [id] = await uploadFilesTus([local.file], mediaType);
-    await registerMedia({ subdomain: brand.makeSlug, file: id })
+    await registerMedia({ subdomain: brand.makeSlug, file_id: id })
       .unwrap()
       .catch(() => undefined);
     return { id };
@@ -176,7 +176,7 @@ function HeroForm({ site }: Props) {
       for (const slide of values.slides) {
         if (slide.file) {
           const [id] = await uploadFilesTus([slide.file], 'image');
-          await registerMedia({ subdomain: brand.makeSlug, file: id })
+          await registerMedia({ subdomain: brand.makeSlug, file_id: id })
             .unwrap()
             .catch(() => undefined);
           slidePayload.push({ media: { id } });
