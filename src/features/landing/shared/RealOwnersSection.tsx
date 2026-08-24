@@ -4,8 +4,8 @@ import SectionTitle from '@/components/landing/SectionTitle';
 import LogbookCard from '@/components/landing/LogbookCard';
 import Carousel from '@/components/landing/Carousel';
 import { IconChevronRight } from '@/components/landing/icons';
-import Highlight from '@/components/landing/Highlight';
 import { useGetTopLogbooksQuery, type TopLogbookAuthorType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
+import { useGetPublicAutobrandQuery } from '@/lib/redux/api/autobrand-api/autobrand-api-slice';
 import { brand, brandCatalogUrl } from '@/lib/brand';
 import { mediaUrl } from '@/lib/media';
 import type { OwnerLogbook } from '@/features/landing/data';
@@ -32,17 +32,20 @@ function toOwnerLogbook(author: TopLogbookAuthorType): OwnerLogbook {
 
 export function RealOwnersSection() {
   const { model, gen } = useParams();
+  const { data: site } = useGetPublicAutobrandQuery({ subdomain: brand.makeSlug });
+  const community = site?.community;
   const { data, isFetching, isError } = useGetTopLogbooksQuery({
     type: 'car',
     make: brand.makeSlug,
     model: model ?? '',
     generation: gen ?? '',
     page: 1,
-    perPage: 10,
+    perPage: community?.max_logbooks ?? 4,
   });
   const logbooks = (data?.items ?? []).map(toOwnerLogbook);
   const catalogUrl = brandCatalogUrl(model, gen);
 
+  if (community?.show_on_landing === false) return <></>;
   if (isFetching || isError || data?.items?.length === 0) return <></>;
 
   return (
@@ -50,23 +53,21 @@ export function RealOwnersSection() {
       <Container>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex min-w-0 flex-1 flex-col">
-            <Highlight id="5b" className="w-full">
-              <div className="flex w-full flex-col gap-4">
-                <div className="flex items-center justify-between gap-4">
-                  <SectionTitle>Real owners</SectionTitle>
-                  <a
-                    href={catalogUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Browse all logbooks"
-                    className="shrink-0 cursor-pointer text-white w640:hidden"
-                  >
-                    <IconChevronRight size={20} />
-                  </a>
-                </div>
-                <p className="t-subhead text-white/80">BMW owners documenting their journeys on Motority</p>
+            <div className="flex w-full flex-col gap-4">
+              <div className="flex items-center justify-between gap-4">
+                <SectionTitle>{community?.title ?? 'Real owners'}</SectionTitle>
+                <a
+                  href={catalogUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Browse all logbooks"
+                  className="shrink-0 cursor-pointer text-white w640:hidden"
+                >
+                  <IconChevronRight size={20} />
+                </a>
               </div>
-            </Highlight>
+              {community?.subtitle && <p className="t-subhead text-white/80">{community.subtitle}</p>}
+            </div>
           </div>
           <a
             href={catalogUrl}

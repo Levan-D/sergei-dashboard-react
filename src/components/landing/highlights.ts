@@ -16,11 +16,6 @@ export const HIGHLIGHTS = [
     note: 'Cards come from Admin → Catalog → Models (visibility in Admin → Landing → Models on landing). Still needs an endpoint to serve them: Explore only lists models per make, with no body/series/decade filtering and no model images.',
     location: 'Home — models grid (cards)',
   },
-  {
-    id: '4r',
-    note: 'Both pagination and a “See more” button are here — which one do we keep? They do the same job.',
-    location: 'Home — models section (See more + pagination)',
-  },
   { id: '1b', note: 'Admin panel → Landing page → Hero block', location: 'Home hero — headline & lead' },
   { id: '2b', note: 'Admin panel → Landing page → Hero block', location: 'Home hero — Join the community button' },
   { id: '3b', note: 'Admin panel → Landing page → Second screen', location: 'Home — brand section (second screen)' },
@@ -79,11 +74,6 @@ export const HIGHLIGHTS = [
     id: '7b',
     note: 'Admin panel → Catalog → Model editor → Gallery',
     location: 'Model page — gallery strip',
-  },
-  {
-    id: '5b',
-    note: 'Admin panel → Community → Community Block Settings (block on/off, title, subtitle). “Max logbooks to show” also controls how many cards render here — not wired up yet.',
-    location: 'Real owners — section header',
   },
 ] as const satisfies readonly HighlightEntry[];
 

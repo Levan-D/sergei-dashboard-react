@@ -7,7 +7,6 @@ import PillChip from '@/components/landing/PillChip';
 import Carousel from '@/components/landing/Carousel';
 import Highlight from '@/components/landing/Highlight';
 import useModelsPerPage from '@/hooks/use-models-per-page';
-import Button from '@/components/landing/Button';
 import { cn } from '@/lib/cn';
 import { landingModels, bodyTypeFilters, seriesFilters, decadeFilters } from '@/features/landing/data';
 
@@ -99,11 +98,8 @@ export function ModelsSection() {
           })}
         </div>
 
-        <Highlight id="4r" size="lg" className="mt-6 block w960:mt-[30px]">
+        <div className="mt-6 block w960:mt-[30px]">
           <div className="flex w-full flex-col items-center gap-6">
-            <Button variant="secondary" className="w-full bg-[#d4d4d8]/40 text-black hover:bg-[#d4d4d8]/60">
-              See more
-            </Button>
             <div className="flex items-center gap-2 w640:gap-4">
               <button
                 type="button"
@@ -135,7 +131,7 @@ export function ModelsSection() {
               </button>
             </div>
           </div>
-        </Highlight>
+        </div>
       </Container>
     </section>
   );
