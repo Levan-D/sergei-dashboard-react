@@ -38,6 +38,7 @@ export type AdminMediaType = {
   meta?: string | null;
   media_type?: 'image' | 'video' | null;
   filetype?: string | null;
+  filename?: string | null;
   size?: number | null;
   width?: number | null;
   height?: number | null;

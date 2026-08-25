@@ -62,7 +62,12 @@ export function GallerySection({ sub, initial }: GallerySectionProps) {
         </button>
       </div>
       <p className="px-5 pb-3 text-[11px] text-ink-3 @mobile:pb-4">Drag to reorder · JPG, WebP · max 5MB each</p>
-      <PickMediaModal open={pickOpen} onClose={() => setPickOpen(false)} />
+      <PickMediaModal
+        open={pickOpen}
+        onClose={() => setPickOpen(false)}
+        onPick={() => showToast('📁 Gallery has no backend yet — nowhere to attach the pick')}
+        kinds={['image']}
+      />
     </SectionCard>
   );
 }

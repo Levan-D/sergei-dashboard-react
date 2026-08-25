@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { useForm, type UseFormRegister } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
@@ -8,6 +9,7 @@ import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminHeroMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
 import { useRegisterAdminMediaMutation } from '@/lib/redux/api/admin-api/media/media-api';
 import {
+  adminMediaFileUrl,
   adminMediaUrl,
   type AdminMediaType,
   type AutobrandSiteType,
@@ -23,10 +25,13 @@ import Toggle from '@/components/_admin/forms/Toggle';
 import MediaPreview from '@/components/_admin/MediaPreview';
 import DropZone from '@/components/_admin/forms/DropZone';
 import { MediaPickRow, MediaSectionLabel } from '@/components/_admin/MediaRow';
+import PickMediaModal from '@/features/_admin/media/PickMediaModal';
 import { IconImage, IconVideo, IconCarousel } from '@/components/_admin/icons';
 import Input from '@/components/_admin/forms/Input';
 
 type SingleFileField = 'image_file' | 'video_file' | 'video_thumbnail_file';
+type SinglePickField = 'image_pick' | 'video_pick' | 'video_thumbnail_pick';
+type SingleRemovedField = 'image_removed' | 'video_removed' | 'video_thumbnail_removed';
 
 type HeroFormValues = {
   type: HeroType;
@@ -39,6 +44,12 @@ type HeroFormValues = {
   image_file: LocalFileType | null;
   video_file: LocalFileType | null;
   video_thumbnail_file: LocalFileType | null;
+  image_pick: AdminMediaType | null;
+  video_pick: AdminMediaType | null;
+  video_thumbnail_pick: AdminMediaType | null;
+  image_removed: boolean;
+  video_removed: boolean;
+  video_thumbnail_removed: boolean;
   slides: HeroSlideItemType[];
 };
 
@@ -78,6 +89,7 @@ const seedSlides = (site: AutobrandSiteType): HeroSlideItemType[] =>
     previewUrl: adminMediaUrl(s.media),
     file: null,
     mediaId: s.media?.id ?? null,
+    media: s.media ?? null,
   }));
 
 type Props = { site: AutobrandSiteType };
@@ -105,6 +117,12 @@ function HeroForm({ site }: Props) {
       image_file: null,
       video_file: null,
       video_thumbnail_file: null,
+      image_pick: null,
+      video_pick: null,
+      video_thumbnail_pick: null,
+      image_removed: false,
+      video_removed: false,
+      video_thumbnail_removed: false,
       slides: seedSlides(site),
     },
   });
@@ -113,34 +131,81 @@ function HeroForm({ site }: Props) {
   const imageFile = watch('image_file');
   const videoFile = watch('video_file');
   const thumbFile = watch('video_thumbnail_file');
+  const imagePick = watch('image_pick');
+  const videoPick = watch('video_pick');
+  const thumbPick = watch('video_thumbnail_pick');
+  const imageRemoved = watch('image_removed');
+  const videoRemoved = watch('video_removed');
+  const thumbRemoved = watch('video_thumbnail_removed');
   const slides = watch('slides');
 
   const existingImageUrl = adminMediaUrl(hero?.image);
-  const existingVideoUrl = adminMediaUrl(hero?.video);
+  const existingVideoUrl = adminMediaFileUrl(hero?.video);
   const existingThumbUrl = adminMediaUrl(hero?.video_thumbnail);
+
+  const pickFieldOf: Record<SingleFileField, SinglePickField> = {
+    image_file: 'image_pick',
+    video_file: 'video_pick',
+    video_thumbnail_file: 'video_thumbnail_pick',
+  };
+
+  const removedFieldOf: Record<SingleFileField, SingleRemovedField> = {
+    image_file: 'image_removed',
+    video_file: 'video_removed',
+    video_thumbnail_file: 'video_thumbnail_removed',
+  };
 
   const replaceSingle = (field: SingleFileField) => (files: File[]) => {
     releaseLocalFile(watch(field));
     setValue(field, toLocalFile(files[0]), { shouldDirty: true });
+    setValue(pickFieldOf[field], null, { shouldDirty: true });
+    setValue(removedFieldOf[field], false, { shouldDirty: true });
+  };
+
+  const pickSingle = (field: SingleFileField) => (media: AdminMediaType) => {
+    releaseLocalFile(watch(field));
+    setValue(field, null, { shouldDirty: true });
+    setValue(pickFieldOf[field], media, { shouldDirty: true });
+    setValue(removedFieldOf[field], false, { shouldDirty: true });
   };
 
   const removeSingle = (field: SingleFileField) => () => {
     releaseLocalFile(watch(field));
     setValue(field, null, { shouldDirty: true });
+    setValue(pickFieldOf[field], null, { shouldDirty: true });
     showToast('🗑️ File removed');
   };
 
+  const removeExisting = (field: SingleFileField) => () => {
+    setValue(removedFieldOf[field], true, { shouldDirty: true });
+  };
+
+  const [slidePickOpen, setSlidePickOpen] = useState(false);
+  const slideKeyRef = useRef(0);
+
   const addSlides = (files: File[]) => {
-    const next = files.map((file, i) => {
+    const next = files.map((file) => {
       const local = toLocalFile(file);
       return {
-        id: `local-${slides.length + i}-${file.name}`,
+        id: `local-${slideKeyRef.current++}-${file.name}`,
         name: file.name,
         meta: fmtFileSize(file.size),
         previewUrl: local.url,
         file,
       };
     });
+    setValue('slides', [...slides, ...next], { shouldDirty: true });
+  };
+
+  const addSlidesFromLibrary = (mediaList: AdminMediaType[]) => {
+    const next = mediaList.map((media, i) => ({
+      id: `pick-${media.id}-${slideKeyRef.current++}`,
+      name: media.name ?? `Slide ${slides.length + i + 1}`,
+      meta: media.meta ?? '',
+      previewUrl: adminMediaUrl(media),
+      file: null,
+      media: media.file ?? media,
+    }));
     setValue('slides', [...slides, ...next], { shouldDirty: true });
   };
 
@@ -155,31 +220,46 @@ function HeroForm({ site }: Props) {
     showToast('🗑️ Slide removed');
   };
 
-  const uploadOne = async (local: LocalFileType | null, mediaType: TusMediaType) => {
-    if (!local) return undefined;
+  const uploadOne = async (local: LocalFileType, mediaType: TusMediaType) => {
     const [id] = await uploadFilesTus([local.file], mediaType);
-    await registerMedia({ subdomain: brand.makeSlug, file_id: id })
+    const entry = await registerMedia({ subdomain: brand.makeSlug, file_id: id, name: local.file.name })
       .unwrap()
       .catch(() => undefined);
-    return { id };
+    return entry?.file ?? { id };
   };
 
-  const mediaRef = (media?: AdminMediaType | null) => (media?.id != null ? { id: media.id } : undefined);
+  const resolveSingle = async (
+    local: LocalFileType | null,
+    pick: AdminMediaType | null,
+    removed: boolean,
+    existing: AdminMediaType | null | undefined,
+    mediaType: TusMediaType,
+  ) => {
+    if (local) return uploadOne(local, mediaType);
+    if (pick) return pick.file ?? pick;
+    if (removed) return null;
+    return existing ?? null;
+  };
 
   const onSubmit = async (values: HeroFormValues) => {
     try {
-      const image = (await uploadOne(values.image_file, 'image')) ?? mediaRef(hero?.image);
-      const video = (await uploadOne(values.video_file, 'video')) ?? mediaRef(hero?.video);
-      const thumb = (await uploadOne(values.video_thumbnail_file, 'image')) ?? mediaRef(hero?.video_thumbnail);
+      const image = await resolveSingle(values.image_file, values.image_pick, values.image_removed, hero?.image, 'image');
+      const video = await resolveSingle(values.video_file, values.video_pick, values.video_removed, hero?.video, 'video');
+      const thumb = await resolveSingle(
+        values.video_thumbnail_file,
+        values.video_thumbnail_pick,
+        values.video_thumbnail_removed,
+        hero?.video_thumbnail,
+        'image',
+      );
 
       const slidePayload = [];
       for (const slide of values.slides) {
         if (slide.file) {
-          const [id] = await uploadFilesTus([slide.file], 'image');
-          await registerMedia({ subdomain: brand.makeSlug, file_id: id })
-            .unwrap()
-            .catch(() => undefined);
-          slidePayload.push({ media: { id } });
+          const local = { file: slide.file, url: slide.previewUrl ?? '' };
+          slidePayload.push({ media: await uploadOne(local, 'image') });
+        } else if (slide.media) {
+          slidePayload.push({ media: slide.media });
         } else if (slide.mediaId != null) {
           slidePayload.push({ media: { id: slide.mediaId } });
         }
@@ -195,9 +275,9 @@ function HeroForm({ site }: Props) {
           cta_secondary: values.cta_secondary,
           autoplay: values.autoplay,
           slide_duration_seconds: Number(values.slide_duration_seconds),
-          ...(image ? { image } : {}),
-          ...(video ? { video } : {}),
-          ...(thumb ? { video_thumbnail: thumb } : {}),
+          image,
+          video,
+          video_thumbnail: thumb,
           slides: slidePayload,
         },
       }).unwrap();
@@ -225,6 +305,7 @@ function HeroForm({ site }: Props) {
           </Button>
         }
       />
+      <fieldset disabled={isSubmitting} className={cn('contents', isSubmitting && '[&_button]:cursor-not-allowed')}>
       <div className="flex gap-1 border-b border-line bg-surface-2 px-3 py-2 @mobile:px-4 @mobile:py-3">
         {tabs.map((t) => (
           <button
@@ -254,13 +335,21 @@ function HeroForm({ site }: Props) {
               meta={fmtFileSize(imageFile.file.size)}
               onRemove={removeSingle('image_file')}
             />
-          ) : existingImageUrl ? (
+          ) : imagePick ? (
+            <MediaPreview
+              url={adminMediaUrl(imagePick) ?? ''}
+              kind="image"
+              name={imagePick.name ?? 'Library photo'}
+              meta={imagePick.meta ?? ''}
+              onRemove={removeSingle('image_file')}
+            />
+          ) : existingImageUrl && !imageRemoved ? (
             <MediaPreview
               url={existingImageUrl}
               kind="image"
-              name={hero?.image?.name ?? 'Current photo'}
+              name={hero?.image?.name ?? hero?.image?.filename ?? 'Current photo'}
               meta={hero?.image?.filetype ?? ''}
-              onRemove={() => showToast('🗑️ Removing saved media is not wired yet')}
+              onRemove={removeExisting('image_file')}
             />
           ) : (
             <MediaPickRow
@@ -270,7 +359,9 @@ function HeroForm({ site }: Props) {
               hint="1600×900px · JPG/WebP · max 5MB"
               kinds={['image']}
               maxSizeMB={5}
+              disabled={isSubmitting}
               onFiles={replaceSingle('image_file')}
+              onPick={pickSingle('image_file')}
             />
           )}
         </div>
@@ -287,13 +378,21 @@ function HeroForm({ site }: Props) {
               meta={fmtFileSize(videoFile.file.size)}
               onRemove={removeSingle('video_file')}
             />
-          ) : existingVideoUrl ? (
+          ) : videoPick ? (
+            <MediaPreview
+              url={adminMediaFileUrl(videoPick) ?? ''}
+              kind="video"
+              name={videoPick.name ?? 'Library video'}
+              meta={videoPick.meta ?? ''}
+              onRemove={removeSingle('video_file')}
+            />
+          ) : existingVideoUrl && !videoRemoved ? (
             <MediaPreview
               url={existingVideoUrl}
               kind="video"
-              name={hero?.video?.name ?? 'Current video'}
+              name={hero?.video?.name ?? hero?.video?.filename ?? 'Current video'}
               meta={hero?.video?.filetype ?? ''}
-              onRemove={() => showToast('🗑️ Removing saved media is not wired yet')}
+              onRemove={removeExisting('video_file')}
             />
           ) : (
             <MediaPickRow
@@ -303,7 +402,9 @@ function HeroForm({ site }: Props) {
               hint="MP4/WebM · max 100MB · recommended 1920×1080"
               kinds={['video']}
               maxSizeMB={100}
+              disabled={isSubmitting}
               onFiles={replaceSingle('video_file')}
+              onPick={pickSingle('video_file')}
             />
           )}
 
@@ -316,13 +417,21 @@ function HeroForm({ site }: Props) {
               meta={fmtFileSize(thumbFile.file.size)}
               onRemove={removeSingle('video_thumbnail_file')}
             />
-          ) : existingThumbUrl ? (
+          ) : thumbPick ? (
+            <MediaPreview
+              url={adminMediaUrl(thumbPick) ?? ''}
+              kind="image"
+              name={thumbPick.name ?? 'Library thumbnail'}
+              meta={thumbPick.meta ?? ''}
+              onRemove={removeSingle('video_thumbnail_file')}
+            />
+          ) : existingThumbUrl && !thumbRemoved ? (
             <MediaPreview
               url={existingThumbUrl}
               kind="image"
-              name={hero?.video_thumbnail?.name ?? 'Current thumbnail'}
+              name={hero?.video_thumbnail?.name ?? hero?.video_thumbnail?.filename ?? 'Current thumbnail'}
               meta={hero?.video_thumbnail?.filetype ?? ''}
-              onRemove={() => showToast('🗑️ Removing saved media is not wired yet')}
+              onRemove={removeExisting('video_thumbnail_file')}
             />
           ) : (
             <MediaPickRow
@@ -333,7 +442,9 @@ function HeroForm({ site }: Props) {
               compact
               kinds={['image']}
               maxSizeMB={5}
+              disabled={isSubmitting}
               onFiles={replaceSingle('video_thumbnail_file')}
+              onPick={pickSingle('video_thumbnail_file')}
             />
           )}
         </div>
@@ -347,7 +458,12 @@ function HeroForm({ site }: Props) {
               {slides.length} slide{slides.length !== 1 ? 's' : ''}
             </Badge>
           </MediaSectionLabel>
-          <HeroSlideGrid slides={slides} onChange={(next) => setValue('slides', next, { shouldDirty: true })} onRemove={removeSlide}>
+          <HeroSlideGrid
+            slides={slides}
+            disabled={isSubmitting}
+            onChange={(next) => setValue('slides', next, { shouldDirty: true })}
+            onRemove={removeSlide}
+          >
             <DropZone
               icon="+"
               text="Add slides"
@@ -355,10 +471,27 @@ function HeroForm({ site }: Props) {
               kinds={['image']}
               maxFiles={10}
               maxSizeMB={5}
+              disabled={isSubmitting}
               onFiles={addSlides}
               className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none flex-col items-center justify-center @mobile:w-[calc(20%-8px)]"
             />
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => setSlidePickOpen(true)}
+              className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border-2 border-dashed border-line-2 bg-transparent p-3 text-center transition-all hover:border-accent hover:bg-accent-bg disabled:cursor-not-allowed disabled:opacity-50 @mobile:w-[calc(20%-8px)] @mobile:p-4"
+            >
+              <IconImage size={18} className="text-ink-3" />
+              <span className="block text-[13px] text-ink-2">From library</span>
+            </button>
           </HeroSlideGrid>
+          <PickMediaModal
+            open={slidePickOpen}
+            onClose={() => setSlidePickOpen(false)}
+            multiple
+            onPickMany={addSlidesFromLibrary}
+            kinds={['image']}
+          />
           <p className="mt-2.5 text-[11px] text-ink-3">Drag to reorder · JPG/WebP · max 5MB each</p>
           <div className="mt-3 flex items-center gap-5 border-t border-line pt-3.5">
             <div className="flex flex-row items-center gap-2.5">
@@ -373,6 +506,7 @@ function HeroForm({ site }: Props) {
       </div>
 
       <HeroCtaFields register={register} />
+      </fieldset>
     </SectionCard>
   );
 }

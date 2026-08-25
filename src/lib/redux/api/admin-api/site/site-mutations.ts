@@ -1,4 +1,7 @@
+import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { adminApiSlice } from '@/lib/redux/api/admin-api/admin-api-slice';
+import { siteQueriesApi } from '@/lib/redux/api/admin-api/site/site-queries';
 import {
   unwrapData,
   type AutobrandBrandStyleType,
@@ -46,12 +49,65 @@ const putSite = (subdomain: string, body: Record<string, unknown>) => ({
   body,
 });
 
+type PutBaseQueryType = (
+  args: ReturnType<typeof putSite>,
+) => PromiseLike<{ data?: unknown; error?: unknown }> | { data?: unknown; error?: unknown };
+
+type PutResultType = { data: AutobrandSiteType } | { error: FetchBaseQueryError };
+
+const putSiteOnce = async (
+  subdomain: string,
+  body: Record<string, unknown>,
+  baseQuery: PutBaseQueryType,
+): Promise<PutResultType> => {
+  const result = await baseQuery(putSite(subdomain, body));
+  if (result.error) return { error: result.error as FetchBaseQueryError };
+  return { data: unwrapData(result.data as SiteResponseType) };
+};
+
+/**
+ * The backend deep-merges the PUT body, and merged arrays keep their trailing
+ * elements — sending 5 slides over 9 leaves 9. Writing null first wipes the
+ * array, so the second PUT lands on a clean slate. Needed for every save whose
+ * array can shrink (hero.slides, facts, hidden_*_ids) until the backend
+ * replaces arrays wholesale.
+ */
+const putSiteReplacingArrays = async (
+  subdomain: string,
+  clearBody: Record<string, unknown>,
+  body: Record<string, unknown>,
+  baseQuery: PutBaseQueryType,
+): Promise<PutResultType> => {
+  const cleared = await baseQuery(putSite(subdomain, clearBody));
+  if (cleared.error) return { error: cleared.error as FetchBaseQueryError };
+  return putSiteOnce(subdomain, body, baseQuery);
+};
+
+/**
+ * Every PUT answers with the full updated site, so instead of refetching,
+ * the response is written straight into the getAdminSite cache — otherwise
+ * navigating away and back re-seeds forms from the stale pre-save payload.
+ */
+type SiteSaveLifecycleType = {
+  dispatch: ThunkDispatch<any, any, UnknownAction>;
+  queryFulfilled: Promise<{ data: AutobrandSiteType }>;
+};
+
+const writeSiteCache = async (subdomain: string, { dispatch, queryFulfilled }: SiteSaveLifecycleType) => {
+  const { data } = await queryFulfilled;
+  if (!data?.subdomain) return;
+  dispatch(siteQueriesApi.util.updateQueryData('getAdminSite', { subdomain }, () => data));
+};
+
 export const siteMutationsApi = adminApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     /** Landing Page → Hero Block save. Photo/video/carousel, H1/H2, both CTAs. MOTORITY-4196 */
     updateAdminHero: builder.mutation<AutobrandSiteType, UpdateAdminHeroArgType>({
-      query: ({ subdomain, hero }) => putSite(subdomain, { hero }),
-      transformResponse: (response: SiteResponseType) => unwrapData(response),
+      queryFn: ({ subdomain, hero }, _api, _extra, baseQuery) =>
+        hero.slides
+          ? putSiteReplacingArrays(subdomain, { hero: { slides: null } }, { hero }, baseQuery)
+          : putSiteOnce(subdomain, { hero }, baseQuery),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /**
@@ -60,8 +116,11 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
      * shows for this brand. There is no landing-only override. MOTORITY-4197
      */
     updateAdminAbout: builder.mutation<AutobrandSiteType, UpdateAdminAboutArgType>({
-      query: ({ subdomain, about, facts }) => putSite(subdomain, { about, facts }),
-      transformResponse: (response: SiteResponseType) => unwrapData(response),
+      queryFn: ({ subdomain, about, facts }, _api, _extra, baseQuery) =>
+        facts
+          ? putSiteReplacingArrays(subdomain, { facts: null }, { about, facts }, baseQuery)
+          : putSiteOnce(subdomain, { about }, baseQuery),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /**
@@ -71,6 +130,7 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
     updateAdminFilters: builder.mutation<AutobrandSiteType, UpdateAdminFiltersArgType>({
       query: ({ subdomain, filters }) => putSite(subdomain, { filters }),
       transformResponse: (response: SiteResponseType) => unwrapData(response),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /**
@@ -80,15 +140,23 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
      * Send the full replacement array, not a delta. MOTORITY-4196, 4200
      */
     updateAdminModelVisibility: builder.mutation<AutobrandSiteType, UpdateAdminModelVisibilityArgType>({
-      query: ({ subdomain, hidden_model_ids, hidden_generation_ids }) =>
-        putSite(subdomain, { hidden_model_ids, hidden_generation_ids }),
-      transformResponse: (response: SiteResponseType) => unwrapData(response),
+      queryFn: ({ subdomain, hidden_model_ids, hidden_generation_ids }, _api, _extra, baseQuery) => {
+        const body = { hidden_model_ids, hidden_generation_ids };
+        const clear: Record<string, unknown> = {};
+        if (hidden_model_ids) clear.hidden_model_ids = null;
+        if (hidden_generation_ids) clear.hidden_generation_ids = null;
+        return Object.keys(clear).length
+          ? putSiteReplacingArrays(subdomain, clear, body, baseQuery)
+          : putSiteOnce(subdomain, body, baseQuery);
+      },
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /** Brand Style — logo, favicon, the four colors, selected font. MOTORITY-4198 */
     updateAdminBrandStyle: builder.mutation<AutobrandSiteType, UpdateAdminBrandStyleArgType>({
       query: ({ subdomain, brand_style }) => putSite(subdomain, { brand_style }),
       transformResponse: (response: SiteResponseType) => unwrapData(response),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /**
@@ -99,6 +167,7 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
     updateAdminCommunity: builder.mutation<AutobrandSiteType, UpdateAdminCommunityArgType>({
       query: ({ subdomain, community }) => putSite(subdomain, { community }),
       transformResponse: (response: SiteResponseType) => unwrapData(response),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
     /**
@@ -109,6 +178,7 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
     updateAdminSettings: builder.mutation<AutobrandSiteType, UpdateAdminSettingsArgType>({
       query: ({ subdomain, ...settings }) => putSite(subdomain, settings),
       transformResponse: (response: SiteResponseType) => unwrapData(response),
+      onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
   }),
 });

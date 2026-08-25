@@ -5,6 +5,7 @@ import { IconImage, IconX } from '@/components/_admin/icons';
 import Button from '@/components/_admin/ui/Button';
 import DropZone, { type DropZoneKind } from '@/components/_admin/forms/DropZone';
 import PickMediaModal from '@/features/_admin/media/PickMediaModal';
+import type { AdminMediaKindType, AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
 
 type MediaPickRowProps = {
   icon: string;
@@ -15,11 +16,31 @@ type MediaPickRowProps = {
   kinds?: DropZoneKind[];
   maxFiles?: number;
   maxSizeMB?: number;
+  disabled?: boolean;
   onFiles?: (files: File[]) => void;
+  onPick?: (media: AdminMediaType) => void;
+};
+
+const toLibraryKinds = (kinds?: DropZoneKind[]): AdminMediaKindType[] | undefined => {
+  if (!kinds) return undefined;
+  const mapped = kinds.map((k): AdminMediaKindType => (k === 'video' ? 'video' : k === 'logo' ? 'logo' : 'image'));
+  return [...new Set(mapped)];
 };
 
 /** "Upload zone — or — Choose from Media Library" row used across the app. `stack` lays it out vertically. */
-export function MediaPickRow({ icon, text, hint, compact, stack, kinds, maxFiles, maxSizeMB, onFiles }: MediaPickRowProps) {
+export function MediaPickRow({
+  icon,
+  text,
+  hint,
+  compact,
+  stack,
+  kinds,
+  maxFiles,
+  maxSizeMB,
+  disabled,
+  onFiles,
+  onPick,
+}: MediaPickRowProps) {
   const [pickOpen, setPickOpen] = useState(false);
   return (
     <div
@@ -36,6 +57,7 @@ export function MediaPickRow({ icon, text, hint, compact, stack, kinds, maxFiles
         kinds={kinds}
         maxFiles={maxFiles}
         maxSizeMB={maxSizeMB}
+        disabled={disabled}
         onFiles={onFiles ?? (() => showToast('📁 Upload is not wired for this section yet'))}
         className={cn(stack && '@max-mobile:min-w-0 @max-mobile:flex-none')}
       />
@@ -49,13 +71,19 @@ export function MediaPickRow({ icon, text, hint, compact, stack, kinds, maxFiles
       </div>
       <Button
         variant="ghost"
+        disabled={disabled}
         className={cn('shrink-0 whitespace-nowrap', stack && '@max-mobile:w-full @max-mobile:justify-center')}
         onClick={() => setPickOpen(true)}
       >
         <IconImage size={14} />
         Choose from Media Library
       </Button>
-      <PickMediaModal open={pickOpen} onClose={() => setPickOpen(false)} />
+      <PickMediaModal
+        open={pickOpen}
+        onClose={() => setPickOpen(false)}
+        onPick={onPick ?? (() => showToast('📁 Library pick is not wired for this section yet'))}
+        kinds={toLibraryKinds(kinds)}
+      />
     </div>
   );
 }

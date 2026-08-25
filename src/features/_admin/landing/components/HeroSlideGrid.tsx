@@ -5,6 +5,7 @@ import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from '@d
 import { CSS } from '@dnd-kit/utilities';
 import { cn } from '@/lib/cn';
 import { IconX } from '@/components/_admin/icons';
+import type { AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
 
 export type HeroSlideItemType = {
   id: string;
@@ -13,6 +14,7 @@ export type HeroSlideItemType = {
   previewUrl: string | null;
   file: File | null;
   mediaId?: string | number | null;
+  media?: AdminMediaType | null;
 };
 
 const tileClass =
@@ -35,17 +37,20 @@ function TileBody({ slide, index }: TileBodyProps) {
   );
 }
 
-type TileProps = { slide: HeroSlideItemType; index: number; onRemove: (id: string) => void };
+type TileProps = { slide: HeroSlideItemType; index: number; disabled?: boolean; onRemove: (id: string) => void };
 
-function SlideTile({ slide, index, onRemove }: TileProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: slide.id });
+function SlideTile({ slide, index, disabled, onRemove }: TileProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: slide.id,
+    disabled,
+  });
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
         tileClass,
-        'cursor-grab active:cursor-grabbing',
+        disabled ? 'opacity-60' : 'cursor-grab active:cursor-grabbing',
         isDragging && 'border-2 border-dashed border-accent bg-accent-bg',
       )}
       {...attributes}
@@ -71,12 +76,13 @@ function SlideTile({ slide, index, onRemove }: TileProps) {
 
 type Props = {
   slides: HeroSlideItemType[];
+  disabled?: boolean;
   onChange: (slides: HeroSlideItemType[]) => void;
   onRemove: (id: string) => void;
   children?: ReactNode;
 };
 
-export default function HeroSlideGrid({ slides, onChange, onRemove, children }: Props) {
+export default function HeroSlideGrid({ slides, disabled, onChange, onRemove, children }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
@@ -100,7 +106,7 @@ export default function HeroSlideGrid({ slides, onChange, onRemove, children }: 
       <SortableContext items={slides.map((s) => s.id)} strategy={rectSortingStrategy}>
         <div className="flex flex-wrap gap-2.5">
           {slides.map((slide, i) => (
-            <SlideTile key={slide.id} slide={slide} index={i} onRemove={onRemove} />
+            <SlideTile key={slide.id} slide={slide} index={i} disabled={disabled} onRemove={onRemove} />
           ))}
           {children}
         </div>

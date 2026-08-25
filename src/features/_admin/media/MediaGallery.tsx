@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
-import { adminMediaFileUrl, adminMediaUrl, type AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
+import {
+  adminMediaFileUrl,
+  adminMediaUrl,
+  type AdminMediaKindType,
+  type AdminMediaType,
+} from '@/lib/redux/api/admin-api/admin-types';
 import { IconX, IconChevronLeft, IconChevronRight } from '@/components/_admin/icons';
 
 export const isVideoMedia = (media: AdminMediaType) =>
   media.kind === 'video' ||
   media.file?.media_type === 'video' ||
   (media.file?.filetype ?? media.filetype ?? '').startsWith('video');
+
+export const mediaKindOf = (media: AdminMediaType): AdminMediaKindType =>
+  media.kind ?? (isVideoMedia(media) ? 'video' : 'image');
 
 type Props = {
   items: AdminMediaType[];

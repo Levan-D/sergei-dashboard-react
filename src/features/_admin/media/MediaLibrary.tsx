@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
 import { useAppSelector } from '@/store';
+import { acceptAttr, isAcceptedFile } from '@/lib/media-formats';
 import { useDeleteAdminMediaMutation } from '@/lib/redux/api/admin-api/media/media-api';
 import type { AdminMediaKindType, AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
 import { uploadToLibrary } from './upload-media';
@@ -10,7 +11,7 @@ import Chip from '@/components/_admin/ui/Chip';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import ConfirmModal from '@/components/_admin/ConfirmModal';
-import MediaGallery, { isVideoMedia } from './MediaGallery';
+import MediaGallery, { mediaKindOf } from './MediaGallery';
 import MediaTile from './components/MediaTile';
 import UploadingTile from './components/UploadingTile';
 
@@ -19,9 +20,6 @@ const FILTERS: { label: string; kind?: AdminMediaKindType }[] = [
   { label: 'Images', kind: 'image' },
   { label: 'Videos', kind: 'video' },
 ];
-
-const mediaKindOf = (media: AdminMediaType): AdminMediaKindType =>
-  media.kind ?? (isVideoMedia(media) ? 'video' : 'image');
 
 type Props = { items: AdminMediaType[] };
 
@@ -40,10 +38,12 @@ export default function MediaLibrary({ items }: Props) {
   const openDialog = () => inputRef.current?.click();
 
   const onPickFiles = (list: FileList | null) => {
-    const files = Array.from(list ?? []);
+    const picked = Array.from(list ?? []);
     if (inputRef.current) inputRef.current.value = '';
-    if (!files.length || isUploading) return;
-    void uploadToLibrary(files);
+    if (!picked.length || isUploading) return;
+    const files = picked.filter((f) => isAcceptedFile(f, ['image', 'video']));
+    picked.filter((f) => !files.includes(f)).forEach((f) => showToast(`⚠️ ${f.name} — unsupported file type`));
+    if (files.length) void uploadToLibrary(files);
   };
 
   const onConfirmDelete = () => {
@@ -71,7 +71,7 @@ export default function MediaLibrary({ items }: Props) {
         ref={inputRef}
         type="file"
         multiple
-        accept="image/*,video/*"
+        accept={acceptAttr(['image', 'video'])}
         className="hidden"
         onChange={(e) => onPickFiles(e.target.files)}
       />
