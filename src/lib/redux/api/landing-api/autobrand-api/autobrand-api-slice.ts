@@ -33,7 +33,11 @@ export const autobrandApiSlice = createApi({
 
     getPublicAutobrand: builder.query<AutobrandSiteType, GetPublicAutobrandArgType>({
       query: ({ subdomain }) => `/api/v3/public/autobrands/${subdomain}`,
-      transformResponse: (response: { data: AutobrandSiteType } | AutobrandSiteType) => unwrapData(response),
+      transformResponse: (response: { data: AutobrandSiteType } | AutobrandSiteType) => {
+        const data = unwrapData(response);
+        console.log('[public] GET /api/v3/public/autobrands/{subdomain}', data);
+        return data;
+      },
       providesTags: (_result, _error, { subdomain }) => [{ type: 'publicAutobrand', id: subdomain }],
     }),
   }),

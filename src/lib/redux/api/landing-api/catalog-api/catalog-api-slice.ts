@@ -223,7 +223,11 @@ export const catalogApiSlice = createApi({
 
       transformResponse: (
         response: { data: PaginatedResponse<TopLogbookAuthorType> } | PaginatedResponse<TopLogbookAuthorType>,
-      ) => ('data' in response ? response.data : response),
+      ) => {
+        const data = 'data' in response ? response.data : response;
+        console.log('[public] GET /api/v2/public/catalog/logbooks/authors', data);
+        return data;
+      },
       providesTags: () => [{ type: 'getTopLogbooks', id: 'LIST' }],
     }),
 
@@ -237,7 +241,11 @@ export const catalogApiSlice = createApi({
 
       transformResponse: (
         response: { data: PaginatedResponse<TopLogbookAuthorType> } | PaginatedResponse<TopLogbookAuthorType>,
-      ) => ('data' in response ? response.data : response),
+      ) => {
+        const data = 'data' in response ? response.data : response;
+        console.log('[public] GET /api/public/author?search-type=new', data);
+        return data;
+      },
       providesTags: () => [{ type: 'getNewLogbooks', id: 'LIST' }],
     }),
 

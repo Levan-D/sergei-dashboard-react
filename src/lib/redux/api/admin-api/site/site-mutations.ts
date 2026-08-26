@@ -66,11 +66,11 @@ const putSiteOnce = async (
 };
 
 /**
- * The backend deep-merges the PUT body, and merged arrays keep their trailing
- * elements — sending 5 slides over 9 leaves 9. Writing null first wipes the
- * array, so the second PUT lands on a clean slate. Needed for every save whose
- * array can shrink (hero.slides, facts, hidden_*_ids) until the backend
- * replaces arrays wholesale.
+ * Arrays *nested* inside an object (hero.slides) are deep-merged and keep their
+ * trailing elements — sending 5 slides over 9 leaves 9. Writing null into the
+ * nested key wipes it first, so the second PUT lands on a clean slate.
+ * Top-level arrays (facts, hidden_*_ids) replace correctly on their own and
+ * must NOT use this: for them null means "not provided" and is ignored.
  */
 const putSiteReplacingArrays = async (
   subdomain: string,
@@ -116,10 +116,8 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
      * shows for this brand. There is no landing-only override. MOTORITY-4197
      */
     updateAdminAbout: builder.mutation<AutobrandSiteType, UpdateAdminAboutArgType>({
-      queryFn: ({ subdomain, about, facts }, _api, _extra, baseQuery) =>
-        facts
-          ? putSiteReplacingArrays(subdomain, { facts: null }, { about, facts }, baseQuery)
-          : putSiteOnce(subdomain, { about }, baseQuery),
+      query: ({ subdomain, about, facts }) => putSite(subdomain, { about, facts }),
+      transformResponse: (response: SiteResponseType) => unwrapData(response),
       onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 
@@ -140,15 +138,9 @@ export const siteMutationsApi = adminApiSlice.injectEndpoints({
      * Send the full replacement array, not a delta. MOTORITY-4196, 4200
      */
     updateAdminModelVisibility: builder.mutation<AutobrandSiteType, UpdateAdminModelVisibilityArgType>({
-      queryFn: ({ subdomain, hidden_model_ids, hidden_generation_ids }, _api, _extra, baseQuery) => {
-        const body = { hidden_model_ids, hidden_generation_ids };
-        const clear: Record<string, unknown> = {};
-        if (hidden_model_ids) clear.hidden_model_ids = null;
-        if (hidden_generation_ids) clear.hidden_generation_ids = null;
-        return Object.keys(clear).length
-          ? putSiteReplacingArrays(subdomain, clear, body, baseQuery)
-          : putSiteOnce(subdomain, body, baseQuery);
-      },
+      query: ({ subdomain, hidden_model_ids, hidden_generation_ids }) =>
+        putSite(subdomain, { hidden_model_ids, hidden_generation_ids }),
+      transformResponse: (response: SiteResponseType) => unwrapData(response),
       onQueryStarted: ({ subdomain }, api) => writeSiteCache(subdomain, api),
     }),
 

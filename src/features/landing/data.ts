@@ -44,30 +44,6 @@ export const bodyTypeFilters = [
 export const seriesFilters = ['All', 'X', '7', '5', '4', '3', '2', '1', 'Z'];
 export const decadeFilters = ['All', '1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'];
 
-export const brandAbout = [
-  'Founded in 1916 in Munich, Germany, Bayerische Motoren Werke AG – BMW – began as an aircraft engine manufacturer before transitioning into motorcycles and then automobiles. What emerged was a relentless engineering culture defined by a single obsession: the driver.',
-  "Today, BMW is one of the world's most recognisable luxury automotive brands, producing vehicles that synthesise performance, innovation and craftsmanship. The M division, established in 1972, elevated that obsession into motorsport legend – giving birth to icons like the M3, M4, and M5.",
-  "As BMW accelerates into an electrified future with its i-series lineup, the brand's core promise remains unchanged: every car should be a joy to drive. The shift to electric is not a compromise – it is the next evolution of the Ultimate Driving Machine.",
-];
-
-export const brandFacts = [
-  { name: 'Founded', value: '1916' },
-  { name: 'Headquarters', value: 'Munich, Germany' },
-  { name: 'Models in lineup', value: '47 models' },
-  { name: 'Global employees', value: '149,475' },
-  { name: 'Annual production', value: '2.5M vehicles' },
-  { name: 'Countries sold in', value: '140+ countries' },
-];
-
-export const brandStats = [
-  { name: 'Total Logbooks', value: '2,841' },
-  { name: 'Active Owners', value: '1,203' },
-  { name: 'New This Month', value: '+47' },
-  { name: 'Avg. Ownership', value: '3.2 yr' },
-  { name: 'Top Model', value: 'BMW 3 Series' },
-  { name: 'Avg. Mileage', value: '48k km' },
-];
-
 export type LandingGen = {
   slug: string;
   name: string;

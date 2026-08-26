@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import { brand } from '@/lib/brand';
+import { adminMediaUrl } from '@/lib/redux/api/site-types';
 import { useGetPublicAutobrandQuery } from '@/lib/redux/api/landing-api/autobrand-api/autobrand-api-slice';
 
 type ShellProps = { children: ReactNode };
@@ -21,6 +22,20 @@ function GateShell({ children }: ShellProps) {
  */
 export default function SiteGate() {
   const { data: site, isError, isFetching, refetch } = useGetPublicAutobrandQuery({ subdomain: brand.makeSlug });
+
+  useEffect(() => {
+    if (!site) return;
+    if (site.make?.name) document.title = `${site.make.name} & Motority`;
+    const faviconUrl = adminMediaUrl(site.brand_style?.favicon, 'small');
+    if (!faviconUrl) return;
+    let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = faviconUrl;
+  }, [site]);
 
   if (!site && !isError) {
     return (

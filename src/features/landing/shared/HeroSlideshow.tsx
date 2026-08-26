@@ -4,9 +4,9 @@ import PaneSlider from '@/components/landing/PaneSlider';
 import { IconArrowRight } from '@/components/landing/icons';
 import { cn } from '@/lib/cn';
 
-type Props = { slides: string[] };
+type Props = { slides: string[]; intervalMs?: number | null };
 
-export function HeroSlideshow({ slides }: Props) {
+export function HeroSlideshow({ slides, intervalMs = 5000 }: Props) {
   const [active, setActive] = useState(0);
   const [resetKey, setResetKey] = useState(0);
 
@@ -17,9 +17,10 @@ export function HeroSlideshow({ slides }: Props) {
   const advance = () => goTo((active + 1) % slides.length);
 
   useEffect(() => {
-    const id = setInterval(() => setActive((a) => (a + 1) % slides.length), 5000);
+    if (!intervalMs) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % slides.length), intervalMs);
     return () => clearInterval(id);
-  }, [slides.length, resetKey]);
+  }, [slides.length, resetKey, intervalMs]);
 
   return (
     <>

@@ -10,6 +10,8 @@ import { scrollToId } from '@/lib/scroll';
 import { highlightsToggle, useHighlightsEnabled } from '@/components/landing/highlights';
 import { brand } from '@/lib/brand';
 import { cn } from '@/lib/cn';
+import usePublicSite from '@/features/landing/use-public-site';
+import { adminMediaUrl } from '@/lib/redux/api/site-types';
 
 const navLinks = ['Explore models', 'Configurator', 'Find a dealer'];
 const deadNavLinks = [
@@ -22,6 +24,9 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const highlightsOn = useHighlightsEnabled();
+  const site = usePublicSite();
+  const brandName = site?.make?.name ?? brand.name;
+  const logoUrl = adminMediaUrl(site?.brand_style?.logo, 'small');
 
   const onWordmarkClick = () => {
     if (location.pathname === ROUTING.home) {
@@ -46,10 +51,10 @@ export default function Header() {
           onClick={onWordmarkClick}
           className="flex cursor-pointer items-center gap-3 w640:gap-4 w1280:gap-6"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 text-[11px] font-bold text-white w1280:h-[54px] w1280:w-[54px] w1280:text-[13px]">
-            {brand.name}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/40 text-[11px] font-bold text-white w1280:h-[54px] w1280:w-[54px] w1280:text-[13px]">
+            {logoUrl ? <img src={logoUrl} alt={brandName} className="h-full w-full object-contain" /> : brandName}
           </div>
-          <p className="t-wordmark text-white/70">{brand.name} &amp; Motority</p>
+          <p className="t-wordmark text-white/70">{brandName} &amp; Motority</p>
         </Link>
         <div className="flex items-center gap-3 w640:gap-4 w1280:gap-6">
           <nav className="hidden items-center gap-6 w1280:flex">
