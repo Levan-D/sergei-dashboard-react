@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import StoryCard from '@/components/landing/StoryCard';
-import { useGetCatalogLogbookPostsQuery, type CatalogPostType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
+import { useGetCatalogLogbookPostsQuery, type CatalogPostType } from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';
 import { brand, brandPostsUrl } from '@/lib/brand';
 import { coverStyle, mediaUrl } from '@/lib/media';
 import type { OwnerStory } from '@/features/landing/data';

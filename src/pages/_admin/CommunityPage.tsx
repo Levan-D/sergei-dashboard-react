@@ -4,7 +4,7 @@ import { brand } from '@/lib/brand';
 import { initialsOf } from '@/lib/initials';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminCommunityMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
-import { useGetNewLogbooksQuery, type TopLogbookAuthorType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
+import { useGetNewLogbooksQuery, type TopLogbookAuthorType } from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';
 import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';

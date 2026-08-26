@@ -1,4 +1,4 @@
-import type { CatalogLogoType } from '@/lib/redux/api/catalog-api/catalog-api-slice';
+import type { CatalogLogoType } from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';
 
 type Size = 'small' | 'medium' | 'big';
 

@@ -4,6 +4,7 @@ import { ROUTING } from '@/lib/routing';
 import { reportHighlights } from '@/components/landing/highlights';
 import useScreenDimensions from '@/hooks/use-screen-dimensions';
 import useScrollReset from '@/hooks/use-scroll-reset';
+import SiteGate from '@/features/landing/SiteGate';
 import LandingLayout from '@/layout/landing-layout/LandingLayout';
 import HomePage from '@/pages/landing/HomePage';
 import ModelPage from '@/pages/landing/ModelPage';
@@ -33,10 +34,12 @@ export default function App() {
 
   return (
     <Routes>
-      <Route element={<LandingLayout />}>
-        <Route path={ROUTING.home} element={<HomePage />} />
-        <Route path=":model" element={<ModelPage />} />
-        <Route path=":model/:gen" element={<GenerationPage />} />
+      <Route element={<SiteGate />}>
+        <Route element={<LandingLayout />}>
+          <Route path={ROUTING.home} element={<HomePage />} />
+          <Route path=":model" element={<ModelPage />} />
+          <Route path=":model/:gen" element={<GenerationPage />} />
+        </Route>
       </Route>
       <Route path={ROUTING.admin} element={<AdminLayout />}>
         <Route index element={<DashboardPage />} />

@@ -16,9 +16,9 @@
 export {
   useGetCatalogModelsQuery as useGetAdminCatalogModelsQuery,
   useGetCatalogGenerationsQuery as useGetAdminCatalogGenerationsQuery,
-} from '@/lib/redux/api/catalog-api/catalog-api-slice';
+} from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';
 
 export type {
   CatalogModelItemType as AdminCatalogModelSourceType,
   CatalogGenerationType as AdminCatalogGenerationSourceType,
-} from '@/lib/redux/api/catalog-api/catalog-api-slice';
+} from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';

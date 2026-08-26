@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
-import { catalogApiSlice } from '@/lib/redux/api/catalog-api/catalog-api-slice';
+import { catalogApiSlice } from '@/lib/redux/api/landing-api/catalog-api/catalog-api-slice';
 import { adminApiSlice } from '@/lib/redux/api/admin-api';
-import { autobrandApiSlice } from '@/lib/redux/api/autobrand-api/autobrand-api-slice';
+import { autobrandApiSlice } from '@/lib/redux/api/landing-api/autobrand-api/autobrand-api-slice';
 import catalog from '@/features/_admin/catalog/catalogSlice';
 import landing from '@/features/_admin/landing/landingSlice';
 import specs from '@/features/_admin/specs/specsSlice';

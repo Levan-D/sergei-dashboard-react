@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from '@/lib/redux/api/base-query';
-import { unwrapData, type AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
+import { unwrapData, type AutobrandSiteType } from '@/lib/redux/api/site-types';
 
 /**
  * Public, unauthenticated brand landing API (MOTORITY-4195, 4193). Kept apart
