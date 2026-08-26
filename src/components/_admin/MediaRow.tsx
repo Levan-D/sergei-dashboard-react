@@ -5,7 +5,7 @@ import { IconImage, IconX } from '@/components/_admin/icons';
 import Button from '@/components/_admin/ui/Button';
 import DropZone, { type DropZoneKind } from '@/components/_admin/forms/DropZone';
 import PickMediaModal from '@/features/_admin/media/PickMediaModal';
-import type { AdminMediaKindType, AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
+import type { AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
 
 type MediaPickRowProps = {
   icon: string;
@@ -19,12 +19,6 @@ type MediaPickRowProps = {
   disabled?: boolean;
   onFiles?: (files: File[]) => void;
   onPick?: (media: AdminMediaType) => void;
-};
-
-const toLibraryKinds = (kinds?: DropZoneKind[]): AdminMediaKindType[] | undefined => {
-  if (!kinds) return undefined;
-  const mapped = kinds.map((k): AdminMediaKindType => (k === 'video' ? 'video' : k === 'logo' ? 'logo' : 'image'));
-  return [...new Set(mapped)];
 };
 
 /** "Upload zone — or — Choose from Media Library" row used across the app. `stack` lays it out vertically. */
@@ -82,7 +76,7 @@ export function MediaPickRow({
         open={pickOpen}
         onClose={() => setPickOpen(false)}
         onPick={onPick ?? (() => showToast('📁 Library pick is not wired for this section yet'))}
-        kinds={toLibraryKinds(kinds)}
+        kinds={kinds}
       />
     </div>
   );

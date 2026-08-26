@@ -19,6 +19,7 @@ const FILTERS: { label: string; kind?: AdminMediaKindType }[] = [
   { label: 'All' },
   { label: 'Images', kind: 'image' },
   { label: 'Videos', kind: 'video' },
+  { label: 'Logos', kind: 'logo' },
 ];
 
 type Props = { items: AdminMediaType[] };

@@ -12,8 +12,21 @@ export const isVideoMedia = (media: AdminMediaType) =>
   media.file?.media_type === 'video' ||
   (media.file?.filetype ?? media.filetype ?? '').startsWith('video');
 
-export const mediaKindOf = (media: AdminMediaType): AdminMediaKindType =>
-  media.kind ?? (isVideoMedia(media) ? 'video' : 'image');
+const LOGO_FILETYPES = ['image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'];
+const LOGO_EXTENSIONS = ['.svg', '.ico'];
+
+/**
+ * The server only maps svg to kind "logo" — ico and the rest register as
+ * plain "image". For the UI buckets we classify by filetype instead, so
+ * brand-asset formats (svg, ico) always land under Logos.
+ */
+export const mediaKindOf = (media: AdminMediaType): AdminMediaKindType => {
+  const info = media.file ?? media;
+  if (LOGO_FILETYPES.includes(info.filetype ?? '')) return 'logo';
+  const name = (info.filename ?? media.name ?? info.url ?? '').toLowerCase();
+  if (LOGO_EXTENSIONS.some((ext) => name.endsWith(ext))) return 'logo';
+  return media.kind ?? (isVideoMedia(media) ? 'video' : 'image');
+};
 
 type Props = {
   items: AdminMediaType[];

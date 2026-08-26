@@ -1,13 +1,27 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
+import { brand } from '@/lib/brand';
+import { fmtFileSize, releaseLocalFile, toLocalFile, type LocalFileType } from '@/lib/files';
+import { uploadFilesTus } from '@/lib/tus';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
-import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
+import { useUpdateAdminBrandStyleMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
+import { useRegisterAdminMediaMutation } from '@/lib/redux/api/admin-api/media/media-api';
+import { adminMediaUrl, type AdminMediaType, type AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
 import Badge from '@/components/_admin/ui/Badge';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
-import { CurrentMedia, MediaPickRow } from '@/components/_admin/MediaRow';
+import { MediaPickRow } from '@/components/_admin/MediaRow';
+import MediaPreview from '@/components/_admin/MediaPreview';
+
+type AssetStateType = {
+  file: LocalFileType | null;
+  pick: AdminMediaType | null;
+  removed: boolean;
+};
+
+const EMPTY_ASSET: AssetStateType = { file: null, pick: null, removed: false };
 
 const fontRowClass = (selected: boolean) =>
   selected
@@ -30,8 +44,11 @@ type Props = { site: AutobrandSiteType };
 
 function BrandStyleForm({ site }: Props) {
   const style = site.brand_style;
-  const logo = style?.logo;
-  const [logoRemoved, setLogoRemoved] = useState(false);
+  const [logoAsset, setLogoAsset] = useState<AssetStateType>(EMPTY_ASSET);
+  const [faviconAsset, setFaviconAsset] = useState<AssetStateType>(EMPTY_ASSET);
+  const [isSavingAssets, setIsSavingAssets] = useState(false);
+  const [registerMedia] = useRegisterAdminMediaMutation();
+  const [updateBrandStyle] = useUpdateAdminBrandStyleMutation();
   const {
     watch,
     setValue,
@@ -42,6 +59,100 @@ function BrandStyleForm({ site }: Props) {
   });
   const font = watch('font');
   const brandFont = style?.font && style.font !== 'system' ? style.font : null;
+
+  const assetsDirty = [logoAsset, faviconAsset].some((a) => a.file || a.pick || a.removed);
+
+  const stageFile = (set: typeof setLogoAsset) => (files: File[]) =>
+    set((prev) => {
+      releaseLocalFile(prev.file);
+      return { file: toLocalFile(files[0]), pick: null, removed: false };
+    });
+
+  const stagePick = (set: typeof setLogoAsset) => (media: AdminMediaType) =>
+    set((prev) => {
+      releaseLocalFile(prev.file);
+      return { file: null, pick: media, removed: false };
+    });
+
+  const uploadAsset = async (local: LocalFileType) => {
+    const [id] = await uploadFilesTus([local.file]);
+    const entry = await registerMedia({ subdomain: brand.makeSlug, file_id: id, name: local.file.name, kind: 'logo' })
+      .unwrap()
+      .catch(() => undefined);
+    return entry?.file ?? { id };
+  };
+
+  const resolveAsset = async (asset: AssetStateType, existing: AdminMediaType | null | undefined) => {
+    if (asset.file) return uploadAsset(asset.file);
+    if (asset.pick) return asset.pick.file ?? asset.pick;
+    if (asset.removed) return null;
+    return existing ?? null;
+  };
+
+  const onSaveAssets = async () => {
+    setIsSavingAssets(true);
+    try {
+      const logo = await resolveAsset(logoAsset, style?.logo);
+      const favicon = await resolveAsset(faviconAsset, style?.favicon);
+      await updateBrandStyle({
+        subdomain: brand.makeSlug,
+        brand_style: { logo, favicon, colors: style?.colors ?? null, font: style?.font ?? null },
+      }).unwrap();
+      releaseLocalFile(logoAsset.file);
+      releaseLocalFile(faviconAsset.file);
+      setLogoAsset(EMPTY_ASSET);
+      setFaviconAsset(EMPTY_ASSET);
+      showToast('✅ Assets saved');
+    } catch {
+      showToast('⚠️ Could not save assets');
+    } finally {
+      setIsSavingAssets(false);
+    }
+  };
+
+  const assetPreview = (asset: AssetStateType, set: typeof setLogoAsset, existing: AdminMediaType | null | undefined) => {
+    const clearStaged = () =>
+      set((prev) => {
+        releaseLocalFile(prev.file);
+        return { ...EMPTY_ASSET };
+      });
+    if (asset.file) {
+      return (
+        <MediaPreview
+          url={asset.file.url}
+          kind="image"
+          name={asset.file.file.name}
+          meta={fmtFileSize(asset.file.file.size)}
+          onRemove={clearStaged}
+        />
+      );
+    }
+    if (asset.pick) {
+      return (
+        <MediaPreview
+          url={adminMediaUrl(asset.pick) ?? ''}
+          kind="image"
+          name={asset.pick.name ?? String(asset.pick.id)}
+          meta={asset.pick.meta ?? ''}
+          onRemove={clearStaged}
+        />
+      );
+    }
+    if (existing && !asset.removed) {
+      return (
+        <MediaPreview
+          url={adminMediaUrl(existing) ?? ''}
+          kind="image"
+          name={existing.name ?? existing.filename ?? String(existing.id)}
+          meta={[existing.filetype, existing.width && existing.height ? `${existing.width}×${existing.height}` : null]
+            .filter(Boolean)
+            .join(' · ')}
+          onRemove={() => set((prev) => ({ ...prev, removed: true }))}
+        />
+      );
+    }
+    return null;
+  };
 
   const colors = [
     { label: 'Primary', hex: style?.colors?.primary ?? '' },
@@ -57,32 +168,26 @@ function BrandStyleForm({ site }: Props) {
           title={<>Logo &amp; Favicon</>}
           sub="Brand identity assets"
           right={
-            <Button sm disabled={!logoRemoved} onClick={() => showToast('✅ Assets saved')}>
+            <Button sm loading={isSavingAssets} disabled={!assetsDirty} onClick={onSaveAssets}>
               Save
             </Button>
           }
         />
+        <fieldset disabled={isSavingAssets} className="contents">
         <div className="border-b border-line p-5">
           <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Brand Logo</p>
           <p className="mb-3.5 text-xs text-ink-3">Primary logo shown in the site header and on landing pages.</p>
-          <MediaPickRow
-            stack
-            icon="🖼️"
-            text="Drop logo or click to upload"
-            hint="SVG preferred · PNG/WebP accepted · transparent background · max 2MB"
-          />
-          {logo && !logoRemoved && (
-            <CurrentMedia
-              emoji="🔵"
-              bg="#f1f5f9"
-              name={logo.name ?? `logo #${logo.id}`}
-              meta={[logo.filetype, logo.width && logo.height ? `${logo.width}×${logo.height}` : null]
-                .filter(Boolean)
-                .join(' · ')}
-              onRemove={() => {
-                setLogoRemoved(true);
-                showToast('🗑️ Logo removed');
-              }}
+          {assetPreview(logoAsset, setLogoAsset, style?.logo) ?? (
+            <MediaPickRow
+              stack
+              icon="🖼️"
+              text="Drop logo or click to upload"
+              hint="SVG preferred · PNG/WebP accepted · transparent background · max 2MB"
+              kinds={['logo']}
+              maxSizeMB={2}
+              disabled={isSavingAssets}
+              onFiles={stageFile(setLogoAsset)}
+              onPick={stagePick(setLogoAsset)}
             />
           )}
           <Recommendation>
@@ -93,18 +198,26 @@ function BrandStyleForm({ site }: Props) {
         <div className="p-5">
           <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Favicon</p>
           <p className="mb-3.5 text-xs text-ink-3">Shown in browser tabs and bookmarks.</p>
-          <MediaPickRow
-            stack
-            icon="📌"
-            text="Drop favicon or click to upload"
-            hint="ICO · PNG · SVG · 32×32 or 64×64 px recommended · max 500 KB"
-          />
+          {assetPreview(faviconAsset, setFaviconAsset, style?.favicon) ?? (
+            <MediaPickRow
+              stack
+              icon="📌"
+              text="Drop favicon or click to upload"
+              hint="ICO · PNG · SVG · WebP · 32×32 or 64×64 px recommended · max 500 KB"
+              kinds={['favicon']}
+              maxSizeMB={0.5}
+              disabled={isSavingAssets}
+              onFiles={stageFile(setFaviconAsset)}
+              onPick={stagePick(setFaviconAsset)}
+            />
+          )}
           <Recommendation>
             Use a square image — 32×32 px minimum, 64×64 px preferred for crisp rendering on high-DPI displays. ICO
             format ensures broadest browser compatibility; SVG favicons are supported in modern browsers. Keep the
             design simple and recognisable at small sizes.
           </Recommendation>
         </div>
+        </fieldset>
       </SectionCard>
 
       <SectionCard>

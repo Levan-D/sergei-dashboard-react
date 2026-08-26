@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
 import { brand } from '@/lib/brand';
+import { acceptMap, type MediaFormatKind } from '@/lib/media-formats';
 import { useGetAdminMediaQuery } from '@/lib/redux/api/admin-api/media/media-api';
 import { adminMediaUrl, type AdminMediaKindType, type AdminMediaType } from '@/lib/redux/api/admin-api/admin-types';
 import Modal from '@/components/_admin/Modal';
@@ -15,15 +16,29 @@ const FILTERS: { label: string; kind?: AdminMediaKindType }[] = [
   { label: 'All' },
   { label: 'Images', kind: 'image' },
   { label: 'Videos', kind: 'video' },
+  { label: 'Logos', kind: 'logo' },
 ];
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onPick?: (media: AdminMediaType) => void;
-  kinds?: AdminMediaKindType[];
+  /**
+   * Same format kinds the calling drop zone uses — the picker offers exactly
+   * the files that zone would accept (filtered by mime/extension against
+   * MEDIA_FORMATS, not by library kind).
+   */
+  kinds?: MediaFormatKind[];
   multiple?: boolean;
   onPickMany?: (media: AdminMediaType[]) => void;
+};
+
+const matchesFormats = (media: AdminMediaType, map: Record<string, string[]> | null) => {
+  if (!map) return true;
+  const info = media.file ?? media;
+  if ((info.filetype ?? '') in map) return true;
+  const name = (info.filename ?? media.name ?? info.url ?? '').toLowerCase();
+  return Object.values(map).some((exts) => exts.some((ext) => name.endsWith(ext)));
 };
 
 export default function PickMediaModal({ open, onClose, onPick, kinds, multiple, onPickMany }: Props) {
@@ -48,10 +63,21 @@ export default function PickMediaModal({ open, onClose, onPick, kinds, multiple,
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   };
 
-  const allowed = (data?.items ?? []).filter((m) => !kinds || kinds.includes(mediaKindOf(m)));
+  const formatMap = kinds ? acceptMap(kinds) : null;
+  const allowed = (data?.items ?? []).filter((m) => matchesFormats(m, formatMap));
   const items = filter ? allowed.filter((m) => mediaKindOf(m) === filter) : allowed;
   const selected = allowed.filter((m) => selectedIds.includes(m.id));
-  const showFilters = !kinds || kinds.length > 1;
+  const chipKinds = kinds
+    ? [
+        ...new Set(
+          kinds.flatMap((k): AdminMediaKindType[] =>
+            k === 'video' ? ['video'] : k === 'image' ? ['image'] : ['image', 'logo'],
+          ),
+        ),
+      ]
+    : null;
+  const chips = FILTERS.filter((f) => !f.kind || !chipKinds || chipKinds.includes(f.kind));
+  const showFilters = chips.length > 2;
 
   const footerLabel = !selected.length
     ? multiple
@@ -95,7 +121,7 @@ export default function PickMediaModal({ open, onClose, onPick, kinds, multiple,
     >
       {showFilters && (
         <div className="flex gap-2 border-b border-line px-5 py-2 @mobile:py-3">
-          {FILTERS.map((f) => (
+          {chips.map((f) => (
             <Chip key={f.label} label={f.label} active={filter === f.kind} onClick={() => setFilter(f.kind)} />
           ))}
         </div>

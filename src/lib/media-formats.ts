@@ -3,8 +3,10 @@ export type MediaFormatKind = 'image' | 'video' | 'logo' | 'favicon';
 /**
  * Allowed upload formats per media kind, react-dropzone accept-map shaped
  * ({mime: [extensions]}). image/video mirror the main frontend's TUS
- * restrictions; logo/favicon are placeholders until the backend confirms
- * what the file-service actually supports for them.
+ * restrictions; logo/favicon confirmed by backend 2026-08-25 (no server-side
+ * validation — product allows all listed; webp/ico/svg pass TUS + register,
+ * but get no resized variants, and svg is currently served with a wrong
+ * Content-Type so it won't render in <img> until the file-service fixes it).
  */
 export const MEDIA_FORMATS: Record<MediaFormatKind, Record<string, string[]>> = {
   image: {
@@ -28,6 +30,7 @@ export const MEDIA_FORMATS: Record<MediaFormatKind, Record<string, string[]>> = 
     'image/vnd.microsoft.icon': ['.ico'],
     'image/png': ['.png'],
     'image/svg+xml': ['.svg'],
+    'image/webp': ['.webp'],
   },
 };
 
