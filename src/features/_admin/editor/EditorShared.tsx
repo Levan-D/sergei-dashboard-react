@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/store';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { ROUTING } from '@/lib/routing';
-import { addCustomLink, removeCustomLink } from '@/features/_admin/catalog/catalogSlice';
 import Button from '@/components/_admin/ui/Button';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
@@ -99,9 +97,9 @@ const fixedLinks = [
 
 type ExternalLinksSectionProps = { sub: string; target: 'model' | 'gen' };
 
-export function ExternalLinksSection({ sub, target }: ExternalLinksSectionProps) {
-  const dispatch = useAppDispatch();
-  const links = useAppSelector((s) => (target === 'model' ? s.catalog.modelCustomLinks : s.catalog.genCustomLinks));
+export function ExternalLinksSection({ sub }: ExternalLinksSectionProps) {
+  const [links, setLinks] = useState<{ id: number }[]>([]);
+  const [counter, setCounter] = useState(0);
   return (
     <SectionCard>
       <SectionHeader title="External Links" sub={sub} />
@@ -136,7 +134,7 @@ export function ExternalLinksSection({ sub, target }: ExternalLinksSectionProps)
               <button
                 title="Remove"
                 onClick={() => {
-                  dispatch(removeCustomLink({ target, id: l.id }));
+                  setLinks((ls) => ls.filter((x) => x.id !== l.id));
                   showToast('🗑️ Link removed');
                 }}
                 className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-[5px] border border-line bg-transparent text-ink-3 hover:border-red hover:bg-red-bg hover:text-red"
@@ -146,7 +144,15 @@ export function ExternalLinksSection({ sub, target }: ExternalLinksSectionProps)
             </div>
           ))}
         </div>
-        <Button variant="ghost" sm className="self-start" onClick={() => dispatch(addCustomLink(target))}>
+        <Button
+          variant="ghost"
+          sm
+          className="self-start"
+          onClick={() => {
+            setCounter((c) => c + 1);
+            setLinks((ls) => [...ls, { id: counter + 1 }]);
+          }}
+        >
           <IconPlus size={13} />
           Add custom link
         </Button>
@@ -157,30 +163,35 @@ export function ExternalLinksSection({ sub, target }: ExternalLinksSectionProps)
 
 type PublishCardProps = {
   saveLabel: string;
-  savedToast: string;
+  visible: boolean;
+  onVisibleChange: (next: boolean) => void;
+  onSave: () => void;
+  saving?: boolean;
+  saveDisabled?: boolean;
   className?: string;
 };
 
 /* ── Publish sidebar card ── */
-export function PublishCard({ saveLabel, savedToast, className }: PublishCardProps) {
+export function PublishCard({
+  saveLabel,
+  visible,
+  onVisibleChange,
+  onSave,
+  saving,
+  saveDisabled,
+  className,
+}: PublishCardProps) {
   const navigate = useNavigate();
-  const [visible, setVisible] = useState(true);
   return (
     <SectionCard className={cn('mb-0', className)}>
       <SectionHeader compact title="Publish" />
       <div className="flex flex-col gap-2 px-3 py-3.5 @mobile:gap-3 @mobile:px-4">
         <div className="flex items-center gap-2.5">
-          <Toggle
-            on={visible}
-            onClick={() => {
-              setVisible(!visible);
-              showToast('👁️ Visibility updated');
-            }}
-          />
+          <Toggle on={visible} onClick={() => onVisibleChange(!visible)} />
           <label>Visible on landing</label>
         </div>
         <div className="h-px bg-line" />
-        <Button className="w-full justify-center" onClick={() => showToast(savedToast)}>
+        <Button className="w-full justify-center" loading={saving} disabled={saveDisabled} onClick={onSave}>
           {saveLabel}
         </Button>
         <Button variant="ghost" className="w-full justify-center" onClick={() => navigate(ROUTING.adminCatalog)}>

@@ -4,7 +4,6 @@ import { catalogApiSlice } from '@/lib/redux/api/landing-api/catalog-api/catalog
 import { adminApiSlice } from '@/lib/redux/api/admin-api';
 import { autobrandApiSlice } from '@/lib/redux/api/landing-api/autobrand-api/autobrand-api-slice';
 import catalog from '@/features/_admin/catalog/catalogSlice';
-import landing from '@/features/_admin/landing/landingSlice';
 import specs from '@/features/_admin/specs/specsSlice';
 import screen from './screenSlice';
 import uploads from './uploadsSlice';
@@ -12,7 +11,6 @@ import uploads from './uploadsSlice';
 export const store = configureStore({
   reducer: {
     catalog,
-    landing,
     specs,
     screen,
     uploads,

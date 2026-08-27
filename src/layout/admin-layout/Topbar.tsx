@@ -22,15 +22,15 @@ const SITE_STATUS = {
   },
 } as const;
 
-/** Resolve the editor breadcrumb label from `/admin/catalog/{model|gen}/:name`. */
+/** Resolve the editor breadcrumb label from `/admin/catalog/{model|gen}/:id`. */
 function editorLabel(pathname: string): string | null {
   const prefix = [ROUTING.adminCatalogModel, ROUTING.adminCatalogGen].find((p) => pathname.startsWith(p));
   if (!prefix) return null;
   const raw = pathname.slice(prefix.length);
   if (!raw) return null;
-  const name = decodeURIComponent(raw);
-  if (name === 'new') return prefix === ROUTING.adminCatalogModel ? 'Add Model' : 'Add Generation';
-  return name;
+  const isModel = prefix === ROUTING.adminCatalogModel;
+  if (raw === 'new') return isModel ? 'Add Model' : 'Add Generation';
+  return isModel ? 'Edit Model' : 'Edit Generation';
 }
 
 type Props = { onMenuClick: () => void };

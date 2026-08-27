@@ -22,6 +22,9 @@ const FILTERS: { label: string; kind?: AdminMediaKindType }[] = [
   { label: 'Logos', kind: 'logo' },
 ];
 
+/** The library holds every brand asset, so its upload accepts every format any screen can use. */
+const LIBRARY_KINDS = ['image', 'video', 'logo', 'favicon'] as const;
+
 type Props = { items: AdminMediaType[] };
 
 export default function MediaLibrary({ items }: Props) {
@@ -42,7 +45,7 @@ export default function MediaLibrary({ items }: Props) {
     const picked = Array.from(list ?? []);
     if (inputRef.current) inputRef.current.value = '';
     if (!picked.length || isUploading) return;
-    const files = picked.filter((f) => isAcceptedFile(f, ['image', 'video']));
+    const files = picked.filter((f) => isAcceptedFile(f, [...LIBRARY_KINDS]));
     picked.filter((f) => !files.includes(f)).forEach((f) => showToast(`⚠️ ${f.name} — unsupported file type`));
     if (files.length) void uploadToLibrary(files);
   };
@@ -72,7 +75,7 @@ export default function MediaLibrary({ items }: Props) {
         ref={inputRef}
         type="file"
         multiple
-        accept={acceptAttr(['image', 'video'])}
+        accept={acceptAttr([...LIBRARY_KINDS])}
         className="hidden"
         onChange={(e) => onPickFiles(e.target.files)}
       />

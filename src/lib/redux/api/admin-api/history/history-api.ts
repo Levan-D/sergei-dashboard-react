@@ -22,9 +22,12 @@ export type AdminHistoryEntryType = {
 export type AdminHistoryResponseType = {
   items: AdminHistoryEntryType[];
   count: number;
+  total: number;
+  current_page: number;
+  last_page: number;
 };
 
-export type GetAdminHistoryArgType = { subdomain: string };
+export type GetAdminHistoryArgType = { subdomain: string; page?: number; perPage?: number };
 
 export type CreateAdminBackupArgType = { subdomain: string };
 
@@ -43,15 +46,30 @@ export type RestoreAdminVersionArgType = {
  * `time` and `badge` come preformatted from the server; `snapshot` is null in
  * the list payload.
  *
- * Verified 2026-08-21: the list endpoint ignores page / per-page / limit and
- * always returns everything — server-side pagination does not exist yet.
+ * Server-side pagination landed by 2026-08-27 (the 08-21 note saying otherwise
+ * is obsolete): `page` and `per-page` work and the response carries total /
+ * current_page / last_page. Pages merge into one cache entry.
  */
+const HISTORY_PER_PAGE = 20;
+
 export const historyApi = adminApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAdminHistory: builder.query<AdminHistoryResponseType, GetAdminHistoryArgType>({
-      query: ({ subdomain }) => `/api/autobrands/${subdomain}/history`,
+      query: ({ subdomain, page = 1, perPage = HISTORY_PER_PAGE }) =>
+        `/api/autobrands/${subdomain}/history?page=${page}&per-page=${perPage}`,
       transformResponse: (response: { data: AdminHistoryResponseType } | AdminHistoryResponseType) =>
         unwrapData(response),
+      serializeQueryArgs: ({ queryArgs: { subdomain } }) => ({ subdomain }),
+      merge: (cache, incoming) => {
+        if (incoming.current_page <= 1) return incoming;
+        const seen = new Set(cache.items.map((i) => i.id));
+        cache.items.push(...incoming.items.filter((i) => !seen.has(i.id)));
+        cache.count = cache.items.length;
+        cache.total = incoming.total;
+        cache.current_page = incoming.current_page;
+        cache.last_page = incoming.last_page;
+      },
+      forceRefetch: ({ currentArg, previousArg }) => currentArg?.page !== previousArg?.page,
       providesTags: (_result, _error, { subdomain }) => [{ type: 'adminHistory', id: subdomain }],
     }),
 

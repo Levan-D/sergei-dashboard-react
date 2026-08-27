@@ -1,8 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { initModelEditor, updateModelEditor } from '@/features/_admin/catalog/catalogSlice';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { showToast } from '@/lib/toast';
+import { brand } from '@/lib/brand';
+import { ROUTING } from '@/lib/routing';
+import { useGetAdminCatalogModelQuery } from '@/lib/redux/api/admin-api/catalog/catalog-queries';
+import {
+  useCreateAdminCatalogModelMutation,
+  useUpdateAdminCatalogModelMutation,
+  useSetAdminCatalogModelVisibilityMutation,
+} from '@/lib/redux/api/admin-api/catalog/catalog-mutations';
+import type { AdminCatalogModelType } from '@/lib/redux/api/admin-api/admin-types';
 import Chip from '@/components/_admin/ui/Chip';
+import Spinner from '@/components/_admin/ui/Spinner';
+import ErrorState from '@/components/_admin/ui/ErrorState';
 import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import FormGroup from '@/components/_admin/forms/FormGroup';
@@ -14,19 +25,74 @@ import Textarea from '@/components/_admin/forms/Textarea';
 
 const decades = ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'];
 
-export default function ModelEditorPage() {
-  const dispatch = useAppDispatch();
-  const { name } = useParams();
-  const editor = useAppSelector((s) => s.catalog.modelEditor);
-  const [activeDecades, setActiveDecades] = useState<Record<string, boolean>>({ '2020s': true });
+type ModelFormValues = {
+  name: string;
+  about: string;
+};
 
-  // Seed the editor from the URL param on direct navigation / reload.
-  useEffect(() => {
-    const target = name === 'new' ? null : decodeURIComponent(name ?? '');
-    const current = editor.isNew ? null : editor.name;
-    if (target !== current) dispatch(initModelEditor(target));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name]);
+type Props = { model: AdminCatalogModelType | null };
+
+function ModelEditorForm({ model }: Props) {
+  const navigate = useNavigate();
+  const isNew = model === null;
+  const [activeDecades, setActiveDecades] = useState<Record<string, boolean>>({ '2020s': true });
+  const [visible, setVisible] = useState(model?.visible ?? true);
+  const [createModel] = useCreateAdminCatalogModelMutation();
+  const [updateModel] = useUpdateAdminCatalogModelMutation();
+  const [setModelVisibility] = useSetAdminCatalogModelVisibilityMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { isDirty, isSubmitting },
+  } = useForm<ModelFormValues>({
+    defaultValues: { name: model?.name ?? '', about: model?.about ?? '' },
+  });
+
+  const onVisibleChange = (next: boolean) => {
+    setVisible(next);
+    if (isNew) return;
+    setModelVisibility({ subdomain: brand.makeSlug, id: model.id, visible: next })
+      .unwrap()
+      .then(() => showToast('👁️ Visibility updated'))
+      .catch(() => {
+        setVisible(!next);
+        showToast('⚠️ Could not update visibility');
+      });
+  };
+
+  const onSave = handleSubmit(async (values) => {
+    if (!values.name.trim()) {
+      showToast('⚠️ Model name is required');
+      return;
+    }
+    try {
+      if (isNew) {
+        const created = await createModel({
+          subdomain: brand.makeSlug,
+          name: values.name.trim(),
+          about: values.about.trim() || null,
+        }).unwrap();
+        if (!visible) {
+          await setModelVisibility({ subdomain: brand.makeSlug, id: created.id, visible: false })
+            .unwrap()
+            .catch(() => undefined);
+        }
+        showToast('✅ Model saved');
+        navigate(ROUTING.adminCatalog);
+      } else {
+        await updateModel({
+          subdomain: brand.makeSlug,
+          id: model.id,
+          name: values.name.trim(),
+          about: values.about.trim() || null,
+          info: model.info,
+        }).unwrap();
+        showToast('✅ Model saved');
+      }
+    } catch {
+      showToast('⚠️ Could not save the model');
+    }
+  });
 
   return (
     <div className="flex h-auto items-start gap-5 @max-mobile:flex-col">
@@ -36,46 +102,26 @@ export default function ModelEditorPage() {
           <SectionHeader title="Basic Information" />
           <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
             <FormGroup half label="Model Name">
-              <Input
-                type="text"
-                placeholder="e.g. BMW M4"
-                value={editor.name}
-                onChange={(e) => dispatch(updateModelEditor({ name: e.target.value }))}
-              />
+              <Input type="text" placeholder="e.g. BMW M4" {...register('name')} />
             </FormGroup>
-            <FormGroup half label="Production Years">
-              <Input
-                type="text"
-                placeholder="e.g. 2014 – Present"
-                value={editor.years}
-                onChange={(e) => dispatch(updateModelEditor({ years: e.target.value }))}
-              />
+            <FormGroup half label="Production Years" hint="Computed from this model's generations">
+              <Input type="text" placeholder="—" value={model?.years ?? ''} readOnly />
             </FormGroup>
             <FormGroup half label="Body Type">
               <Select
+                disabled
                 placeholder="— Select —"
-                options={[
-                  'Sedan',
-                  'Coupe',
-                  'SAV',
-                  'Convertible',
-                  'Roadster',
-                  'Touring',
-                  'Compact',
-                  'Hatchback',
-                  'Other',
-                ]}
+                options={['Sedan', 'Coupe', 'SAV', 'Convertible', 'Roadster', 'Touring', 'Compact', 'Hatchback', 'Other']}
               />
             </FormGroup>
             <FormGroup half label="Power Type">
-              <Select placeholder="— Select —" options={['Combustion', 'Electric', 'Hybrid', 'Plug-in Hybrid']} />
+              <Select disabled placeholder="— Select —" options={['Combustion', 'Electric', 'Hybrid', 'Plug-in Hybrid']} />
             </FormGroup>
             <FormGroup label="Description" full hint="Markdown supported">
               <Textarea
                 rows={5}
                 placeholder="Describe this model — its history, key features, generations overview..."
-                value={editor.desc}
-                onChange={(e) => dispatch(updateModelEditor({ desc: e.target.value }))}
+                {...register('about')}
               />
             </FormGroup>
           </div>
@@ -119,12 +165,21 @@ export default function ModelEditorPage() {
 
       {/* RIGHT SIDEBAR */}
       <div className="flex w-[260px] shrink-0 flex-col gap-2 @max-mobile:w-full @mobile:gap-3">
-        <PublishCard saveLabel="Save Model" savedToast="✅ Model saved" className="@max-mobile:order-last" />
+        <PublishCard
+          saveLabel="Save Model"
+          visible={visible}
+          onVisibleChange={onVisibleChange}
+          onSave={onSave}
+          saving={isSubmitting}
+          saveDisabled={!isNew && !isDirty}
+          className="@max-mobile:order-last"
+        />
 
         <SectionCard className="mb-0">
           <SectionHeader compact title="Series" />
           <div className="px-3 py-3.5 @mobile:px-4">
             <Select
+              disabled
               placeholder="— Select series —"
               options={[
                 '1 Series',
@@ -157,16 +212,29 @@ export default function ModelEditorPage() {
           </div>
         </SectionCard>
 
-        {!editor.isNew && (
+        {!isNew && (
           <InfoCard
             rows={[
-              { label: 'Generations', value: '3' },
-              { label: 'Logbooks', value: '284' },
-              { label: 'Last edited', value: '2h ago', muted: true },
+              { label: 'Generations', value: String(model.generations_count) },
+              { label: 'Logbooks', value: String(model.logbooks_count) },
             ]}
           />
         )}
       </div>
     </div>
   );
+}
+
+export default function ModelEditorPage() {
+  const { name: param } = useParams();
+  const isNew = param === 'new';
+  const { data, isError, error, isFetching, refetch } = useGetAdminCatalogModelQuery(
+    { subdomain: brand.makeSlug, id: param ?? '' },
+    { skip: isNew },
+  );
+
+  if (isNew) return <ModelEditorForm model={null} />;
+  if (isError && !data) return <ErrorState error={error} isRetrying={isFetching} onRetry={refetch} />;
+  if (!data) return <Spinner />;
+  return <ModelEditorForm key={data.id} model={data} />;
 }

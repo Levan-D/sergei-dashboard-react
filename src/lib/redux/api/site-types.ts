@@ -171,19 +171,53 @@ export type AdminMeItemType = {
 
 
 
+export type AdminInfoPairType = { name: string; value: string };
+
+export type AdminEuroNcapType = {
+  rating: number | null;
+  adult_occupant: number | null;
+  child_occupant: number | null;
+  vulnerable_road_users: number | null;
+  safety_assist: number | null;
+};
+
+/** Shape verified against a live GET .../catalog/models on 2026-08-26. */
 export type AdminCatalogModelType = {
   id: number;
   name: string;
-  slug?: string | null;
-  years?: string | null;
+  slug: string;
+  type: string;
+  about: string | null;
+  info: AdminInfoPairType[];
+  /** Computed from the model's generations. Read-only: PUT ignores it. */
+  years: string | null;
+  since: number | null;
+  until: number | null;
+  generations_count: number;
+  logbooks_count: number;
+  visible: boolean;
 };
 
+/** Shape verified against a live GET .../catalog/models/{id}/generations on 2026-08-26. */
 export type AdminCatalogGenerationType = {
   id: number;
   name: string;
-  slug?: string | null;
-  years?: string | null;
-  model_id?: number | null;
+  slug: string;
+  model_id: number;
+  model_name: string;
+  about: string | null;
+  info: AdminInfoPairType[];
+  /** Writable here, unlike on the model. `since`/`until` are derived from it. */
+  years: string | null;
+  since: number | null;
+  until: number | null;
+  sort: number | null;
+  /** Always returns empty; no accepted write shape found yet. */
+  bodies: unknown[];
+  logo: AdminFileInfoType | null;
+  euro_ncap: AdminEuroNcapType;
+  logbooks_count: number;
+  visible: boolean;
 };
 
 const MEDIA_SIZES = ['small', 'medium', 'big'] as const;

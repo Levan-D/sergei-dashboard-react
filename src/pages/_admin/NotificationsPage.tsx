@@ -17,38 +17,35 @@ import SectionCard from '@/components/_admin/ui/SectionCard';
 import SectionHeader from '@/components/_admin/ui/SectionHeader';
 import { NotifyItem } from '@/components/_admin/NotifyItem';
 
-const BATCH_SIZE = 20;
-
 const SURFACE_ROUTES: Record<string, string> = {
   landing: ROUTING.adminLanding,
   catalog: ROUTING.adminCatalog,
   community: ROUTING.adminCommunity,
 };
 
-type Props = {
-  items: AdminNotificationType[];
-  unreadCount: number;
-  onRefetch: () => void;
-};
-
-function NotificationsList({ items, unreadCount, onRefetch }: Props) {
+export default function NotificationsPage() {
   const navigate = useNavigate();
-  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const [page, setPage] = useState(1);
+  const { data, isError, error, isFetching, refetch } = useGetAdminNotificationsQuery({
+    subdomain: brand.makeSlug,
+    page,
+  });
   const [readNotification] = useReadAdminNotificationMutation();
   const [readAll, { isLoading: isMarkingAll }] = useReadAllAdminNotificationsMutation();
 
-  const visible = items.slice(0, visibleCount);
-  const hasMore = visibleCount < items.length;
+  const items = data?.items ?? [];
+  const hasMore = !!data && data.current_page < data.last_page;
   const sentinelRef = useInfiniteScroll({
     hasMore,
-    isFetching: false,
-    onLoadMore: () => setVisibleCount((v) => v + BATCH_SIZE),
+    isFetching,
+    onLoadMore: () => setPage((p) => p + 1),
   });
 
   const onMarkAll = async () => {
     try {
       await readAll({ subdomain: brand.makeSlug }).unwrap();
-      onRefetch();
+      setPage(1);
+      refetch();
       showToast('✅ All marked as read');
     } catch {
       showToast('⚠️ Could not mark notifications as read');
@@ -59,25 +56,29 @@ function NotificationsList({ items, unreadCount, onRefetch }: Props) {
     if (!notification.read) {
       readNotification({ subdomain: brand.makeSlug, id: notification.id })
         .unwrap()
-        .then(onRefetch)
+        .then(() => refetch())
         .catch(() => undefined);
     }
     const route = SURFACE_ROUTES[notification.surface];
     if (route) navigate(route);
   };
 
+  if (isError && !data) return <ErrorState error={error} isRetrying={isFetching} onRetry={refetch} />;
+  if (!data) return <Spinner />;
+
   return (
     <SectionCard>
       <SectionHeader
         title="Notifications"
+        sub={`${data.total} total · ${data.unread_count} unread`}
         right={
-          <Button variant="ghost" sm loading={isMarkingAll} disabled={unreadCount === 0} onClick={onMarkAll}>
+          <Button variant="ghost" sm loading={isMarkingAll} disabled={data.unread_count === 0} onClick={onMarkAll}>
             Mark all read
           </Button>
         }
       />
       {items.length === 0 && <p className="p-5 text-sm text-ink-3">No notifications yet.</p>}
-      {visible.map((notification) => (
+      {items.map((notification) => (
         <NotifyItem
           key={notification.id}
           read={notification.read}
@@ -94,12 +95,4 @@ function NotificationsList({ items, unreadCount, onRefetch }: Props) {
       )}
     </SectionCard>
   );
-}
-
-export default function NotificationsPage() {
-  const { data, isError, error, isFetching, refetch } = useGetAdminNotificationsQuery({ subdomain: brand.makeSlug });
-
-  if (isError && !data) return <ErrorState error={error} isRetrying={isFetching} onRetry={refetch} />;
-  if (!data) return <Spinner />;
-  return <NotificationsList items={data.items} unreadCount={data.unread_count} onRefetch={refetch} />;
 }

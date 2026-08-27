@@ -18,8 +18,6 @@ import Table from '@/components/_admin/ui/Table';
 import { RecordCard } from '@/components/_admin/RecordCard';
 import { IdentityCell, MutedCell } from '@/components/_admin/table-cells';
 
-const BATCH_SIZE = 20;
-
 const BADGE_COLORS: BadgeColor[] = ['blue', 'gray', 'green', 'yellow', 'red'];
 
 const badgeColor = (badge: string): BadgeColor =>
@@ -40,21 +38,18 @@ function RestoreButton({ onClick }: RestoreButtonProps) {
 
 type Props = {
   entries: AdminHistoryEntryType[];
-  count: number;
+  total: number;
+  hasMore: boolean;
+  isFetching: boolean;
+  onLoadMore: () => void;
 };
 
-function HistoryList({ entries, count }: Props) {
-  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+function HistoryList({ entries, total, hasMore, isFetching, onLoadMore }: Props) {
   const [restoreTarget, setRestoreTarget] = useState<AdminHistoryEntryType | null>(null);
   const [restoreVersion, { isLoading: isRestoring }] = useRestoreAdminVersionMutation();
 
-  const visible = entries.slice(0, visibleCount);
-  const hasMore = visibleCount < entries.length;
-  const sentinelRef = useInfiniteScroll({
-    hasMore,
-    isFetching: false,
-    onLoadMore: () => setVisibleCount((v) => v + BATCH_SIZE),
-  });
+  const visible = entries;
+  const sentinelRef = useInfiniteScroll({ hasMore, isFetching, onLoadMore });
 
   const confirmRestore = async () => {
     if (!restoreTarget) return;
@@ -69,7 +64,7 @@ function HistoryList({ entries, count }: Props) {
 
   return (
     <SectionCard>
-      <SectionHeader title="Version History" sub={`${count} change${count !== 1 ? 's' : ''}`} />
+      <SectionHeader title="Version History" sub={`${total} change${total !== 1 ? 's' : ''}`} />
       <Table className="@max-table:hidden">
         <thead>
           <tr>
@@ -128,9 +123,21 @@ function HistoryList({ entries, count }: Props) {
 }
 
 export default function HistoryPage() {
-  const { data, isError, error, isFetching, refetch } = useGetAdminHistoryQuery({ subdomain: brand.makeSlug });
+  const [page, setPage] = useState(1);
+  const { data, isError, error, isFetching, refetch } = useGetAdminHistoryQuery({
+    subdomain: brand.makeSlug,
+    page,
+  });
 
   if (isError && !data) return <ErrorState error={error} isRetrying={isFetching} onRetry={refetch} />;
   if (!data) return <Spinner />;
-  return <HistoryList entries={data.items} count={data.count} />;
+  return (
+    <HistoryList
+      entries={data.items}
+      total={data.total}
+      hasMore={data.current_page < data.last_page}
+      isFetching={isFetching}
+      onLoadMore={() => setPage((p) => p + 1)}
+    />
+  );
 }

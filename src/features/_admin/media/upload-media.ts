@@ -3,10 +3,25 @@ import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
 import { releaseLocalFile, toLocalFile } from '@/lib/files';
 import { uploadFilesTus } from '@/lib/tus';
+import { mediaKindForFile } from '@/lib/media-formats';
 import { mediaApi } from '@/lib/redux/api/admin-api/media/media-api';
 import { finishUploads, setUploadProgress, startUploads } from '@/store/uploadsSlice';
 
 let uploadCounter = 0;
+
+type RegisterOutcomeType = 'added' | 'duplicate' | 'failed';
+
+const isConflict = (error: unknown) =>
+  typeof error === 'object' && error !== null && (error as { status?: number }).status === 409;
+
+/** One line summarising a batch: what landed, what was already there, what broke. */
+const outcomeToast = (added: number, duplicates: number, failed: number) => {
+  const files = (n: number) => `${n} file${n === 1 ? '' : 's'}`;
+  if (failed) return `⚠️ ${files(failed)} could not be uploaded`;
+  if (!duplicates) return `✅ ${files(added)} uploaded`;
+  if (!added) return duplicates === 1 ? 'ℹ️ Already in the library' : `ℹ️ ${files(duplicates)} already in the library`;
+  return `✅ ${files(added)} uploaded · ${duplicates} already in the library`;
+};
 
 /**
  * Runs the whole upload pipeline (TUS → register → cache insert) against the
@@ -35,29 +50,25 @@ export async function uploadToLibrary(files: File[]) {
     const fileIds = await uploadFilesTus(files, undefined, undefined, (index, percent) =>
       store.dispatch(setUploadProgress({ key: keys[index], progress: percent })),
     );
-    let registered = 0;
+    const tally: Record<RegisterOutcomeType, number> = { added: 0, duplicate: 0, failed: 0 };
     for (const [i, fileId] of fileIds.entries()) {
-      const ok = await store
+      const outcome: RegisterOutcomeType = await store
         .dispatch(
           mediaApi.endpoints.registerAdminMedia.initiate({
             subdomain: brand.makeSlug,
             file_id: fileId,
             name: files[i].name,
+            kind: mediaKindForFile(files[i]),
           }),
         )
         .unwrap()
-        .then(() => true)
-        .catch(() => false);
-      if (ok) {
-        registered += 1;
-        store.dispatch(finishUploads([keys[i]]));
-      }
+        .then((): RegisterOutcomeType => 'added')
+        .catch((error): RegisterOutcomeType => (isConflict(error) ? 'duplicate' : 'failed'));
+      tally[outcome] += 1;
+      // A duplicate is already in the library, so its placeholder has nothing left to wait for.
+      if (outcome !== 'failed') store.dispatch(finishUploads([keys[i]]));
     }
-    if (registered === files.length) {
-      showToast(`✅ ${registered} file${registered === 1 ? '' : 's'} uploaded`);
-    } else {
-      showToast(`⚠️ ${registered} of ${files.length} files made it to the library`);
-    }
+    showToast(outcomeToast(tally.added, tally.duplicate, tally.failed));
   } catch {
     showToast('⚠️ Upload failed, please try again');
   } finally {
