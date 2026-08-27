@@ -1,9 +1,26 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/cn';
+import { brand } from '@/lib/brand';
 import { ROUTING } from '@/lib/routing';
+import { useGetAdminSiteQuery } from '@/lib/redux/api/admin-api/site/site-queries';
 import { titleForPath } from './nav';
 import { IconArrowLeft, IconBell, IconExternal, IconMenu } from '@/components/_admin/icons';
 import IconButton from '@/components/_admin/ui/IconButton';
+
+/** Site status pill, driven by the settings the Settings page writes. */
+const SITE_STATUS = {
+  live: { label: 'Live', title: 'The landing is publicly reachable', className: 'bg-green-bg text-green before:bg-green' },
+  maintenance: {
+    label: 'Maintenance',
+    title: 'Visitors see the maintenance screen instead of the landing',
+    className: 'bg-yellow-bg text-yellow before:bg-yellow',
+  },
+  offline: {
+    label: 'Offline',
+    title: 'The brand is disabled, so the landing is not served at all',
+    className: 'bg-red-bg text-red before:bg-red',
+  },
+} as const;
 
 /** Resolve the editor breadcrumb label from `/admin/catalog/{model|gen}/:name`. */
 function editorLabel(pathname: string): string | null {
@@ -24,6 +41,8 @@ export default function Topbar({ onMenuClick }: Props) {
 
   const breadcrumb = editorLabel(pathname);
   const isSubPage = breadcrumb !== null;
+  const { data: site } = useGetAdminSiteQuery({ subdomain: brand.makeSlug });
+  const status = !site ? null : site.enabled === false ? 'offline' : site.maintenance ? 'maintenance' : 'live';
 
   return (
     <div className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-surface px-4 md:gap-4 md:px-6">
@@ -54,9 +73,17 @@ export default function Topbar({ onMenuClick }: Props) {
         </div>
       </div>
       <div className="ml-auto flex items-center gap-2">
-        <div className="flex items-center gap-1.5 rounded-el bg-green-bg px-2 py-[5px] text-xs font-semibold text-green before:h-1.5 before:w-1.5 before:rounded-full before:bg-green before:content-[''] md:px-3">
-          Live
-        </div>
+        {status && (
+          <div
+            title={SITE_STATUS[status].title}
+            className={cn(
+              "flex items-center gap-1.5 rounded-el px-2 py-[5px] text-xs font-semibold before:h-1.5 before:w-1.5 before:rounded-full before:content-[''] md:px-3",
+              SITE_STATUS[status].className,
+            )}
+          >
+            {SITE_STATUS[status].label}
+          </div>
+        )}
         <IconButton title="Notifications" onClick={() => navigate(ROUTING.adminNotifications)}>
           <IconBell size={15} />
         </IconButton>
