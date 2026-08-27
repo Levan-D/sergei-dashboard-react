@@ -11,11 +11,14 @@ import { unwrapData, type AutobrandSiteType } from '@/lib/redux/api/site-types';
  */
 export type ResolveAutobrandHostArgType = { host: string };
 
-export type ResolveAutobrandHostType = {
-  subdomain: string;
-  domain?: string | null;
-  name?: string | null;
-};
+/**
+ * Verified 2026-08-26: resolve returns the **full** AutobrandSiteType, the same
+ * payload as getPublicAutobrand, not a slim {subdomain, domain, name}. It also
+ * accepts a bare slug ("bmw") as well as a host. Reserved hosts (www, admin,
+ * testing-backend) answer 404 "Host is not a brand subdomain"; an unknown brand
+ * answers 404 "Autobrand site not found".
+ */
+export type ResolveAutobrandHostType = AutobrandSiteType;
 
 export type GetPublicAutobrandArgType = { subdomain: string };
 

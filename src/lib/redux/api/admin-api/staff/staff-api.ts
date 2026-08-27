@@ -1,15 +1,19 @@
 import { adminApiSlice } from '@/lib/redux/api/admin-api/admin-api-slice';
 import {
   unwrapData,
+  type AdminFileInfoType,
   type AdminListResponseType,
   type AdminStaffRoleType,
 } from '@/lib/redux/api/admin-api/admin-types';
 
+/** Shape verified against a live GET .../staff on 2026-08-26. */
 export type AdminStaffType = {
   id: number;
   user_id: number;
   email: string;
   name: string;
+  /** Same FileInfo as a user avatar. `default: true` means the placeholder. */
+  picture: AdminFileInfoType | null;
   role: AdminStaffRoleType;
   active: boolean;
   must_change_password: boolean;
@@ -87,6 +91,15 @@ export const staffApi = adminApiSlice.injectEndpoints({
         method: 'POST',
       }),
     }),
+
+    /** Superadmin only, and not on yourself. Verified live 2026-08-26. */
+    activateAdminStaff: builder.mutation<AdminStaffType, DeactivateAdminStaffArgType>({
+      query: ({ subdomain, id }) => ({
+        url: `/api/autobrands/${subdomain}/staff/${id}/activate`,
+        method: 'POST',
+      }),
+      transformResponse: (response: { data: AdminStaffType } | AdminStaffType) => unwrapData(response),
+    }),
   }),
 });
 
@@ -95,4 +108,5 @@ export const {
   useInviteAdminStaffMutation,
   useUpdateAdminStaffMutation,
   useDeactivateAdminStaffMutation,
+  useActivateAdminStaffMutation,
 } = staffApi;

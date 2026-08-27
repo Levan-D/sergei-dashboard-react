@@ -6,13 +6,24 @@ type Props = {
   title: string;
   description: string | string[];
   actionLabel: string;
+  /** Defaults to `danger`; pass `secondary` when the action is not destructive. */
+  actionVariant?: 'danger' | 'secondary';
   loading?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 };
 
 /** Confirmation gate for destructive actions — deactivations, restores, deletions. */
-export default function ConfirmModal({ open, title, description, actionLabel, loading, onConfirm, onClose }: Props) {
+export default function ConfirmModal({
+  open,
+  title,
+  description,
+  actionLabel,
+  actionVariant = 'danger',
+  loading,
+  onConfirm,
+  onClose,
+}: Props) {
   const lines = Array.isArray(description) ? description : [description];
   return (
     <Modal
@@ -25,7 +36,7 @@ export default function ConfirmModal({ open, title, description, actionLabel, lo
           <Button variant="ghost" disabled={loading} onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="danger" loading={loading} onClick={onConfirm}>
+          <Button variant={actionVariant} loading={loading} onClick={onConfirm}>
             {actionLabel}
           </Button>
         </>

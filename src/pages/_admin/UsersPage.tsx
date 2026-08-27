@@ -6,8 +6,10 @@ import { initialsOf } from '@/lib/initials';
 import {
   useGetAdminStaffQuery,
   useDeactivateAdminStaffMutation,
+  useActivateAdminStaffMutation,
   type AdminStaffType,
 } from '@/lib/redux/api/admin-api/staff/staff-api';
+import { adminMediaUrl } from '@/lib/redux/api/admin-api/admin-types';
 import Avatar from '@/components/_admin/ui/Avatar';
 import Badge from '@/components/_admin/ui/Badge';
 import Button from '@/components/_admin/ui/Button';
@@ -28,18 +30,32 @@ type RowActionsProps = {
   canManage: boolean;
   onEditRole: (member: AdminStaffType) => void;
   onDeactivate: (member: AdminStaffType) => void;
+  onActivate: (member: AdminStaffType) => void;
 };
 
-function RowActions({ member, canManage, onEditRole, onDeactivate }: RowActionsProps) {
+const ACTION_W = 'w-[85px] justify-center';
+
+function RowActions({ member, canManage, onEditRole, onDeactivate, onActivate }: RowActionsProps) {
   if (member.you) return <span className="text-xs text-ink-3">You</span>;
-  if (!member.active) return <Badge color="red">Inactive</Badge>;
+  if (!member.active) {
+    return (
+      <>
+        <Badge color="red">Inactive</Badge>
+        {canManage && (
+          <Button variant="secondary" sm className={ACTION_W} onClick={() => onActivate(member)}>
+            Reactivate
+          </Button>
+        )}
+      </>
+    );
+  }
   if (!canManage) return null;
   return (
     <>
-      <Button variant="ghost" sm onClick={() => onEditRole(member)}>
+      <Button variant="ghost" sm className={ACTION_W} onClick={() => onEditRole(member)}>
         Edit Role
       </Button>
-      <Button variant="danger" sm onClick={() => onDeactivate(member)}>
+      <Button variant="danger" sm className={ACTION_W} onClick={() => onDeactivate(member)}>
         Deactivate
       </Button>
     </>
@@ -53,9 +69,10 @@ type Props = {
 };
 
 function UsersTable({ staff, count, onRefetch }: Props) {
-  const [modal, setModal] = useState<'invite' | 'role' | 'deactivate' | null>(null);
+  const [modal, setModal] = useState<'invite' | 'role' | 'deactivate' | 'activate' | null>(null);
   const [selected, setSelected] = useState<AdminStaffType | null>(null);
   const [deactivateStaff, { isLoading: isDeactivating }] = useDeactivateAdminStaffMutation();
+  const [activateStaff, { isLoading: isActivating }] = useActivateAdminStaffMutation();
 
   const me = staff.find((m) => m.you);
   const canManage = me?.role === 'superadmin';
@@ -73,6 +90,23 @@ function UsersTable({ staff, count, onRefetch }: Props) {
   const closeModal = () => {
     setModal(null);
     setSelected(null);
+  };
+
+  const onActivate = (member: AdminStaffType) => {
+    setSelected(member);
+    setModal('activate');
+  };
+
+  const confirmActivate = async () => {
+    if (!selected) return;
+    try {
+      await activateStaff({ subdomain: brand.makeSlug, id: selected.id }).unwrap();
+      showToast(`✅ ${selected.name} reactivated`);
+      onRefetch();
+      closeModal();
+    } catch {
+      showToast('⚠️ Could not reactivate this user');
+    }
   };
 
   const confirmDeactivate = async () => {
@@ -113,14 +147,25 @@ function UsersTable({ staff, count, onRefetch }: Props) {
         <tbody>
           {staff.map((member) => (
             <tr key={member.id}>
-              <IdentityCell sm={false} initials={initialsOf(member.name)} name={member.name} />
+              <IdentityCell
+                sm={false}
+                initials={initialsOf(member.name)}
+                imageUrl={adminMediaUrl(member.picture, 'small')}
+                name={member.name}
+              />
               <td className="text-ink-2">{member.email}</td>
               <td>
                 <Badge color={member.role === 'superadmin' ? 'blue' : 'gray'}>{ROLE_LABELS[member.role]}</Badge>
               </td>
               <MutedCell>{fmtRelativeTime(member.last_login_at)}</MutedCell>
-              <ActionsCell>
-                <RowActions member={member} canManage={canManage} onEditRole={onEditRole} onDeactivate={onDeactivate} />
+              <ActionsCell className="grid w-fit grid-cols-[85px_85px] items-center justify-items-center gap-1.5">
+                <RowActions
+                  member={member}
+                  canManage={canManage}
+                  onEditRole={onEditRole}
+                  onDeactivate={onDeactivate}
+                  onActivate={onActivate}
+                />
               </ActionsCell>
             </tr>
           ))}
@@ -131,7 +176,7 @@ function UsersTable({ staff, count, onRefetch }: Props) {
         {staff.map((member) => (
           <div key={member.id} className="w-full overflow-hidden rounded-el border border-line bg-surface-2">
             <div className="flex items-center gap-2.5 p-3">
-              <Avatar initials={initialsOf(member.name)} />
+              <Avatar initials={initialsOf(member.name)} imageUrl={adminMediaUrl(member.picture, 'small')} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[13.5px] font-semibold text-ink">{member.name}</p>
                 <p className="truncate text-[11px] text-ink-3">{member.email}</p>
@@ -141,7 +186,13 @@ function UsersTable({ staff, count, onRefetch }: Props) {
             <div className="flex items-center gap-2 border-t border-line px-3 py-2.5">
               <p className="text-[11px] text-ink-3">{fmtRelativeTime(member.last_login_at)}</p>
               <div className="ml-auto flex gap-1.5">
-                <RowActions member={member} canManage={canManage} onEditRole={onEditRole} onDeactivate={onDeactivate} />
+                <RowActions
+                  member={member}
+                  canManage={canManage}
+                  onEditRole={onEditRole}
+                  onDeactivate={onDeactivate}
+                  onActivate={onActivate}
+                />
               </div>
             </div>
           </div>
@@ -157,6 +208,16 @@ function UsersTable({ staff, count, onRefetch }: Props) {
         actionLabel="Deactivate"
         loading={isDeactivating}
         onConfirm={confirmDeactivate}
+        onClose={closeModal}
+      />
+      <ConfirmModal
+        open={modal === 'activate'}
+        title={`Reactivate ${selected?.name ?? ''}?`}
+        description={['They will regain access to this brand admin.']}
+        actionLabel="Reactivate"
+        actionVariant="secondary"
+        loading={isActivating}
+        onConfirm={confirmActivate}
         onClose={closeModal}
       />
     </SectionCard>

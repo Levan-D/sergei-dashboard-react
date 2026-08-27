@@ -160,11 +160,13 @@ export type AutobrandSiteType = {
   vendor_channel?: AutobrandVendorChannelType | null;
 } & AutobrandSettingsType;
 
+/** Shape verified against a live GET /api/autobrands/me on 2026-08-26. */
 export type AdminMeItemType = {
   subdomain: string;
-  name?: string | null;
   domain?: string | null;
   role: AdminStaffRoleType;
+  must_change_password: boolean;
+  make?: AutobrandMakeType | null;
 };
 
 
