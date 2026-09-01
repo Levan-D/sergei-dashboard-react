@@ -111,6 +111,7 @@ function HeroForm({ site }: Props) {
     watch,
     setValue,
     reset,
+    clearErrors,
     handleSubmit,
     formState: { isDirty, isSubmitting, errors },
   } = useForm<HeroFormValues>({
@@ -169,6 +170,7 @@ function HeroForm({ site }: Props) {
     return values.slides.length > 0 || 'Add at least one slide';
   };
   register('type', { validate: (_, values) => mediaCheck(values) });
+  const mediaError = errors.type?.message as string | undefined;
 
   const pickFieldOf: Record<SingleFileField, SinglePickField> = {
     image_file: 'image_pick',
@@ -351,7 +353,12 @@ function HeroForm({ site }: Props) {
         {tabs.map((t) => (
           <button
             key={t.id}
-            onClick={() => setValue('type', t.id, { shouldDirty: true })}
+            onClick={() => {
+              // The error belongs to the tab that was open when save was hit,
+              // so it says nothing about the one being switched to.
+              clearErrors('type');
+              setValue('type', t.id, { shouldDirty: true });
+            }}
             className={cn(
               'inline-flex cursor-pointer items-center gap-1.5 rounded-el border px-3 py-[7px] font-sans text-[12.5px] font-semibold transition-all @mobile:px-4',
               heroType === t.id
@@ -401,10 +408,12 @@ function HeroForm({ site }: Props) {
               kinds={['image']}
               maxSizeMB={5}
               disabled={isSubmitting}
+              invalid={!!mediaError}
               onFiles={replaceSingle('image_file')}
               onPick={pickSingle('image_file')}
             />
           )}
+          {mediaError && <p className="mt-1.5 text-[11px] text-red">{mediaError}</p>}
         </div>
       </div>
 
@@ -444,10 +453,12 @@ function HeroForm({ site }: Props) {
               kinds={['video']}
               maxSizeMB={100}
               disabled={isSubmitting}
+              invalid={!!mediaError}
               onFiles={replaceSingle('video_file')}
               onPick={pickSingle('video_file')}
             />
           )}
+          {mediaError && <p className="mt-1.5 text-[11px] text-red">{mediaError}</p>}
 
           <MediaSectionLabel className="mt-4 @mobile:mt-5">Preview Thumbnail</MediaSectionLabel>
           {thumbFile ? (
@@ -515,6 +526,7 @@ function HeroForm({ site }: Props) {
                   maxFiles={MAX_SLIDES}
                   maxSizeMB={5}
                   disabled={isSubmitting}
+                  invalid={!!mediaError}
                   onFiles={addSlides}
                   className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none flex-col items-center justify-center @mobile:w-[calc(20%-8px)]"
                 />
@@ -537,7 +549,11 @@ function HeroForm({ site }: Props) {
             onPickMany={addSlidesFromLibrary}
             kinds={['image']}
           />
-          <p className="mt-2.5 text-[11px] text-ink-3">Drag to reorder · JPG/WebP · max 5MB each</p>
+          {mediaError ? (
+            <p className="mt-2.5 text-[11px] text-red">{mediaError}</p>
+          ) : (
+            <p className="mt-2.5 text-[11px] text-ink-3">Drag to reorder · JPG/WebP · max 5MB each</p>
+          )}
           <div className="mt-3 flex items-center gap-5 border-t border-line pt-3.5">
             <div className="flex flex-row items-center gap-2.5">
               <Toggle on={autoplay} onClick={() => setValue('autoplay', !autoplay, { shouldDirty: true })} />

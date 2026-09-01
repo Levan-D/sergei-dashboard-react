@@ -15,6 +15,8 @@ type Props = {
   text: string;
   hint?: string;
   compact?: boolean;
+  /** Save was attempted and this zone is what is missing. */
+  invalid?: boolean;
   className?: string;
 };
 
@@ -28,6 +30,7 @@ export default function DropZone({
   text,
   hint,
   compact,
+  invalid,
   className,
 }: Props) {
   const accept = acceptMap(kinds);
@@ -60,12 +63,14 @@ export default function DropZone({
 
   return (
     <div
+      aria-invalid={invalid || undefined}
       {...getRootProps({
         className: cn(
           'min-w-[180px] flex-1 cursor-pointer rounded-card border-2 border-dashed text-center transition-all',
           isDragActive ? 'border-accent bg-accent-bg' : 'border-line-2 hover:border-accent hover:bg-accent-bg',
           compact ? 'p-3 @mobile:p-4' : 'px-5 py-3 @mobile:py-4',
           disabled && 'cursor-not-allowed opacity-50 hover:border-line-2 hover:bg-transparent',
+          invalid && !isDragActive && 'border-red bg-red-bg/30',
           className,
         ),
       })}

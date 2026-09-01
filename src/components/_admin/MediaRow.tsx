@@ -17,6 +17,8 @@ type MediaPickRowProps = {
   maxFiles?: number;
   maxSizeMB?: number;
   disabled?: boolean;
+  /** Save was attempted and this row is what is missing. */
+  invalid?: boolean;
   onFiles?: (files: File[]) => void;
   onPick?: (media: AdminMediaType) => void;
 };
@@ -32,6 +34,7 @@ export function MediaPickRow({
   maxFiles,
   maxSizeMB,
   disabled,
+  invalid,
   onFiles,
   onPick,
 }: MediaPickRowProps) {
@@ -52,6 +55,7 @@ export function MediaPickRow({
         maxFiles={maxFiles}
         maxSizeMB={maxSizeMB}
         disabled={disabled}
+        invalid={invalid}
         onFiles={onFiles ?? (() => showToast('📁 Upload is not wired for this section yet'))}
         className={cn(stack && '@max-mobile:min-w-0 @max-mobile:flex-none')}
       />

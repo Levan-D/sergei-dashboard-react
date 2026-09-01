@@ -216,6 +216,7 @@ function BrandStyleForm({ site }: Props) {
               kinds={['logo']}
               maxSizeMB={2}
               disabled={isSavingAssets}
+              invalid={!!assetErrors.logo}
               onFiles={stageFile('logo')}
               onPick={stagePick('logo')}
             />
@@ -238,6 +239,7 @@ function BrandStyleForm({ site }: Props) {
               kinds={['favicon']}
               maxSizeMB={0.5}
               disabled={isSavingAssets}
+              invalid={!!assetErrors.favicon}
               onFiles={stageFile('favicon')}
               onPick={stagePick('favicon')}
             />
