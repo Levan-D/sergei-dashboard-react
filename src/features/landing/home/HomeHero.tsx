@@ -1,6 +1,5 @@
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
-import Highlight from '@/components/landing/Highlight';
 import { HeroSlideshow } from '@/features/landing/shared/HeroSlideshow';
 import usePublicSite from '@/features/landing/use-public-site';
 import { adminMediaFileUrl, adminMediaUrl } from '@/lib/redux/api/site-types';
@@ -61,12 +60,10 @@ export function HomeHero() {
       <Container noPadding="y" className="pointer-events-none relative pb-10 w1440:pb-20">
         <div className="pointer-events-auto flex max-w-[624px] flex-col gap-12">
           {(headline || subheadline) && (
-            <Highlight id="1b" size="lg" className="self-start">
-              <div className="flex flex-col gap-6">
-                {headline && <h1 className="t-h1 text-white">{headline}</h1>}
-                {subheadline && <p className="t-lead max-w-[585px] text-white">{subheadline}</p>}
-              </div>
-            </Highlight>
+            <div className="flex flex-col gap-6 self-start">
+              {headline && <h1 className="t-h1 text-white">{headline}</h1>}
+              {subheadline && <p className="t-lead max-w-[585px] text-white">{subheadline}</p>}
+            </div>
           )}
           {(primaryText || showSecondary) && (
             <div className="flex flex-col gap-4 w640:flex-row w640:flex-wrap w960:gap-6">
@@ -86,17 +83,15 @@ export function HomeHero() {
                   </Button>
                 ))}
               {showSecondary && (
-                <Highlight id="2b" className="w-full w640:flex-1 w960:w-auto w960:flex-none">
-                  <Button
-                    variant="secondary"
-                    href={secondaryUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full"
-                  >
-                    {secondaryText}
-                  </Button>
-                </Highlight>
+                <Button
+                  variant="secondary"
+                  href={secondaryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full w640:flex-1 w960:w-auto w960:flex-none"
+                >
+                  {secondaryText}
+                </Button>
               )}
             </div>
           )}

@@ -1,6 +1,5 @@
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
-import Highlight from '@/components/landing/Highlight';
 import { TechSpecsCard } from '@/features/landing/shared/TechSpecsCard';
 import { genOverview } from '@/features/landing/data';
 
@@ -17,9 +16,9 @@ export function GenOverviewSection() {
               </p>
             ))}
           </div>
-          <Highlight id="9b" size="lg" className="block w-full shrink-0 w1280:w-[335px] w1440:w-[464px]">
+          <div className="w-full shrink-0 w1280:w-[335px] w1440:w-[464px]">
             <TechSpecsCard title="Technical specifications" />
-          </Highlight>
+          </div>
         </div>
       </Container>
     </section>

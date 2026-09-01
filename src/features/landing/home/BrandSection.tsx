@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
-import Highlight from '@/components/landing/Highlight';
 import { IconArrowRight } from '@/components/landing/icons';
 import { cn } from '@/lib/cn';
 import usePublicSite from '@/features/landing/use-public-site';
@@ -68,8 +67,7 @@ export function BrandSection() {
   return (
     <section className="bg-surface-2">
       <Container>
-        <Highlight id="3b" size="lg" className="block">
-          <div className="flex flex-col gap-6 w960:gap-10">
+        <div className="flex flex-col gap-6 w960:gap-10">
             <SectionTitle>Brand</SectionTitle>
             <div className="flex flex-col items-start gap-6 w960:flex-row w960:gap-16 w1280:gap-[calc(8.333%+26px)]">
               {available.length > 1 && (
@@ -104,9 +102,8 @@ export function BrandSection() {
                 {tab === 'Facts' && <PairList pairs={facts.map((f) => ({ name: f.name, value: f.value }))} />}
                 {tab === 'Motority stats' && <PairList pairs={statRows} />}
               </div>
-            </div>
           </div>
-        </Highlight>
+        </div>
       </Container>
     </section>
   );

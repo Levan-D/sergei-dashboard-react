@@ -1,17 +1,13 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
-import Highlight from '@/components/landing/Highlight';
 import { ROUTING } from '@/lib/routing';
 import { scrollToId } from '@/lib/scroll';
 import { brand } from '@/lib/brand';
 import usePublicSite from '@/features/landing/use-public-site';
 import { adminMediaUrl } from '@/lib/redux/api/site-types';
 
-const deadLinks = [
-  { id: '1r', label: 'Configurator' },
-  { id: '2r', label: 'Find a dealer' },
-] as const;
+const secondaryLinks = ['Configurator', 'Find a dealer'];
 
 const linkClass = 't-footer-link cursor-pointer text-white/70 transition-colors hover:text-white';
 
@@ -54,24 +50,22 @@ export default function Footer() {
             <p onClick={goToModels} className={linkClass}>
               Explore models
             </p>
-            {deadLinks.map((l) => (
-              <Highlight key={l.id} id={l.id}>
-                <p className={linkClass}>{l.label}</p>
-              </Highlight>
+            {secondaryLinks.map((label) => (
+              <p key={label} className={linkClass}>
+                {label}
+              </p>
             ))}
           </div>
           {joinHref && (
-            <Highlight id="2b" className="w-full w960:ml-auto w960:w-auto w1280:w-[342px]">
-              <Button
-                variant="secondary"
-                href={joinHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                Join the community
-              </Button>
-            </Highlight>
+            <Button
+              variant="secondary"
+              href={joinHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full w960:ml-auto w960:w-auto w1280:w-[342px]"
+            >
+              Join the community
+            </Button>
           )}
         </div>
         <div className="border-t border-white/20 py-[23.5px]">

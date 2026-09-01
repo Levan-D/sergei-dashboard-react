@@ -5,7 +5,6 @@ import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
 import PillChip from '@/components/landing/PillChip';
 import Carousel from '@/components/landing/Carousel';
-import Highlight from '@/components/landing/Highlight';
 import useModelsPerPage from '@/hooks/use-models-per-page';
 import { cn } from '@/lib/cn';
 import { landingModels, bodyTypeFilters, seriesFilters, decadeFilters } from '@/features/landing/data';
@@ -43,15 +42,13 @@ export function ModelsSection() {
       <Container>
         <SectionTitle className="mb-6 w640:mb-10">Models</SectionTitle>
 
-        <Highlight id="4b" size="lg" className="mb-6 block">
-          <div className="flex flex-col gap-3 w1280:gap-4">
-            <FilterGroup label="Body type" options={bodyTypeFilters} active={bodyType} onPick={setBodyType} />
-            <div className="h-px w-full bg-line" />
-            <FilterGroup label="Series" options={seriesFilters} active={series} onPick={setSeries} />
-            <div className="h-px w-full bg-line" />
-            <FilterGroup label="Decade" options={decadeFilters} active={decade} onPick={setDecade} />
-          </div>
-        </Highlight>
+        <div className="mb-6 flex flex-col gap-3 w1280:gap-4">
+          <FilterGroup label="Body type" options={bodyTypeFilters} active={bodyType} onPick={setBodyType} />
+          <div className="h-px w-full bg-line" />
+          <FilterGroup label="Series" options={seriesFilters} active={series} onPick={setSeries} />
+          <div className="h-px w-full bg-line" />
+          <FilterGroup label="Decade" options={decadeFilters} active={decade} onPick={setDecade} />
+        </div>
 
         <div className="flex flex-wrap gap-4 w1440:gap-6">
           {landingModels.slice(0, perPage).map((m, i) => {
@@ -81,15 +78,6 @@ export function ModelsSection() {
                 </div>
               </>
             );
-            if (i === 0) {
-              return (
-                <Highlight key={i} id="3r" size="lg" className={`block w-full ${widthCls}`}>
-                  <Link to={landingModelPath(m.slug)} className={cardCls}>
-                    {inner}
-                  </Link>
-                </Highlight>
-              );
-            }
             return (
               <Link key={i} to={landingModelPath(m.slug)} className={`${cardCls} ${widthCls}`}>
                 {inner}

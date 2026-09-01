@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
@@ -49,13 +50,22 @@ function SecondScreenForm({ site }: Props) {
     },
   });
   const facts = watch('facts');
+  const [triedToSave, setTriedToSave] = useState(false);
+  // The landing always shows six facts, so all six must be filled before saving.
+  const factsIncomplete = facts.some((f) => !f.name.trim() || !f.value.trim());
+
+  const onSave = () => {
+    setTriedToSave(true);
+    if (factsIncomplete) return;
+    handleSubmit(onSubmit)();
+  };
 
   const onSubmit = async (values: SecondScreenFormValues) => {
     try {
       await updateAbout({
         subdomain: brand.makeSlug,
         about: values.about,
-        facts: values.facts.filter((f) => f.name.trim() || f.value.trim()),
+        facts: values.facts.map((f) => ({ name: f.name.trim(), value: f.value.trim() })),
       }).unwrap();
       reset(values);
       showToast('✅ Second screen saved');
@@ -79,7 +89,7 @@ function SecondScreenForm({ site }: Props) {
         title="Second Screen"
         sub={<>About, Facts &amp; Motority Stats block</>}
         right={
-          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
+          <Button sm loading={isSaving} disabled={!isDirty} onClick={onSave}>
             Save Changes
           </Button>
         }
@@ -114,6 +124,9 @@ function SecondScreenForm({ site }: Props) {
             </div>
           ))}
         </div>
+        {triedToSave && factsIncomplete && (
+          <p className="mt-2.5 text-[11px] text-red">Please fill out all the facts</p>
+        )}
       </div>
       <div className="p-5">
         <div className="mb-2 flex items-center gap-2 @mobile:mb-3">

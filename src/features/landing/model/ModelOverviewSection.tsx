@@ -1,6 +1,5 @@
 import Container from '@/components/landing/Container';
 import SectionTitle from '@/components/landing/SectionTitle';
-import Highlight from '@/components/landing/Highlight';
 import { TechSpecsCard } from '@/features/landing/shared/TechSpecsCard';
 import { modelOverview } from '@/features/landing/data';
 
@@ -17,9 +16,9 @@ export function ModelOverviewSection() {
               </p>
             ))}
           </div>
-          <Highlight id="8r" size="lg" className="block w-full shrink-0 w1280:w-[335px] w1440:w-[464px]">
+          <div className="w-full shrink-0 w1280:w-[335px] w1440:w-[464px]">
             <TechSpecsCard title="Last generation" />
-          </Highlight>
+          </div>
         </div>
       </Container>
     </section>

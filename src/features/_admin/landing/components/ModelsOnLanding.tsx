@@ -17,6 +17,13 @@ import { ActionsCell } from '@/components/_admin/table-cells';
 
 const logbooksBadge = (count: number): 'green' | 'gray' => (count > 0 ? 'green' : 'gray');
 
+/**
+ * This card is a preview, not the management screen — the catalog has hundreds
+ * of models and rendering them all here is unusable. Matches the placeholder's
+ * row count; "Manage in Catalog" is the way to the full list.
+ */
+const PREVIEW_ROWS = 4;
+
 type BodyProps = { models: AdminCatalogModelType[] };
 
 function ModelsOnLandingBody({ models }: BodyProps) {
@@ -24,6 +31,7 @@ function ModelsOnLandingBody({ models }: BodyProps) {
   const [setVisibility] = useSetAdminCatalogModelVisibilityMutation();
 
   const visibleCount = models.filter((m) => m.visible).length;
+  const preview = models.slice(0, PREVIEW_ROWS);
 
   const setVisible = (m: AdminCatalogModelType, visible: boolean) => {
     setVisibility({ subdomain: brand.makeSlug, id: m.id, visible })
@@ -49,7 +57,7 @@ function ModelsOnLandingBody({ models }: BodyProps) {
     <SectionCard>
       <SectionHeader
         title="Models on Landing"
-        sub={`${visibleCount} model${visibleCount !== 1 ? 's' : ''} visible`}
+        sub={`${visibleCount} of ${models.length} model${models.length !== 1 ? 's' : ''} visible on the landing`}
         right={<div className="flex gap-1.5 @max-mobile:hidden">{actions}</div>}
       />
       <div className="hidden flex-wrap gap-1.5 border-b border-line px-5 py-3 @max-mobile:flex">{actions}</div>
@@ -65,7 +73,7 @@ function ModelsOnLandingBody({ models }: BodyProps) {
           </tr>
         </thead>
         <tbody>
-          {models.map((m) => (
+          {preview.map((m) => (
             <tr key={m.id}>
               <td>
                 <div className="flex items-center gap-2.5">
@@ -89,15 +97,6 @@ function ModelsOnLandingBody({ models }: BodyProps) {
                 <Button variant="ghost" sm onClick={() => openEditor(m.id)}>
                   Edit
                 </Button>
-                {m.visible ? (
-                  <Button variant="danger" sm onClick={() => setVisible(m, false)}>
-                    Hide
-                  </Button>
-                ) : (
-                  <Button variant="secondary" sm onClick={() => setVisible(m, true)}>
-                    Show
-                  </Button>
-                )}
               </ActionsCell>
             </tr>
           ))}
@@ -105,7 +104,7 @@ function ModelsOnLandingBody({ models }: BodyProps) {
       </Table>
 
       <div className="hidden flex-col gap-2 p-3 @max-mobile:flex">
-        {models.map((m) => (
+        {preview.map((m) => (
           <div key={m.id} className="w-full overflow-hidden rounded-el border border-line bg-surface-2">
             <div className="flex items-center gap-2.5 p-3">
               <div className="flex h-7 w-10 shrink-0 items-center justify-center rounded-[5px] bg-surface-3 text-sm">

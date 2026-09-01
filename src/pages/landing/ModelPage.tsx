@@ -5,21 +5,16 @@ import { GenerationsSection } from '@/features/landing/model/GenerationsSection'
 import { GalleryStrip } from '@/features/landing/shared/GalleryStrip';
 import { RealOwnersSection } from '@/features/landing/shared/RealOwnersSection';
 import { OwnersStoriesSection } from '@/features/landing/shared/OwnersStoriesSection';
-import Highlight from '@/components/landing/Highlight';
 import { modelStatsStrip } from '@/features/landing/data';
 
 export default function ModelPage() {
   return (
     <div className="overflow-x-clip">
       <ModelHero />
-      <Highlight id="5r" size="lg" className="block">
-        <StatsStrip items={modelStatsStrip} />
-      </Highlight>
+      <StatsStrip items={modelStatsStrip} />
       <ModelOverviewSection />
       <GenerationsSection />
-      <Highlight id="7b" size="lg" className="block">
-        <GalleryStrip />
-      </Highlight>
+      <GalleryStrip />
       <RealOwnersSection />
       <OwnersStoriesSection />
     </div>

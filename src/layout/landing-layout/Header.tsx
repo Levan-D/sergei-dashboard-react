@@ -3,27 +3,20 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
-import Highlight from '@/components/landing/Highlight';
 import MobileMenu from '@/layout/landing-layout/MobileMenu';
 import { IconBurger } from '@/components/landing/icons';
 import { scrollToId } from '@/lib/scroll';
-import { highlightsToggle, useHighlightsEnabled } from '@/components/landing/highlights';
 import { brand } from '@/lib/brand';
-import { cn } from '@/lib/cn';
 import usePublicSite from '@/features/landing/use-public-site';
 import { adminMediaUrl } from '@/lib/redux/api/site-types';
 
 const navLinks = ['Explore models', 'Configurator', 'Find a dealer'];
-const deadNavLinks = [
-  { id: '1r', label: 'Configurator' },
-  { id: '2r', label: 'Find a dealer' },
-] as const;
+const secondaryNavLinks = ['Configurator', 'Find a dealer'];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const highlightsOn = useHighlightsEnabled();
   const site = usePublicSite();
   const brandName = site?.make?.name ?? brand.name;
   const logoUrl = adminMediaUrl(site?.brand_style?.logo, 'small');
@@ -64,20 +57,12 @@ export default function Header() {
             >
               Explore models
             </p>
-            {deadNavLinks.map((l) => (
-              <Highlight key={l.id} id={l.id}>
-                <p className="t-wordmark cursor-pointer text-white/70 transition-colors hover:text-white">{l.label}</p>
-              </Highlight>
+            {secondaryNavLinks.map((label) => (
+              <p key={label} className="t-wordmark cursor-pointer text-white/70 transition-colors hover:text-white">
+                {label}
+              </p>
             ))}
           </nav>
-          <button
-            type="button"
-            onClick={() => highlightsToggle.toggle()}
-            className="hidden h-10 w-[168px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/40 px-3 text-white/70 transition-colors hover:bg-white/10 w960:inline-flex w1280:h-12"
-          >
-            <span className={cn('h-2 w-2 shrink-0 rounded-full', highlightsOn ? 'bg-[#ef4444]' : 'bg-white/40')} />
-            <span className="t-wordmark">{highlightsOn ? 'Hide highlights' : 'Show highlights'}</span>
-          </button>
           <button
             type="button"
             aria-label="Open menu"

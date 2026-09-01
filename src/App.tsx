@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
-import { reportHighlights } from '@/components/landing/highlights';
 import useScreenDimensions from '@/hooks/use-screen-dimensions';
 import useScrollReset from '@/hooks/use-scroll-reset';
 import SiteGate from '@/features/landing/SiteGate';
@@ -27,10 +25,6 @@ import ApiProbePage from '@/pages/dev/ApiProbePage';
 export default function App() {
   useScreenDimensions();
   useScrollReset();
-
-  useEffect(() => {
-    reportHighlights();
-  }, []);
 
   return (
     <Routes>

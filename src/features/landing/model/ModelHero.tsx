@@ -2,7 +2,6 @@ import { Link, useParams } from 'react-router-dom';
 import { ROUTING } from '@/lib/routing';
 import Container from '@/components/landing/Container';
 import Button from '@/components/landing/Button';
-import Highlight from '@/components/landing/Highlight';
 import { HeroSlideshow } from '@/features/landing/shared/HeroSlideshow';
 import { HeroFacts } from '@/features/landing/shared/HeroFacts';
 import { IconChevronRight } from '@/components/landing/icons';
@@ -35,13 +34,11 @@ export function ModelHero() {
       </Container>
       <Container noPadding="y" className="relative pb-14 w1280:pb-20">
         <div className="flex flex-col gap-8 w1280:max-w-[608px] w1280:gap-12">
-          <Highlight id="6b" size="lg" className="self-start">
-            <div className="flex flex-col gap-3 w1280:gap-6">
-              <p className="t-card-years text-accent-sky uppercase">M Division / 2014 - Present</p>
-              <h1 className="t-h1 text-white">BMW M4</h1>
-              <p className="t-lead text-white">The art of performance</p>
-            </div>
-          </Highlight>
+          <div className="flex flex-col gap-3 self-start w1280:gap-6">
+            <p className="t-card-years text-accent-sky uppercase">M Division / 2014 - Present</p>
+            <h1 className="t-h1 text-white">BMW M4</h1>
+            <p className="t-lead text-white">The art of performance</p>
+          </div>
           <HeroFacts
             items={landingGens.slice(0, 3).map((g) => ({
               label: `Generation ${g.slug.toUpperCase()}`,
@@ -52,16 +49,12 @@ export function ModelHero() {
             <Button onClick={() => scrollToId('generations')} className="w-full w1280:w-auto">
               Explore generations
             </Button>
-            <Highlight id="2b" className="w-full w1280:w-auto">
-              <Button variant="secondary" className="w-full">
-                Join the community
-              </Button>
-            </Highlight>
-            <Highlight id="1r" className="w-full w1280:w-auto">
-              <Button variant="ghost" className="w-full border-transparent">
-                Configure yours
-              </Button>
-            </Highlight>
+            <Button variant="secondary" className="w-full w1280:w-auto">
+              Join the community
+            </Button>
+            <Button variant="ghost" className="w-full border-transparent w1280:w-auto">
+              Configure yours
+            </Button>
           </div>
         </div>
       </Container>

@@ -29,6 +29,8 @@ import PickMediaModal from '@/features/_admin/media/PickMediaModal';
 import { IconImage, IconVideo, IconCarousel } from '@/components/_admin/icons';
 import Input from '@/components/_admin/forms/Input';
 
+const MAX_SLIDES = 6;
+
 type SingleFileField = 'image_file' | 'video_file' | 'video_thumbnail_file';
 type SinglePickField = 'image_pick' | 'video_pick' | 'video_thumbnail_pick';
 type SingleRemovedField = 'image_removed' | 'video_removed' | 'video_thumbnail_removed';
@@ -182,8 +184,15 @@ function HeroForm({ site }: Props) {
 
   const [slidePickOpen, setSlidePickOpen] = useState(false);
   const slideKeyRef = useRef(0);
+  const slidesLeft = MAX_SLIDES - slides.length;
 
-  const addSlides = (files: File[]) => {
+  const addSlides = (incoming: File[]) => {
+    if (slidesLeft <= 0) {
+      showToast(`⚠️ Maximum ${MAX_SLIDES} slides`);
+      return;
+    }
+    const files = incoming.slice(0, slidesLeft);
+    if (incoming.length > files.length) showToast(`⚠️ Maximum ${MAX_SLIDES} slides`);
     const next = files.map((file) => {
       const local = toLocalFile(file);
       return {
@@ -197,7 +206,13 @@ function HeroForm({ site }: Props) {
     setValue('slides', [...slides, ...next], { shouldDirty: true });
   };
 
-  const addSlidesFromLibrary = (mediaList: AdminMediaType[]) => {
+  const addSlidesFromLibrary = (incoming: AdminMediaType[]) => {
+    if (slidesLeft <= 0) {
+      showToast(`⚠️ Maximum ${MAX_SLIDES} slides`);
+      return;
+    }
+    const mediaList = incoming.slice(0, slidesLeft);
+    if (incoming.length > mediaList.length) showToast(`⚠️ Maximum ${MAX_SLIDES} slides`);
     const next = mediaList.map((media, i) => ({
       id: `pick-${media.id}-${slideKeyRef.current++}`,
       name: media.name ?? `Slide ${slides.length + i + 1}`,
@@ -455,7 +470,7 @@ function HeroForm({ site }: Props) {
           <MediaSectionLabel>
             Carousel Slides{' '}
             <Badge color="gray" className="ml-1.5 text-[11px]">
-              {slides.length} slide{slides.length !== 1 ? 's' : ''}
+              {slides.length} of {MAX_SLIDES}
             </Badge>
           </MediaSectionLabel>
           <HeroSlideGrid
@@ -464,26 +479,30 @@ function HeroForm({ site }: Props) {
             onChange={(next) => setValue('slides', next, { shouldDirty: true })}
             onRemove={removeSlide}
           >
-            <DropZone
-              icon="+"
-              text="Add slides"
-              compact
-              kinds={['image']}
-              maxFiles={10}
-              maxSizeMB={5}
-              disabled={isSubmitting}
-              onFiles={addSlides}
-              className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none flex-col items-center justify-center @mobile:w-[calc(20%-8px)]"
-            />
-            <button
-              type="button"
-              disabled={isSubmitting}
-              onClick={() => setSlidePickOpen(true)}
-              className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border-2 border-dashed border-line-2 bg-transparent p-3 text-center transition-all hover:border-accent hover:bg-accent-bg disabled:cursor-not-allowed disabled:opacity-50 @mobile:w-[calc(20%-8px)] @mobile:p-4"
-            >
-              <IconImage size={18} className="text-ink-3" />
-              <span className="block text-[13px] text-ink-2">From library</span>
-            </button>
+            {slidesLeft > 0 && (
+              <>
+                <DropZone
+                  icon="+"
+                  text="Add slides"
+                  compact
+                  kinds={['image']}
+                  maxFiles={MAX_SLIDES}
+                  maxSizeMB={5}
+                  disabled={isSubmitting}
+                  onFiles={addSlides}
+                  className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none flex-col items-center justify-center @mobile:w-[calc(20%-8px)]"
+                />
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => setSlidePickOpen(true)}
+                  className="flex aspect-[4/3] w-[calc(33.333%-7px)] min-w-0 flex-none cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border-2 border-dashed border-line-2 bg-transparent p-3 text-center transition-all hover:border-accent hover:bg-accent-bg disabled:cursor-not-allowed disabled:opacity-50 @mobile:w-[calc(20%-8px)] @mobile:p-4"
+                >
+                  <IconImage size={18} className="text-ink-3" />
+                  <span className="block text-[13px] text-ink-2">From library</span>
+                </button>
+              </>
+            )}
           </HeroSlideGrid>
           <PickMediaModal
             open={slidePickOpen}

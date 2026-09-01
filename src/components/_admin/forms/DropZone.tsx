@@ -33,14 +33,20 @@ export default function DropZone({
   const accept = acceptMap(kinds);
 
   const onDrop = (accepted: File[], rejections: FileRejection[]) => {
-    for (const rejection of rejections) {
+    // Dropping more than maxFiles rejects the whole batch, so recover those and
+    // take the first maxFiles instead. The caller reports its own limit.
+    const isOverflowOnly = (r: FileRejection) => r.errors.every((e) => e.code === 'too-many-files');
+    const overflow = rejections.filter(isOverflowOnly).map((r) => r.file);
+
+    for (const rejection of rejections.filter((r) => !isOverflowOnly(r))) {
       const code = rejection.errors[0]?.code;
       if (code === 'file-too-large') showToast(`⚠️ ${rejection.file.name} is over ${maxSizeMB}MB`);
       else if (code === 'file-invalid-type') showToast(`⚠️ ${rejection.file.name} — unsupported file type`);
-      else if (code === 'too-many-files') showToast(`⚠️ Up to ${maxFiles} file${maxFiles > 1 ? 's' : ''} at a time`);
       else showToast(`⚠️ ${rejection.file.name} was rejected`);
     }
-    if (accepted.length) onFiles(accepted.slice(0, maxFiles));
+
+    const usable = [...accepted, ...overflow].slice(0, maxFiles);
+    if (usable.length) onFiles(usable);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
