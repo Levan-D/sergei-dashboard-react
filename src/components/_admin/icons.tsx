@@ -24,6 +24,7 @@ import {
   FiChevronRight,
   FiMenu,
   FiTrash2,
+  FiLogOut,
 } from 'react-icons/fi';
 import { RxDragHandleDots2 } from 'react-icons/rx';
 import type { IconType } from 'react-icons';
@@ -69,3 +70,4 @@ export const IconChevronLeft = wrap(FiChevronLeft);
 export const IconChevronRight = wrap(FiChevronRight);
 export const IconMenu = wrap(FiMenu);
 export const IconTrash = wrap(FiTrash2);
+export const IconLogout = wrap(FiLogOut);

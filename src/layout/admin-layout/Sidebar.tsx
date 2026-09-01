@@ -1,13 +1,21 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { brand } from '@/lib/brand';
 import { ROUTING } from '@/lib/routing';
 import { useGetAdminNotificationsQuery } from '@/lib/redux/api/admin-api/notifications/notifications-api';
+import { useGetAdminStaffQuery } from '@/lib/redux/api/admin-api/staff/staff-api';
+import { adminMediaUrl } from '@/lib/redux/api/admin-api/admin-types';
+import { initialsOf } from '@/lib/initials';
+import { useSignOut } from '@/features/_admin/auth/use-sign-out';
 import { useTheme } from './theme-context';
 import { navItems, isActivePath } from './nav';
-import { IconMoon, IconSun } from '@/components/_admin/icons';
+import { IconMoon, IconSun, IconLogout } from '@/components/_admin/icons';
 import Avatar from '@/components/_admin/ui/Avatar';
+import ConfirmModal from '@/components/_admin/ConfirmModal';
+
+const ROLE_LABELS = { admin: 'Admin', superadmin: 'Super Admin' } as const;
 
 type Props = { className?: string; onNavigate?: () => void };
 
@@ -15,8 +23,13 @@ export default function Sidebar({ className, onNavigate }: Props) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const signOut = useSignOut();
+  const [signOutOpen, setSignOutOpen] = useState(false);
   const { data: notifications } = useGetAdminNotificationsQuery({ subdomain: brand.makeSlug });
+  const { data: staff } = useGetAdminStaffQuery({ subdomain: brand.makeSlug });
   const unreadCount = notifications?.unread_count ?? 0;
+  // The staff list already marks your own row, so it doubles as the profile source.
+  const me = staff?.items.find((member) => member.you);
 
   return (
     <nav
@@ -107,13 +120,29 @@ export default function Sidebar({ className, onNavigate }: Props) {
             />
           </div>
         </button>
-        <div className="flex cursor-pointer items-center gap-2.5 rounded-el p-2 hover:bg-surface-2">
-          <Avatar initials="AK" />
-          <div>
-            <p className="text-[13px] font-semibold text-ink">Anna Kowalski</p>
-            <p className="text-[11px] text-ink-3">Super Admin</p>
+        <div className="flex items-center gap-2.5 rounded-el p-2">
+          <Avatar initials={initialsOf(me?.name ?? '')} imageUrl={adminMediaUrl(me?.picture, 'small')} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[13px] font-semibold text-ink">{me?.name ?? 'Signed in'}</p>
+            <p className="truncate text-[11px] text-ink-3">{me ? ROLE_LABELS[me.role] : brand.name}</p>
           </div>
+          <button
+            type="button"
+            title="Sign out"
+            onClick={() => setSignOutOpen(true)}
+            className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-el border-none bg-transparent text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
+          >
+            <IconLogout size={15} />
+          </button>
         </div>
+        <ConfirmModal
+          open={signOutOpen}
+          title="Sign out"
+          description="Are you sure you want to sign out?"
+          actionLabel="Sign out"
+          onConfirm={signOut}
+          onClose={() => setSignOutOpen(false)}
+        />
       </div>
     </nav>
   );

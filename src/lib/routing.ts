@@ -3,6 +3,7 @@ export const ROUTING = {
 
   // admin
   admin: '/admin',
+  adminLogin: '/admin/login',
   adminLanding: '/admin/landing',
   adminCatalog: '/admin/catalog',
   adminCatalogModel: '/admin/catalog/model/',

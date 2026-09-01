@@ -7,7 +7,9 @@ import LandingLayout from '@/layout/landing-layout/LandingLayout';
 import HomePage from '@/pages/landing/HomePage';
 import ModelPage from '@/pages/landing/ModelPage';
 import GenerationPage from '@/pages/landing/GenerationPage';
+import AuthGate from '@/features/_admin/auth/AuthGate';
 import AdminLayout from '@/layout/admin-layout/AdminLayout';
+import LoginPage from '@/pages/_admin/LoginPage';
 import DashboardPage from '@/pages/_admin/DashboardPage';
 import LandingPage from '@/pages/_admin/LandingPage';
 import CatalogPage from '@/pages/_admin/CatalogPage';
@@ -35,19 +37,22 @@ export default function App() {
           <Route path=":model/:gen" element={<GenerationPage />} />
         </Route>
       </Route>
-      <Route path={ROUTING.admin} element={<AdminLayout />}>
-        <Route index element={<DashboardPage />} />
-        <Route path={ROUTING.adminLanding} element={<LandingPage />} />
-        <Route path={ROUTING.adminCatalog} element={<CatalogPage />} />
-        <Route path={`${ROUTING.adminCatalogModel}:name`} element={<ModelEditorPage />} />
-        <Route path={`${ROUTING.adminCatalogGen}:name`} element={<GenEditorPage />} />
-        <Route path={ROUTING.adminMedia} element={<MediaPage />} />
-        <Route path={ROUTING.adminStyle} element={<BrandStylePage />} />
-        <Route path={ROUTING.adminCommunity} element={<CommunityPage />} />
-        <Route path={ROUTING.adminUsers} element={<UsersPage />} />
-        <Route path={ROUTING.adminNotifications} element={<NotificationsPage />} />
-        <Route path={ROUTING.adminHistory} element={<HistoryPage />} />
-        <Route path={ROUTING.adminSettings} element={<SettingsPage />} />
+      <Route path={ROUTING.adminLogin} element={<LoginPage />} />
+      <Route element={<AuthGate />}>
+        <Route path={ROUTING.admin} element={<AdminLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path={ROUTING.adminLanding} element={<LandingPage />} />
+          <Route path={ROUTING.adminCatalog} element={<CatalogPage />} />
+          <Route path={`${ROUTING.adminCatalogModel}:name`} element={<ModelEditorPage />} />
+          <Route path={`${ROUTING.adminCatalogGen}:name`} element={<GenEditorPage />} />
+          <Route path={ROUTING.adminMedia} element={<MediaPage />} />
+          <Route path={ROUTING.adminStyle} element={<BrandStylePage />} />
+          <Route path={ROUTING.adminCommunity} element={<CommunityPage />} />
+          <Route path={ROUTING.adminUsers} element={<UsersPage />} />
+          <Route path={ROUTING.adminNotifications} element={<NotificationsPage />} />
+          <Route path={ROUTING.adminHistory} element={<HistoryPage />} />
+          <Route path={ROUTING.adminSettings} element={<SettingsPage />} />
+        </Route>
       </Route>
       <Route path={ROUTING.devApi} element={<ApiProbePage />} />
       <Route path="*" element={<Navigate to={ROUTING.home} replace />} />
