@@ -1,6 +1,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { initialsOf } from '@/lib/initials';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminCommunityMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
@@ -46,8 +47,9 @@ function CommunityForm({ site }: Props) {
     setValue,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<CommunityFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       show_on_landing: site.community?.show_on_landing ?? true,
       title: site.community?.title ?? '',
@@ -90,8 +92,9 @@ function CommunityForm({ site }: Props) {
       <SectionCard>
         <SectionHeader
           title="Community Block Settings"
+          error={errorSummary(errors)}
           right={
-            <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
+            <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
               Save
             </Button>
           }
@@ -101,8 +104,12 @@ function CommunityForm({ site }: Props) {
             <Toggle on={showBlock} onClick={() => setValue('show_on_landing', !showBlock, { shouldDirty: true })} />
             <label>Show Community block on landing</label>
           </div>
-          <FormGroup label="Section Title">
-            <Input type="text" {...register('title')} />
+          <FormGroup label="Section Title" error={errors.title?.message}>
+            <Input
+              type="text"
+              aria-invalid={!!errors.title}
+              {...register('title', { validate: (v) => v.trim().length > 0 || 'Section title is required' })}
+            />
           </FormGroup>
           <FormGroup label="Section Subtitle">
             <Input type="text" {...register('subtitle')} />

@@ -60,7 +60,7 @@ export function loginErrorMessage(error: unknown): string {
   }
 
   const status = (error as { status?: number })?.status;
-  if (status === 401) return 'Incorrect username or password.';
+  if (status === 401) return 'Incorrect username or password';
   if (typeof data?.message === 'string' && data.message !== 'Fields validation error') return data.message;
-  return 'Could not sign in. Please try again.';
+  return 'Could not sign in, please try again';
 }

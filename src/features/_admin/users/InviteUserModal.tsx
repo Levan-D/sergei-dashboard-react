@@ -2,6 +2,7 @@ import { useForm, Controller } from 'react-hook-form';
 import Modal from '@/components/_admin/Modal';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { EMAIL_PATTERN, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { useInviteAdminStaffMutation } from '@/lib/redux/api/admin-api/staff/staff-api';
 import type { AdminStaffRoleType } from '@/lib/redux/api/admin-api/admin-types';
 import Button from '@/components/_admin/ui/Button';
@@ -30,11 +31,11 @@ export default function InviteUserModal({ open, onClose, onSaved }: Props) {
     control,
     reset,
     handleSubmit,
-    formState: { isSubmitting },
-    watch,
-  } = useForm<InviteFormValues>({ defaultValues: { name: '', email: '', role: 'Admin' } });
-  const email = watch('email');
-  const name = watch('name');
+    formState: { isSubmitting, errors },
+  } = useForm<InviteFormValues>({
+    ...VALIDATE_ON_SUBMIT,
+    defaultValues: { name: '', email: '', role: 'Admin' },
+  });
 
   const close = () => {
     reset();
@@ -68,18 +69,30 @@ export default function InviteUserModal({ open, onClose, onSaved }: Props) {
           <Button variant="ghost" disabled={isSubmitting} onClick={close}>
             Cancel
           </Button>
-          <Button loading={isSubmitting} disabled={!email.trim() || !name.trim()} onClick={handleSubmit(onSubmit)}>
+          <Button loading={isSubmitting} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
             Send Invitation
           </Button>
         </>
       }
     >
       <div className="flex flex-col gap-3 p-5 @mobile:gap-4">
-        <FormGroup label="Full Name">
-          <Input type="text" placeholder="e.g. John Smith" {...register('name')} />
+        <FormGroup label="Full Name" error={errors.name?.message}>
+          <Input
+            type="text"
+            placeholder="e.g. John Smith"
+            aria-invalid={!!errors.name}
+            {...register('name', { validate: (v) => v.trim().length > 0 || 'Enter a name' })}
+          />
         </FormGroup>
-        <FormGroup label="Email Address">
-          <Input type="email" placeholder="john@company.com" {...register('email')} />
+        <FormGroup label="Email Address" error={errors.email?.message}>
+          <Input
+            type="email"
+            placeholder="john@company.com"
+            aria-invalid={!!errors.email}
+            {...register('email', {
+              validate: (v) => EMAIL_PATTERN.test(v.trim()) || 'Enter a valid email address',
+            })}
+          />
         </FormGroup>
         <FormGroup label="Role">
           <Controller

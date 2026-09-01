@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { showToast } from '@/lib/toast';
 import { ROUTING } from '@/lib/routing';
 import { brand } from '@/lib/brand';
+import { EMAIL_PATTERN, errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminSettingsMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
 import { useCreateAdminBackupMutation } from '@/lib/redux/api/admin-api/history/history-api';
@@ -40,8 +41,9 @@ function SettingsForm({ site }: Props) {
     setValue,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<SettingsFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       brand_name: site.make?.name ?? '',
       domain: site.domain ?? '',
@@ -80,8 +82,9 @@ function SettingsForm({ site }: Props) {
     <SectionCard>
       <SectionHeader
         title="General Settings"
+        error={errorSummary(errors)}
         right={
-          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
+          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
             Save Changes
           </Button>
         }
@@ -93,8 +96,17 @@ function SettingsForm({ site }: Props) {
         <FormGroup half label="Domain" hint="Bound to the catalog make slug">
           <Input type="text" readOnly {...register('domain')} />
         </FormGroup>
-        <FormGroup half label="Contact Email">
-          <Input type="email" {...register('contact_email')} />
+        <FormGroup half label="Contact Email" error={errors.contact_email?.message}>
+          <Input
+            type="email"
+            aria-invalid={!!errors.contact_email}
+            {...register('contact_email', {
+              validate: (v) => {
+                if (!v.trim()) return 'Contact email is required';
+                return EMAIL_PATTERN.test(v.trim()) || 'Enter a valid email address';
+              },
+            })}
+          />
         </FormGroup>
         <FormGroup half label="Default Language" hint="Translations are not supported yet">
           <Controller

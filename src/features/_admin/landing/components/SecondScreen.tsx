@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminAboutMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
 import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
@@ -42,23 +42,17 @@ function SecondScreenForm({ site }: Props) {
     watch,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<SecondScreenFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       about: site.about ?? '',
       facts: padFacts(site.facts ?? []),
     },
   });
   const facts = watch('facts');
-  const [triedToSave, setTriedToSave] = useState(false);
   // The landing always shows six facts, so all six must be filled before saving.
-  const factsIncomplete = facts.some((f) => !f.name.trim() || !f.value.trim());
-
-  const onSave = () => {
-    setTriedToSave(true);
-    if (factsIncomplete) return;
-    handleSubmit(onSubmit)();
-  };
+  const factRule = { validate: (v: string) => v.trim().length > 0 || 'Please fill out all the facts' };
 
   const onSubmit = async (values: SecondScreenFormValues) => {
     try {
@@ -88,8 +82,9 @@ function SecondScreenForm({ site }: Props) {
       <SectionHeader
         title="Second Screen"
         sub={<>About, Facts &amp; Motority Stats block</>}
+        error={errorSummary(errors)}
         right={
-          <Button sm loading={isSaving} disabled={!isDirty} onClick={onSave}>
+          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
             Save Changes
           </Button>
         }
@@ -101,8 +96,12 @@ function SecondScreenForm({ site }: Props) {
             — pulled from Motority, editable
           </span>
         </div>
-        <FormGroup label="Brand Description">
-          <Textarea rows={5} {...register('about')} />
+        <FormGroup label="Brand Description" error={errors.about?.message}>
+          <Textarea
+            rows={5}
+            aria-invalid={!!errors.about}
+            {...register('about', { validate: (v) => v.trim().length > 0 || 'Brand description is required' })}
+          />
         </FormGroup>
       </div>
       <div className="border-b border-line p-5">
@@ -119,14 +118,21 @@ function SecondScreenForm({ site }: Props) {
               className="flex w-full flex-col gap-2 rounded-el border border-line bg-surface-2 p-3.5 @mobile:w-[calc(50%-6px)]"
             >
               <p className="text-[10px] font-bold tracking-[.06em] text-ink-3 uppercase">Fact {i + 1}</p>
-              <Input type="text" placeholder="Fact name" {...register(`facts.${i}.name`)} />
-              <Input type="text" placeholder="Fact value" {...register(`facts.${i}.value`)} />
+              <Input
+                type="text"
+                placeholder="Fact name"
+                aria-invalid={!!errors.facts?.[i]?.name}
+                {...register(`facts.${i}.name`, factRule)}
+              />
+              <Input
+                type="text"
+                placeholder="Fact value"
+                aria-invalid={!!errors.facts?.[i]?.value}
+                {...register(`facts.${i}.value`, factRule)}
+              />
             </div>
           ))}
         </div>
-        {triedToSave && factsIncomplete && (
-          <p className="mt-2.5 text-[11px] text-red">Please fill out all the facts</p>
-        )}
       </div>
       <div className="p-5">
         <div className="mb-2 flex items-center gap-2 @mobile:mb-3">

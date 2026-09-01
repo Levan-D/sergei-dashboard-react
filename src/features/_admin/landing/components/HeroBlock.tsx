@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import { useForm, type UseFormRegister } from 'react-hook-form';
+import { useForm, type FieldErrors, type UseFormRegister } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { cn } from '@/lib/cn';
 import { fmtFileSize, releaseLocalFile, toLocalFile, type LocalFileType } from '@/lib/files';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { uploadFilesTus, type TusMediaType } from '@/lib/tus';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminHeroMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
@@ -55,14 +56,19 @@ type HeroFormValues = {
   slides: HeroSlideItemType[];
 };
 
-type CtaFieldsProps = { register: UseFormRegister<HeroFormValues> };
+type CtaFieldsProps = { register: UseFormRegister<HeroFormValues>; errors: FieldErrors<HeroFormValues> };
 
-function HeroCtaFields({ register }: CtaFieldsProps) {
+function HeroCtaFields({ register, errors }: CtaFieldsProps) {
   return (
     <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
       <div className="h-px w-full bg-line" />
-      <FormGroup label="H1 — Headline" full>
-        <Input type="text" placeholder="Main heading" {...register('headline')} />
+      <FormGroup label="H1 — Headline" full error={errors.headline?.message}>
+        <Input
+          type="text"
+          placeholder="Main heading"
+          aria-invalid={!!errors.headline}
+          {...register('headline', { validate: (v) => v.trim().length > 0 || 'Headline is required' })}
+        />
       </FormGroup>
       <FormGroup label="H2 — Subheadline" full>
         <Input type="text" placeholder="Supporting text" {...register('subheadline')} />
@@ -106,8 +112,9 @@ function HeroForm({ site }: Props) {
     setValue,
     reset,
     handleSubmit,
-    formState: { isDirty, isSubmitting },
+    formState: { isDirty, isSubmitting, errors },
   } = useForm<HeroFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       type: hero?.type ?? 'image',
       headline: hero?.headline ?? '',
@@ -144,6 +151,24 @@ function HeroForm({ site }: Props) {
   const existingImageUrl = adminMediaUrl(hero?.image);
   const existingVideoUrl = adminMediaFileUrl(hero?.video);
   const existingThumbUrl = adminMediaUrl(hero?.video_thumbnail);
+
+  /**
+   * The hero renders one tab's media, so only that tab has to be filled. The
+   * rule hangs off `type` because that is the value it follows; switching tabs
+   * moves the requirement with it.
+   */
+  const mediaCheck = (values: HeroFormValues) => {
+    if (values.type === 'image') {
+      if (values.image_file || values.image_pick || (hero?.image && !values.image_removed)) return true;
+      return 'Upload a photo';
+    }
+    if (values.type === 'video') {
+      if (values.video_file || values.video_pick || (hero?.video && !values.video_removed)) return true;
+      return 'Upload a video';
+    }
+    return values.slides.length > 0 || 'Add at least one slide';
+  };
+  register('type', { validate: (_, values) => mediaCheck(values) });
 
   const pickFieldOf: Record<SingleFileField, SinglePickField> = {
     image_file: 'image_pick',
@@ -314,8 +339,9 @@ function HeroForm({ site }: Props) {
       <SectionHeader
         title="Hero Block"
         sub="Top visual of the landing page"
+        error={errorSummary(errors)}
         right={
-          <Button sm loading={isSubmitting} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
+          <Button sm loading={isSubmitting} disabled={!isDirty} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
             Save Changes
           </Button>
         }
@@ -339,7 +365,7 @@ function HeroForm({ site }: Props) {
         ))}
       </div>
 
-      <div className={heroType === 'image' ? '' : 'hidden'}>
+      <div className={heroType === 'image' ? '' : 'hidden'} data-field={heroType === 'image' ? 'type' : undefined}>
         <div className="p-5">
           <MediaSectionLabel>Background Photo</MediaSectionLabel>
           {imageFile ? (
@@ -382,7 +408,7 @@ function HeroForm({ site }: Props) {
         </div>
       </div>
 
-      <div className={heroType === 'video' ? '' : 'hidden'}>
+      <div className={heroType === 'video' ? '' : 'hidden'} data-field={heroType === 'video' ? 'type' : undefined}>
         <div className="p-5">
           <MediaSectionLabel>Background Video</MediaSectionLabel>
           {videoFile ? (
@@ -465,7 +491,7 @@ function HeroForm({ site }: Props) {
         </div>
       </div>
 
-      <div className={heroType === 'carousel' ? '' : 'hidden'}>
+      <div className={heroType === 'carousel' ? '' : 'hidden'} data-field={heroType === 'carousel' ? 'type' : undefined}>
         <div className="p-5">
           <MediaSectionLabel>
             Carousel Slides{' '}
@@ -524,7 +550,7 @@ function HeroForm({ site }: Props) {
         </div>
       </div>
 
-      <HeroCtaFields register={register} />
+      <HeroCtaFields register={register} errors={errors} />
       </fieldset>
     </SectionCard>
   );

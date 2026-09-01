@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { fmtFileSize, releaseLocalFile, toLocalFile, type LocalFileType } from '@/lib/files';
 import { uploadFilesTus } from '@/lib/tus';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
@@ -21,7 +22,12 @@ type AssetStateType = {
   removed: boolean;
 };
 
+type AssetKeyType = 'logo' | 'favicon';
+
 const EMPTY_ASSET: AssetStateType = { file: null, pick: null, removed: false };
+
+const hasAsset = (asset: AssetStateType, existing: AdminMediaType | null | undefined) =>
+  !!(asset.file || asset.pick || (existing && !asset.removed));
 
 const fontRowClass = (selected: boolean) =>
   selected
@@ -55,6 +61,7 @@ function BrandStyleForm({ site }: Props) {
     handleSubmit,
     formState: { isDirty },
   } = useForm<StyleFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: { font: style?.font ?? 'system' },
   });
   const font = watch('font');
@@ -62,14 +69,30 @@ function BrandStyleForm({ site }: Props) {
 
   const assetsDirty = [logoAsset, faviconAsset].some((a) => a.file || a.pick || a.removed);
 
-  const stageFile = (set: typeof setLogoAsset) => (files: File[]) =>
-    set((prev) => {
+  /**
+   * The two assets are staged in component state rather than form values, so
+   * they are registered here as fields with no input of their own: the rules
+   * read the staged state, and `data-field` on the section gives the scroll a
+   * target.
+   */
+  const {
+    register: registerAsset,
+    handleSubmit: handleAssetsSubmit,
+    formState: { errors: assetErrors },
+  } = useForm(VALIDATE_ON_SUBMIT);
+  registerAsset('logo', { validate: () => hasAsset(logoAsset, style?.logo) || 'Upload a logo' });
+  registerAsset('favicon', { validate: () => hasAsset(faviconAsset, style?.favicon) || 'Upload a favicon' });
+
+  const setterOf: Record<AssetKeyType, typeof setLogoAsset> = { logo: setLogoAsset, favicon: setFaviconAsset };
+
+  const stageFile = (key: AssetKeyType) => (files: File[]) =>
+    setterOf[key]((prev) => {
       releaseLocalFile(prev.file);
       return { file: toLocalFile(files[0]), pick: null, removed: false };
     });
 
-  const stagePick = (set: typeof setLogoAsset) => (media: AdminMediaType) =>
-    set((prev) => {
+  const stagePick = (key: AssetKeyType) => (media: AdminMediaType) =>
+    setterOf[key]((prev) => {
       releaseLocalFile(prev.file);
       return { file: null, pick: media, removed: false };
     });
@@ -110,7 +133,8 @@ function BrandStyleForm({ site }: Props) {
     }
   };
 
-  const assetPreview = (asset: AssetStateType, set: typeof setLogoAsset, existing: AdminMediaType | null | undefined) => {
+  const assetPreview = (key: AssetKeyType, asset: AssetStateType, existing: AdminMediaType | null | undefined) => {
+    const set = setterOf[key];
     const clearStaged = () =>
       set((prev) => {
         releaseLocalFile(prev.file);
@@ -167,17 +191,23 @@ function BrandStyleForm({ site }: Props) {
         <SectionHeader
           title={<>Logo &amp; Favicon</>}
           sub="Brand identity assets"
+          error={errorSummary(assetErrors)}
           right={
-            <Button sm loading={isSavingAssets} disabled={!assetsDirty} onClick={onSaveAssets}>
+            <Button
+              sm
+              loading={isSavingAssets}
+              disabled={!assetsDirty}
+              onClick={handleAssetsSubmit(onSaveAssets, scrollToFirstError)}
+            >
               Save
             </Button>
           }
         />
         <fieldset disabled={isSavingAssets} className="contents">
-        <div className="border-b border-line p-5">
+        <div className="border-b border-line p-5" data-field="logo">
           <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Brand Logo</p>
           <p className="mb-3.5 text-xs text-ink-3">Primary logo shown in the site header and on landing pages.</p>
-          {assetPreview(logoAsset, setLogoAsset, style?.logo) ?? (
+          {assetPreview('logo', logoAsset, style?.logo) ?? (
             <MediaPickRow
               stack
               icon="🖼️"
@@ -186,19 +216,20 @@ function BrandStyleForm({ site }: Props) {
               kinds={['logo']}
               maxSizeMB={2}
               disabled={isSavingAssets}
-              onFiles={stageFile(setLogoAsset)}
-              onPick={stagePick(setLogoAsset)}
+              onFiles={stageFile('logo')}
+              onPick={stagePick('logo')}
             />
           )}
+          {assetErrors.logo && <p className="mt-1.5 text-[11px] text-red">{String(assetErrors.logo.message)}</p>}
           <Recommendation>
             Use SVG for best quality at all sizes. If using raster formats (PNG, WebP), provide at least 400×200 px at
             2× resolution. Transparent background required.
           </Recommendation>
         </div>
-        <div className="p-5">
+        <div className="p-5" data-field="favicon">
           <p className="mb-1 text-xs font-bold tracking-[.06em] text-ink-2 uppercase">Favicon</p>
           <p className="mb-3.5 text-xs text-ink-3">Shown in browser tabs and bookmarks.</p>
-          {assetPreview(faviconAsset, setFaviconAsset, style?.favicon) ?? (
+          {assetPreview('favicon', faviconAsset, style?.favicon) ?? (
             <MediaPickRow
               stack
               icon="📌"
@@ -207,10 +238,11 @@ function BrandStyleForm({ site }: Props) {
               kinds={['favicon']}
               maxSizeMB={0.5}
               disabled={isSavingAssets}
-              onFiles={stageFile(setFaviconAsset)}
-              onPick={stagePick(setFaviconAsset)}
+              onFiles={stageFile('favicon')}
+              onPick={stagePick('favicon')}
             />
           )}
+          {assetErrors.favicon && <p className="mt-1.5 text-[11px] text-red">{String(assetErrors.favicon.message)}</p>}
           <Recommendation>
             Use a square image — 32×32 px minimum, 64×64 px preferred for crisp rendering on high-DPI displays. ICO
             format ensures broadest browser compatibility; SVG favicons are supported in modern browsers. Keep the

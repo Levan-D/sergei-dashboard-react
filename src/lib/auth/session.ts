@@ -64,12 +64,19 @@ export function sessionFromResponse(response: LoginResponseType): SessionType | 
   };
 }
 
+/**
+ * An unreadable cookie is deleted on the spot. It can never become a session,
+ * and leaving it there means every boot from now on parses and rejects it.
+ */
 export function readStoredSession(): SessionType | null {
   const raw = getCookie(COOKIE_NAME);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as Partial<SessionType>;
-    if (!parsed.accessToken || !parsed.refreshToken || typeof parsed.expiresAt !== 'number') return null;
+    if (!parsed.accessToken || !parsed.refreshToken || typeof parsed.expiresAt !== 'number') {
+      clearStoredSession();
+      return null;
+    }
     return {
       accessToken: parsed.accessToken,
       refreshToken: parsed.refreshToken,
@@ -78,6 +85,7 @@ export function readStoredSession(): SessionType | null {
       roles: Array.isArray(parsed.roles) ? parsed.roles : [],
     };
   } catch {
+    clearStoredSession();
     return null;
   }
 }

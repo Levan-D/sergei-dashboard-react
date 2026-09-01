@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { ROUTING } from '@/lib/routing';
 import { useGetAdminCatalogModelQuery } from '@/lib/redux/api/admin-api/catalog/catalog-queries';
 import {
@@ -43,8 +44,9 @@ function ModelEditorForm({ model }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { isDirty, isSubmitting },
+    formState: { isDirty, isSubmitting, errors },
   } = useForm<ModelFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: { name: model?.name ?? '', about: model?.about ?? '' },
   });
 
@@ -61,10 +63,6 @@ function ModelEditorForm({ model }: Props) {
   };
 
   const onSave = handleSubmit(async (values) => {
-    if (!values.name.trim()) {
-      showToast('⚠️ Model name is required');
-      return;
-    }
     try {
       if (isNew) {
         const created = await createModel({
@@ -92,7 +90,7 @@ function ModelEditorForm({ model }: Props) {
     } catch {
       showToast('⚠️ Could not save the model');
     }
-  });
+  }, scrollToFirstError);
 
   return (
     <div className="flex h-auto items-start gap-5 @max-mobile:flex-col">
@@ -101,8 +99,13 @@ function ModelEditorForm({ model }: Props) {
         <SectionCard>
           <SectionHeader title="Basic Information" />
           <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
-            <FormGroup half label="Model Name">
-              <Input type="text" placeholder="e.g. BMW M4" {...register('name')} />
+            <FormGroup half label="Model Name" error={errors.name?.message}>
+              <Input
+                type="text"
+                placeholder="e.g. BMW M4"
+                aria-invalid={!!errors.name}
+                {...register('name', { validate: (v) => v.trim().length > 0 || 'Model name is required' })}
+              />
             </FormGroup>
             <FormGroup half label="Production Years" hint="Computed from this model's generations">
               <Input type="text" placeholder="—" value={model?.years ?? ''} readOnly />
@@ -117,11 +120,12 @@ function ModelEditorForm({ model }: Props) {
             <FormGroup half label="Power Type">
               <Select disabled placeholder="— Select —" options={['Combustion', 'Electric', 'Hybrid', 'Plug-in Hybrid']} />
             </FormGroup>
-            <FormGroup label="Description" full hint="Markdown supported">
+            <FormGroup label="Description" full hint="Markdown supported" error={errors.about?.message}>
               <Textarea
                 rows={5}
                 placeholder="Describe this model — its history, key features, generations overview..."
-                {...register('about')}
+                aria-invalid={!!errors.about}
+                {...register('about', { validate: (v) => v.trim().length > 0 || 'Description is required' })}
               />
             </FormGroup>
           </div>
@@ -172,6 +176,7 @@ function ModelEditorForm({ model }: Props) {
           onSave={onSave}
           saving={isSubmitting}
           saveDisabled={!isNew && !isDirty}
+          error={errorSummary(errors)}
           className="@max-mobile:order-last"
         />
 

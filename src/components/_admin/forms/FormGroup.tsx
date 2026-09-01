@@ -6,12 +6,13 @@ type Props = {
   full?: boolean;
   half?: boolean;
   hint?: string;
+  error?: string;
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
 };
 
-export default function FormGroup({ label, full, half, hint, className, style, children }: Props) {
+export default function FormGroup({ label, full, half, hint, error, className, style, children }: Props) {
   return (
     <div
       className={cn('flex flex-col gap-1.5', full && 'w-full', half && 'w-full @mobile:w-[calc(50%-8px)]', className)}
@@ -19,7 +20,11 @@ export default function FormGroup({ label, full, half, hint, className, style, c
     >
       {label && <label>{label}</label>}
       {children}
-      {hint && <p className="mt-1 text-[11px] text-ink-3">{hint}</p>}
+      {error ? (
+        <p className="mt-1 text-[11px] text-red">{error}</p>
+      ) : (
+        hint && <p className="mt-1 text-[11px] text-ink-3">{hint}</p>
+      )}
     </div>
   );
 }

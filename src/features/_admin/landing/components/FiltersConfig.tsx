@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import SiteLoader from '@/features/_admin/site/SiteLoader';
 import { useUpdateAdminFiltersMutation } from '@/lib/redux/api/admin-api/site/site-mutations';
 import type { AutobrandSiteType } from '@/lib/redux/api/admin-api/admin-types';
@@ -25,8 +26,9 @@ function FiltersForm({ site }: Props) {
     setValue,
     reset,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<FiltersFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       decades_enabled: site.filters?.decades_enabled ?? true,
       body_types: (site.filters?.body_types ?? []).map((c) => ({ label: c.label, active: !!c.active })),
@@ -59,8 +61,9 @@ function FiltersForm({ site }: Props) {
       <SectionHeader
         title="Filters Configuration"
         sub="Visible filters on the models section"
+        error={errorSummary(errors)}
         right={
-          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit)}>
+          <Button sm loading={isSaving} disabled={!isDirty} onClick={handleSubmit(onSubmit, scrollToFirstError)}>
             Save
           </Button>
         }

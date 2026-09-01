@@ -168,6 +168,7 @@ type PublishCardProps = {
   onSave: () => void;
   saving?: boolean;
   saveDisabled?: boolean;
+  error?: string | null;
   className?: string;
 };
 
@@ -179,6 +180,7 @@ export function PublishCard({
   onSave,
   saving,
   saveDisabled,
+  error,
   className,
 }: PublishCardProps) {
   const navigate = useNavigate();
@@ -191,6 +193,7 @@ export function PublishCard({
           <label>Visible on landing</label>
         </div>
         <div className="h-px bg-line" />
+        {error && <p className="text-[11px] text-red">{error}</p>}
         <Button className="w-full justify-center" loading={saving} disabled={saveDisabled} onClick={onSave}>
           {saveLabel}
         </Button>

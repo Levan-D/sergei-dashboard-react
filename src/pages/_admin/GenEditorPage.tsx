@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useAppSelector } from '@/store';
 import { showToast } from '@/lib/toast';
 import { brand } from '@/lib/brand';
+import { errorSummary, scrollToFirstError, VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { ROUTING } from '@/lib/routing';
 import {
   useGetAdminCatalogGenerationQuery,
@@ -50,8 +51,9 @@ function GenEditorForm({ generation, models }: Props) {
   const {
     register,
     handleSubmit,
-    formState: { isDirty, isSubmitting },
+    formState: { isDirty, isSubmitting, errors },
   } = useForm<GenFormValues>({
+    ...VALIDATE_ON_SUBMIT,
     defaultValues: {
       name: generation?.name ?? '',
       years: generation?.years ?? '',
@@ -74,10 +76,6 @@ function GenEditorForm({ generation, models }: Props) {
   };
 
   const onSave = handleSubmit(async (values) => {
-    if (!values.name.trim()) {
-      showToast('⚠️ Generation name is required');
-      return;
-    }
     try {
       if (isNew) {
         if (parentModelId == null) {
@@ -120,7 +118,7 @@ function GenEditorForm({ generation, models }: Props) {
     } catch {
       showToast('⚠️ Could not save the generation');
     }
-  });
+  }, scrollToFirstError);
 
   return (
     <div className="flex h-auto items-start gap-5 @max-mobile:flex-col">
@@ -129,8 +127,13 @@ function GenEditorForm({ generation, models }: Props) {
         <SectionCard>
           <SectionHeader title="Basic Information" />
           <div className="flex flex-wrap gap-3 p-5 @mobile:gap-4">
-            <FormGroup half label="Generation Name">
-              <Input type="text" placeholder="e.g. BMW M4 G82" {...register('name')} />
+            <FormGroup half label="Generation Name" error={errors.name?.message}>
+              <Input
+                type="text"
+                placeholder="e.g. BMW M4 G82"
+                aria-invalid={!!errors.name}
+                {...register('name', { validate: (v) => v.trim().length > 0 || 'Generation name is required' })}
+              />
             </FormGroup>
             <FormGroup half label="Production Years">
               <Input type="text" placeholder="e.g. 2020 – Present" {...register('years')} />
@@ -203,6 +206,7 @@ function GenEditorForm({ generation, models }: Props) {
           onSave={onSave}
           saving={isSubmitting}
           saveDisabled={!isNew && !isDirty}
+          error={errorSummary(errors)}
           className="@max-mobile:order-last"
         />
         {!isNew && <InfoCard rows={[{ label: 'Logbooks', value: String(generation.logbooks_count) }]} />}

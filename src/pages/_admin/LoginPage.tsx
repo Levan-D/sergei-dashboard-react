@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { brand } from '@/lib/brand';
+import { VALIDATE_ON_SUBMIT } from '@/lib/form-errors';
 import { ROUTING } from '@/lib/routing';
 import { sessionFromResponse } from '@/lib/auth/session';
 import { sessionStarted } from '@/store/authSlice';
@@ -30,7 +31,10 @@ function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValuesType>({ defaultValues: { username: '', password: '' } });
+  } = useForm<LoginFormValuesType>({
+    ...VALIDATE_ON_SUBMIT,
+    defaultValues: { username: '', password: '' },
+  });
 
   const from = (location.state as { from?: string } | null)?.from ?? ROUTING.admin;
 
@@ -44,7 +48,7 @@ function LoginForm() {
 
       const session = sessionFromResponse(response);
       if (!session) {
-        setFormError('Sign in failed. Please try again.');
+        setFormError('Sign in failed, please try again');
         return;
       }
       dispatch(sessionStarted(session));
@@ -69,7 +73,7 @@ function LoginForm() {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-4 rounded-card border border-line bg-surface p-5"
         >
-          <FormGroup label="Username or email" full>
+          <FormGroup label="Username or email" full error={errors.username?.message}>
             <Input
               type="text"
               autoComplete="username"
@@ -77,24 +81,22 @@ function LoginForm() {
               placeholder="Enter your username or email"
               aria-invalid={!!errors.username}
               {...register('username', {
-                required: 'Enter your username or email.',
-                minLength: { value: 4, message: 'Username must be at least 4 characters.' },
-                maxLength: { value: 255, message: 'Username is too long.' },
-                pattern: { value: USERNAME_PATTERN, message: 'That is not a valid username or email.' },
+                required: 'Enter your username or email',
+                minLength: { value: 4, message: 'Username must be at least 4 characters' },
+                maxLength: { value: 255, message: 'Username is too long' },
+                pattern: { value: USERNAME_PATTERN, message: 'That is not a valid username or email' },
               })}
             />
-            {errors.username && <p className="mt-1 text-[11px] text-red">{errors.username.message}</p>}
           </FormGroup>
 
-          <FormGroup label="Password" full>
+          <FormGroup label="Password" full error={errors.password?.message}>
             <Input
               type="password"
               autoComplete="current-password"
               placeholder="Enter your password"
               aria-invalid={!!errors.password}
-              {...register('password', { required: 'Enter your password.' })}
+              {...register('password', { required: 'Enter your password' })}
             />
-            {errors.password && <p className="mt-1 text-[11px] text-red">{errors.password.message}</p>}
           </FormGroup>
 
           {formError && <p className="text-[11px] text-red">{formError}</p>}
