@@ -1,82 +1,83 @@
+import { useEffect, useRef, useState } from 'react';
+import { brand } from '@/lib/brand';
+import { ROUTING } from '@/lib/routing';
+import { useGetAdminSiteQuery } from '@/lib/redux/api/admin-api/site/site-queries';
+
+/** Render the landing at a real desktop size, then scale it into the panel. */
+const PREVIEW_WIDTH = 1280;
+const PREVIEW_HEIGHT = 900;
+/**
+ * Stacked full width above the editor the preview grows with the panel, but it
+ * is a glance, not the page, so it stops before it pushes the form off screen.
+ */
+const MAX_PREVIEW_HEIGHT = 320;
+const MAX_SCALE = MAX_PREVIEW_HEIGHT / PREVIEW_HEIGHT;
+
+/**
+ * The real landing in an iframe rather than a mock of it, so the panel cannot
+ * drift from the page it claims to show. It reflects saved state only: the
+ * iframe is a separate app instance reading the public payload, so it reloads
+ * once a save lands rather than tracking unsaved form edits.
+ */
 export function LivePreview() {
+  const { data: site } = useGetAdminSiteQuery({ subdomain: brand.makeSlug });
+  const boxRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const skipFirst = useRef(true);
+  const [scale, setScale] = useState(0.25);
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const measure = () => setScale(Math.min(el.clientWidth / PREVIEW_WIDTH, MAX_SCALE));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Every save writes its response into the site cache, so a new object here
+  // means the landing has changed and the preview is now stale.
+  useEffect(() => {
+    if (!site) return;
+    if (skipFirst.current) {
+      skipFirst.current = false;
+      return;
+    }
+    try {
+      frameRef.current?.contentWindow?.location.reload();
+    } catch {
+      /* nothing useful to do if the frame is not reachable */
+    }
+  }, [site]);
+
+  const domain = site?.domain ?? `${brand.makeSlug}.motority.com`;
+
   return (
     <div className="sticky top-0 overflow-hidden rounded-card border border-line bg-surface">
       <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[11px] font-semibold tracking-[.08em] text-ink-3 uppercase @mobile:px-4 @mobile:py-3">
         <div className="h-1.5 w-1.5 rounded-full bg-green" />
-        Live Preview — bmw.motority.com
+        Live Preview — {domain}
       </div>
       <div className="p-3 @mobile:p-4">
-        <div className="overflow-hidden rounded-lg bg-black">
-          <div
-            className="relative flex h-[100px] items-end p-2 @mobile:p-3"
-            style={{ background: 'linear-gradient(135deg,#0a0a1a,#1a1a3e,#0f2460)' }}
-          >
-            <div className="text-[7px] leading-[1.4] font-extrabold tracking-[.5px] text-white">
-              THE ULTIMATE
-              <br />
-              DRIVING MACHINE
-              <br />
-              <span className="text-[5px] font-normal opacity-70">Over a century of precision engineering</span>
-            </div>
-          </div>
-          <div className="px-2.5 py-2">
-            <p className="mb-[5px] text-[6px] font-bold text-white">MODELS</p>
-            <div className="mb-[7px] flex gap-[3px]">
-              <p className="rounded-lg px-[5px] py-0.5 text-[5px]" style={{ background: '#1e3a5f', color: '#60a5fa' }}>
-                All
-              </p>
-              <p
-                className="rounded-lg border px-[5px] py-0.5 text-[5px]"
-                style={{ borderColor: '#333', color: '#888' }}
-              >
-                Coupe
-              </p>
-              <p
-                className="rounded-lg border px-[5px] py-0.5 text-[5px]"
-                style={{ borderColor: '#333', color: '#888' }}
-              >
-                Sedan
-              </p>
-            </div>
-            <div className="mt-1.5 flex gap-[5px]">
-              {[
-                { code: 'M4', name: 'BMW M4', year: '2021–Present' },
-                { code: 'M3', name: 'BMW M3', year: '2020–Present' },
-                { code: 'X5', name: 'BMW X5', year: '2018–Present' },
-              ].map((m) => (
-                <div key={m.code} className="flex-1 overflow-hidden rounded-[3px]" style={{ background: '#1a1a1a' }}>
-                  <div
-                    className="flex h-6 items-center justify-center text-[5px] font-bold"
-                    style={{ background: 'linear-gradient(135deg,#1e3a5f,#2d6a4f)', color: 'rgba(255,255,255,.4)' }}
-                  >
-                    {m.code}
-                  </div>
-                  <div className="px-1 py-[3px]">
-                    <p className="text-[5px] font-bold text-white">{m.name}</p>
-                    <p className="text-[4px]" style={{ color: '#888' }}>
-                      {m.year}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="px-2.5 py-1.5" style={{ borderTop: '1px solid #1a1a1a' }}>
-            <p className="mb-1 text-[5px] font-bold text-white">REAL OWNERS</p>
-            <div className="flex gap-[3px]">
-              {['BMW M4 Competition', 'BMW X5 G05'].map((n) => (
-                <div
-                  key={n}
-                  className="flex h-[22px] flex-1 items-end rounded-[3px] p-[3px]"
-                  style={{ background: '#111' }}
-                >
-                  <p className="text-[4px]" style={{ color: '#aaa' }}>
-                    {n}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div
+          ref={boxRef}
+          className="relative mx-auto w-full overflow-hidden rounded-lg bg-black"
+          style={{ maxWidth: PREVIEW_WIDTH * MAX_SCALE, height: Math.round(PREVIEW_HEIGHT * scale) }}
+        >
+          <iframe
+            ref={frameRef}
+            src={ROUTING.home}
+            title="Landing preview"
+            tabIndex={-1}
+            className="pointer-events-none absolute top-0 left-0 border-0"
+            style={{
+              width: PREVIEW_WIDTH,
+              height: PREVIEW_HEIGHT,
+              transform: `scale(${scale})`,
+              transformOrigin: 'top left',
+            }}
+          />
         </div>
         <p className="mt-2.5 rounded-md bg-surface-2 px-2.5 py-2 text-[10px] text-ink-3">Changes apply after Save ↑</p>
       </div>
